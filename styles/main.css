@@ -313,7 +313,7 @@ body::after {
   font-size: 1.75rem;
   line-height: 1.1;
   color: var(--ink);
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .hero-frame-title {
@@ -342,7 +342,7 @@ body::after {
 }
 
 .tooltip-card {
-  min-width: 236px;
+  width: min(280px, calc(100vw - 40px));
   padding: 14px 16px;
   border-radius: 18px;
   background: rgba(255, 250, 243, 0.96);

@@ -87,6 +87,31 @@ function buildTooltip(params) {
   `;
 }
 
+function getTooltipPosition(point, _params, _dom, _rect, size) {
+  const gap = 12;
+  const [boxWidth, boxHeight] = size.contentSize;
+  const [viewWidth, viewHeight] = size.viewSize;
+
+  let x = point[0] + gap;
+  let y = point[1] - boxHeight - gap;
+
+  if (x + boxWidth > viewWidth - gap) {
+    x = viewWidth - boxWidth - gap;
+  }
+  if (x < gap) {
+    x = gap;
+  }
+
+  if (y < gap) {
+    y = point[1] + gap;
+  }
+  if (y + boxHeight > viewHeight - gap) {
+    y = Math.max(gap, viewHeight - boxHeight - gap);
+  }
+
+  return [x, y];
+}
+
 function updateSummary() {
   const total = marathonData.length;
   const completed = marathonData.filter((item) => item.completed).length;
@@ -150,10 +175,12 @@ async function initMap() {
       tooltip: {
         trigger: "item",
         enterable: true,
+        confine: true,
         borderWidth: 0,
         backgroundColor: "transparent",
         extraCssText: "box-shadow:none;padding:0;",
         formatter: buildTooltip,
+        position: getTooltipPosition,
       },
       visualMap: {
         show: false,
