@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>省会马拉松地图</title>
+    <meta
+      name="description"
+      content="用中国地图记录省会马拉松收集进度，绿色表示已完成，灰色表示未完成。"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero-card">
+        <div class="section-kicker hero-frame-title">柿子 · 奔跑在路上</div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p>这是柿子同学收集省会马拉松的进度页面。</p>
+            <p>自全马破三的目标达成以后，他已经沉迷省会马拉松集邮。</p>
+            <p>力争在 40 岁生日以前完成，并开启全球大满贯收集之旅。</p>
+          </div>
+
+          <div class="hero-progress">
+            <div class="progress-panel">
+              <div class="progress-summary">
+                <div class="progress-ring" id="progressRing">
+                  <div class="progress-inner">
+                    <strong class="progress-value" id="progressValue">0 / 31</strong>
+                    <span class="progress-label">已完成</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-next">
+            <div class="next-stop">
+              <p class="next-stop-label">下一站</p>
+              <strong class="next-stop-city" id="nextStopCity">待定</strong>
+              <p class="next-stop-date" id="nextStopDate">比赛日期 · 待填写</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-grid">
+        <section class="map-card">
+          <div class="section-heading">
+            <div>
+              <h2>省会马拉松集邮册</h2>
+              <div class="hero-tags">
+                <span class="hero-tag done">绿色省份代表已点亮</span>
+                <span class="hero-tag pending">灰色省份代表未完成</span>
+              </div>
+            </div>
+          </div>
+          <div id="map" aria-label="中国省会马拉松进度地图"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <script type="module" src="scripts/app.js"></script>
+  </body>
+</html>
