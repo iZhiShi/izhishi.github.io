@@ -1,5 +1,4 @@
-export const CHINA_GEOJSON_URL =
-  "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json";
+export const CHINA_GEOJSON_URL = new URL("../data/china.geojson", import.meta.url).href;
 
 export const capitals = [
   { province: "北京市", city: "北京", coord: [116.4074, 39.9042] },

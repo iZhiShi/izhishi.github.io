@@ -7,6 +7,8 @@
 ```text
 .
 ├── index.html
+├── data/
+│   └── china.geojson
 ├── styles/
 │   └── main.css
 └── scripts/
@@ -22,6 +24,9 @@
 - `styles/main.css`
   - 负责全部页面样式。
   - 颜色、间距、字号、卡片样式、地图容器尺寸都在这里修改。
+- `data/china.geojson`
+  - 本地保存的中国地图 GeoJSON 数据。
+  - 页面部署到 GitHub Pages 后，地图直接读取本站文件，不再依赖第三方地图接口。
 - `scripts/data.js`
   - 负责可维护数据。
   - 包含省会列表、已完赛记录、下一站计划。
@@ -98,6 +103,12 @@ export const nextMarathonPlan = {
   - 初始化地图、颜色和交互
 
 ## 数据维护注意事项
+
+### 地图数据来源
+
+- 当前地图数据已经改为读取仓库内的 `data/china.geojson`
+- 这样做的原因是避免 GitHub Pages 线上环境依赖第三方地图接口
+- 如果后续要替换地图数据文件，优先替换这个本地文件，而不是改回外链
 
 ### 省份点亮规则
 

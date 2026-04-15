@@ -215,7 +215,7 @@ async function initMap() {
   } catch (error) {
     console.error(error);
     chart.dispose();
-    showMapError("中国地图数据未能加载，请稍后刷新页面或检查网络连接。");
+    showMapError("中国地图数据未能加载：" + (error && error.message ? error.message : "未知错误"));
   }
 }
 
