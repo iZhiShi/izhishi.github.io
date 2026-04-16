@@ -140,6 +140,13 @@ function showMapError(message) {
 async function initMap() {
   updateSummary();
 
+  if (window.location.protocol === "file:") {
+    showMapError(
+      "当前是通过 file:// 直接打开页面。浏览器通常会拦截模块脚本或本地 GeoJSON 读取，请改用本地静态服务器访问，例如先运行 python3 -m http.server 8000，再打开 http://localhost:8000。"
+    );
+    return;
+  }
+
   if (!window.echarts) {
     showMapError("ECharts 脚本未成功加载，请检查网络或 CDN 地址。");
     return;

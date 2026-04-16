@@ -143,9 +143,15 @@ export const nextMarathonPlan = {
 如果只是日常更新进度，推荐按这个顺序操作：
 
 1. 修改 `scripts/data.js`
-2. 本地打开 `index.html` 检查页面
-3. 确认地图点亮和“下一站”显示无误
-4. 提交 git commit
+2. 在项目目录运行 `python3 -m http.server 8000`
+3. 打开 `http://localhost:8000` 检查页面
+4. 确认地图点亮和“下一站”显示无误
+5. 提交 git commit
+
+注意：
+
+- 不建议直接双击打开 `index.html`
+- 直接以 `file://` 方式访问时，浏览器可能会拦截 ES Module 和本地 `GeoJSON` 文件读取，导致页面显示成“没有数据”或地图加载失败
 
 ## 当前工程化拆分原则
 
