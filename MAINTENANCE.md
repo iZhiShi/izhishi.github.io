@@ -29,11 +29,11 @@
   - 页面部署到 GitHub Pages 后，地图直接读取本站文件，不再依赖第三方地图接口。
 - `scripts/data.js`
   - 负责可维护数据。
-  - 包含省会列表、已完赛记录、下一站计划。
+  - 包含省会列表、四项个人成绩、已完赛记录、下一站计划。
   - 日常更新成绩时，通常只需要改这个文件。
 - `scripts/app.js`
   - 负责交互和地图逻辑。
-  - 包含进度计算、tooltip 渲染、ECharts 地图初始化等逻辑。
+  - 包含头部四项成绩渲染、赛事展示、进度计算、tooltip 渲染、ECharts 地图初始化等逻辑。
 
 ## 最常见维护场景
 
@@ -55,7 +55,41 @@ export const completedMarathons = {
 - `time` 为完赛时间
 - 填入后，对应省份会自动点亮
 
-### 2. 更新下一站计划
+### 2. 更新头部成绩
+
+编辑 `scripts/data.js` 中的 `runnerProfile`：
+
+```js
+export const runnerProfile = {
+  fullMarathonPb: {
+    time: "02:59:13",
+    event: "北京马拉松",
+  },
+  halfMarathonPb: {
+    time: "01:25:00",
+    event: "广州半程马拉松",
+  },
+  itraPerformance: {
+    score: "550",
+    event: "",
+  },
+  utmbPerformance: {
+    score: "499",
+    event: "",
+  },
+};
+```
+
+说明：
+
+- `fullMarathonPb` 显示在头部四项成绩区域中
+- `halfMarathonPb` 显示在同一区域中
+- PB 需要同时维护 `time` 和 `event`，分别显示成绩与赛事名
+- `itraPerformance` 显示 ITRA 表现分和赛事名
+- `utmbPerformance` 显示 UTMB 表现分和赛事名
+- 如果留空，页面会自动显示“待填写”
+
+### 3. 更新下一站计划
 
 编辑 `scripts/data.js` 中的 `nextMarathonPlan`：
 
@@ -68,33 +102,36 @@ export const nextMarathonPlan = {
 
 说明：
 
-- `city` 显示在头部“下一站”卡片中
+- `city` 显示在地图面板顶部的“下一站”卡片中
 - `date` 显示比赛日期
 - 如果留空，页面会自动回退到“下一个未完成省会”并显示“待定”
 
-### 3. 修改头部文案
+### 4. 修改头部文案
 
 编辑 `index.html`：
 
 - 头部标题在 `hero-card` 内
-- 页面介绍文案在 `.hero-copy` 区块中
+- 头部四项成绩在 `.runner-stats` 区块中
 - 地图标题也在 `index.html` 中
 
-### 4. 修改样式
+### 5. 修改样式
 
 编辑 `styles/main.css`：
 
-- 头部三栏布局：`.hero-grid`
-- 左侧说明卡：`.hero-copy`
+- 头部四项成绩布局：`.runner-stats`
+- 个人成绩容器：`.runner-card`
 - 完成率卡：`.progress-panel`
 - 下一站卡：`.next-stop`
+- 地图顶部信息区：`.map-overview`
 - 地图大卡：`.map-card`
 - tooltip：`.tooltip-*`
 
-### 5. 修改地图交互逻辑
+### 6. 修改地图交互逻辑
 
 编辑 `scripts/app.js`：
 
+- `updateProfile()`
+  - 更新头部四项成绩和赛事展示
 - `updateSummary()`
   - 更新完成率和下一站展示
 - `buildTooltip()`

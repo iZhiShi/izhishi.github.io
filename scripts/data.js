@@ -58,6 +58,26 @@ export const completedMarathons = {
   石家庄: { date: "2026.3.29", time: "03:24:57" },
 };
 
+// 头部成绩卡的数据；各项可填写成绩/分数和赛事，留空会显示“待填写”。
+export const runnerProfile = {
+  fullMarathonPb: {
+    time: "02:59:13",
+    event: "2025北京马拉松",
+  },
+  halfMarathonPb: {
+    time: "01:27:55",
+    event: "2025扬州鉴真半程马拉松",
+  },
+  itraPerformance: {
+    score: "567",
+    event: "Nike ACG Ultra-Trail Chongli 2025 - 30K",
+  },
+  utmbPerformance: {
+    score: "499",
+    event: "Ultra-Trail Great Wall by UTMB 2025 - 20K",
+  },
+};
+
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {
   city: "宁夏回族自治区 · 银川市",

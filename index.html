@@ -16,44 +16,58 @@
 
       <header class="hero-card">
         <div class="section-kicker hero-frame-title">柿子 · 奔跑在路上</div>
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <p>这是柿子同学收集省会马拉松的进度页面。</p>
-            <p>自全马破三的目标达成以后，他已经沉迷省会马拉松集邮。</p>
-            <p>力争在 40 岁生日以前完成，并开启全球大满贯收集之旅。</p>
-          </div>
-
-          <div class="hero-progress">
-            <div class="progress-panel">
-              <div class="progress-summary">
-                <div class="progress-ring" id="progressRing">
-                  <div class="progress-inner">
-                    <strong class="progress-value" id="progressValue">0 / 31</strong>
-                    <span class="progress-label">已完成</span>
-                  </div>
-                </div>
-              </div>
+        <section class="runner-card" aria-label="个人成绩">
+          <div class="runner-stats">
+            <div class="runner-stat">
+              <span class="runner-stat-name">全马 PB</span>
+              <strong class="runner-stat-value" id="fullMarathonPbValue">待填写</strong>
+              <span class="runner-stat-detail" id="fullMarathonPbEvent">待填写</span>
+            </div>
+            <div class="runner-stat">
+              <span class="runner-stat-name">半马 PB</span>
+              <strong class="runner-stat-value" id="halfMarathonPbValue">待填写</strong>
+              <span class="runner-stat-detail" id="halfMarathonPbEvent">待填写</span>
+            </div>
+            <div class="runner-stat">
+              <span class="runner-stat-name">ITRA 表现分</span>
+              <strong class="runner-stat-value" id="itraPerformanceValue">待填写</strong>
+              <span class="runner-stat-detail" id="itraPerformanceEvent">待填写</span>
+            </div>
+            <div class="runner-stat">
+              <span class="runner-stat-name">UTMB 表现分</span>
+              <strong class="runner-stat-value" id="utmbPerformanceValue">待填写</strong>
+              <span class="runner-stat-detail" id="utmbPerformanceEvent">待填写</span>
             </div>
           </div>
-
-          <div class="hero-next">
-            <div class="next-stop">
-              <p class="next-stop-label">下一站</p>
-              <strong class="next-stop-city" id="nextStopCity">待定</strong>
-              <p class="next-stop-date" id="nextStopDate">比赛日期 · 待填写</p>
-            </div>
-          </div>
-        </div>
+        </section>
       </header>
 
       <main class="content-grid">
         <section class="map-card">
           <div class="section-heading">
-            <div>
+            <div class="map-heading-panel">
               <h2>省会马拉松集邮册</h2>
               <div class="hero-tags">
                 <span class="hero-tag done">绿色省份代表已点亮</span>
                 <span class="hero-tag pending">灰色省份代表未完成</span>
+              </div>
+            </div>
+            <div class="map-overview">
+              <div class="progress-panel map-progress-panel">
+                <div class="progress-summary">
+                  <div class="progress-ring" id="progressRing">
+                    <div class="progress-inner">
+                      <strong class="progress-value" id="progressValue">0 / 31</strong>
+                      <span class="progress-label">已完成</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="next-stop map-next-stop">
+                <p class="next-stop-label">下一站</p>
+                <strong class="next-stop-city" id="nextStopCity">待定</strong>
+                <p class="next-stop-date" id="nextStopDate">比赛日期 · 待填写</p>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import {
   capitals,
   completedMarathons,
   nextMarathonPlan,
+  runnerProfile,
 } from "./data.js";
 
 const marathonDataByProvince = new Map();
@@ -112,6 +113,61 @@ function getTooltipPosition(point, _params, _dom, _rect, size) {
   return [x, y];
 }
 
+function normalizeText(value) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  return String(value).trim();
+}
+
+function setPersonalBest(prefix, personalBest) {
+  const valueElement = document.getElementById(prefix + "Value");
+  const eventElement = document.getElementById(prefix + "Event");
+  if (!valueElement || !eventElement) {
+    return;
+  }
+
+  const normalizedPersonalBest =
+    typeof personalBest === "object" && personalBest !== null
+      ? personalBest
+      : { time: personalBest, event: "" };
+  const time = normalizeText(normalizedPersonalBest.time);
+  const race = normalizeText(normalizedPersonalBest.event);
+
+  valueElement.textContent = time || "待填写";
+  valueElement.classList.toggle("pending", !time);
+
+  eventElement.textContent = race ? "" + race : "待填写";
+  eventElement.classList.toggle("pending", !race);
+}
+
+function setPerformanceMetric(prefix, metric) {
+  const valueElement = document.getElementById(prefix + "Value");
+  const eventElement = document.getElementById(prefix + "Event");
+  if (!valueElement || !eventElement) {
+    return;
+  }
+
+  const normalizedMetric =
+    typeof metric === "object" && metric !== null ? metric : { score: metric, event: "" };
+  const score = normalizeText(normalizedMetric.score);
+  const event = normalizeText(normalizedMetric.event);
+
+  valueElement.textContent = score || "待填写";
+  valueElement.classList.toggle("pending", !score);
+
+  eventElement.textContent = event ? "" + event : "待填写";
+  eventElement.classList.toggle("pending", !event);
+}
+
+function updateProfile() {
+  setPersonalBest("fullMarathonPb", runnerProfile.fullMarathonPb);
+  setPersonalBest("halfMarathonPb", runnerProfile.halfMarathonPb);
+  setPerformanceMetric("itraPerformance", runnerProfile.itraPerformance);
+  setPerformanceMetric("utmbPerformance", runnerProfile.utmbPerformance);
+}
+
 function updateSummary() {
   const total = marathonData.length;
   const completed = marathonData.filter((item) => item.completed).length;
@@ -119,15 +175,32 @@ function updateSummary() {
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
   const nextCity = nextMarathonPlan.city || (fallbackNext ? fallbackNext.city : "已全部完成");
   const nextDate = nextMarathonPlan.date || (fallbackNext ? "待定" : "已点亮全部省会");
+  const progressRing = document.getElementById("progressRing");
+  const progressValue = document.getElementById("progressValue");
+  const nextStopCity = document.getElementById("nextStopCity");
+  const nextStopDate = document.getElementById("nextStopDate");
 
-  document.getElementById("progressRing").style.setProperty("--progress", percent);
-  document.getElementById("progressValue").textContent = completed + " / " + total;
-  document.getElementById("nextStopCity").textContent = nextCity;
-  document.getElementById("nextStopDate").textContent = "比赛日期 · " + nextDate;
+  if (progressRing) {
+    progressRing.style.setProperty("--progress", percent);
+  }
+  if (progressValue) {
+    progressValue.textContent = completed + " / " + total;
+  }
+  if (nextStopCity) {
+    nextStopCity.textContent = nextCity;
+  }
+  if (nextStopDate) {
+    nextStopDate.textContent = "比赛日期 · " + nextDate;
+  }
 }
 
 function showMapError(message) {
-  document.getElementById("map").innerHTML = `
+  const mapElement = document.getElementById("map");
+  if (!mapElement) {
+    return;
+  }
+
+  mapElement.innerHTML = `
     <div class="map-error">
       <div>
         <strong>地图加载失败</strong>
@@ -138,6 +211,7 @@ function showMapError(message) {
 }
 
 async function initMap() {
+  updateProfile();
   updateSummary();
 
   if (window.location.protocol === "file:") {
