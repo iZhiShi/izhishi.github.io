@@ -62,21 +62,60 @@ export const completedMarathons = {
 export const runnerProfile = {
   fullMarathonPb: {
     time: "02:59:13",
-    event: "2025北京马拉松",
+    event: "2025 北京马拉松",
+    date: "2025.11.07",
   },
   halfMarathonPb: {
     time: "01:27:55",
-    event: "2025扬州鉴真半程马拉松",
+    event: "2025 扬州鉴真半程马拉松",
+    date: "2025.03.30",
   },
   itraPerformance: {
     score: "567",
-    event: "Nike ACG Ultra-Trail Chongli 2025 - 30K",
+    event: "2025 崇礼168 超级越野赛",
+    date: "2025.07.14",
   },
   utmbPerformance: {
     score: "499",
-    event: "Ultra-Trail Great Wall by UTMB 2025 - 20K",
+    event: "2025 大境门 By UTMB",
+    date: "2025.05.18",
   },
 };
+
+export const chinaMajorRaces = [
+  {
+    city: "重庆",
+    event: "重庆马拉松",
+    year: "2025",
+    badge: "山城揭幕",
+    accent: "#2c5b97",
+    soft: "rgba(44, 91, 151, 0.16)",
+  },
+  {
+    city: "武汉",
+    event: "武汉马拉松",
+    year: "2025",
+    badge: "樱花江城",
+    accent: "#8a3b3d",
+    soft: "rgba(138, 59, 61, 0.16)",
+  },
+  {
+    city: "北京",
+    event: "北京马拉松",
+    year: "2025",
+    badge: "国马舞台",
+    accent: "#b04734",
+    soft: "rgba(176, 71, 52, 0.16)",
+  },
+  {
+    city: "广州",
+    event: "广州马拉松",
+    year: "2025",
+    badge: "珠江水韵",
+    accent: "#a97920",
+    soft: "rgba(169, 121, 32, 0.16)",
+  },
+];
 
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {

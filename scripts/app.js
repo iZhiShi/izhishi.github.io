@@ -1,5 +1,6 @@
 import {
   CHINA_GEOJSON_URL,
+  chinaMajorRaces,
   capitals,
   completedMarathons,
   nextMarathonPlan,
@@ -124,41 +125,51 @@ function normalizeText(value) {
 function setPersonalBest(prefix, personalBest) {
   const valueElement = document.getElementById(prefix + "Value");
   const eventElement = document.getElementById(prefix + "Event");
-  if (!valueElement || !eventElement) {
+  const dateElement = document.getElementById(prefix + "Date");
+  if (!valueElement || !eventElement || !dateElement) {
     return;
   }
 
   const normalizedPersonalBest =
     typeof personalBest === "object" && personalBest !== null
       ? personalBest
-      : { time: personalBest, event: "" };
+      : { time: personalBest, event: "", date: "" };
   const time = normalizeText(normalizedPersonalBest.time);
   const race = normalizeText(normalizedPersonalBest.event);
+  const date = normalizeText(normalizedPersonalBest.date);
 
   valueElement.textContent = time || "待填写";
   valueElement.classList.toggle("pending", !time);
 
-  eventElement.textContent = race ? "" + race : "待填写";
+  eventElement.textContent = race || "待填写";
   eventElement.classList.toggle("pending", !race);
+
+  dateElement.textContent = date || " ";
+  dateElement.classList.toggle("pending", !date);
 }
 
 function setPerformanceMetric(prefix, metric) {
   const valueElement = document.getElementById(prefix + "Value");
   const eventElement = document.getElementById(prefix + "Event");
-  if (!valueElement || !eventElement) {
+  const dateElement = document.getElementById(prefix + "Date");
+  if (!valueElement || !eventElement || !dateElement) {
     return;
   }
 
   const normalizedMetric =
-    typeof metric === "object" && metric !== null ? metric : { score: metric, event: "" };
+    typeof metric === "object" && metric !== null ? metric : { score: metric, event: "", date: "" };
   const score = normalizeText(normalizedMetric.score);
   const event = normalizeText(normalizedMetric.event);
+  const date = normalizeText(normalizedMetric.date);
 
   valueElement.textContent = score || "待填写";
   valueElement.classList.toggle("pending", !score);
 
-  eventElement.textContent = event ? "" + event : "待填写";
+  eventElement.textContent = event || "待填写";
   eventElement.classList.toggle("pending", !event);
+
+  dateElement.textContent = date || " ";
+  dateElement.classList.toggle("pending", !date);
 }
 
 function updateProfile() {
@@ -194,6 +205,42 @@ function updateSummary() {
   }
 }
 
+function renderChinaMajorRaces() {
+  const majorRaceGrid = document.getElementById("majorRaceGrid");
+  if (!majorRaceGrid) {
+    return;
+  }
+
+  majorRaceGrid.innerHTML = chinaMajorRaces
+    .map((race) => {
+      const result = completedMarathons[race.city];
+      const time = result && result.time ? result.time : "待填写";
+      const date = result && result.date ? result.date : "待填写";
+      const timeClass = !result || !result.time ? " pending" : "";
+
+      return `
+        <article
+          class="major-race-card"
+          style="--race-accent:${race.accent};--race-soft:${race.soft};"
+        >
+          <div class="major-race-head">
+            <span class="major-race-year">${race.year}</span>
+            <span class="major-race-badge">${race.badge}</span>
+          </div>
+          <h3 class="major-race-title">${race.event}</h3>
+          <div class="major-race-performance">
+            <strong class="major-race-time${timeClass}">${time}</strong>
+          </div>
+          <div class="major-race-footer">
+            <span>完赛日期</span>
+            <strong>${date}</strong>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function showMapError(message) {
   const mapElement = document.getElementById("map");
   if (!mapElement) {
@@ -213,6 +260,7 @@ function showMapError(message) {
 async function initMap() {
   updateProfile();
   updateSummary();
+  renderChinaMajorRaces();
 
   if (window.location.protocol === "file:") {
     showMapError(
