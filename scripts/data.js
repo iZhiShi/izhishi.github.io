@@ -82,6 +82,13 @@ export const runnerProfile = {
   },
 };
 
+const majorRaceMedals = {
+  重庆: new URL("../assets/2025重庆马拉松.png", import.meta.url).href,
+  武汉: new URL("../assets/2025武汉马拉松.png", import.meta.url).href,
+  北京: new URL("../assets/2025北京马拉松.png", import.meta.url).href,
+  广州: new URL("../assets/2025广州马拉松.png", import.meta.url).href,
+};
+
 export const chinaMajorRaces = [
   {
     city: "重庆",
@@ -90,6 +97,7 @@ export const chinaMajorRaces = [
     badge: "山城揭幕",
     accent: "#2c5b97",
     soft: "rgba(44, 91, 151, 0.16)",
+    medalImage: majorRaceMedals.重庆,
   },
   {
     city: "武汉",
@@ -98,6 +106,7 @@ export const chinaMajorRaces = [
     badge: "樱花江城",
     accent: "#8a3b3d",
     soft: "rgba(138, 59, 61, 0.16)",
+    medalImage: majorRaceMedals.武汉,
   },
   {
     city: "北京",
@@ -106,6 +115,7 @@ export const chinaMajorRaces = [
     badge: "国马舞台",
     accent: "#b04734",
     soft: "rgba(176, 71, 52, 0.16)",
+    medalImage: majorRaceMedals.北京,
   },
   {
     city: "广州",
@@ -114,6 +124,7 @@ export const chinaMajorRaces = [
     badge: "珠江水韵",
     accent: "#a97920",
     soft: "rgba(169, 121, 32, 0.16)",
+    medalImage: majorRaceMedals.广州,
   },
 ];
 

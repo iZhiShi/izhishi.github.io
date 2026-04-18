@@ -461,7 +461,7 @@ body::after {
   --race-accent: var(--green);
   --race-soft: rgba(47, 124, 83, 0.14);
   position: relative;
-  min-height: 196px;
+  min-height: 226px;
   padding: 16px 16px 14px;
   border-radius: 26px;
   display: grid;
@@ -524,11 +524,56 @@ body::after {
 }
 
 .major-race-title {
-  margin: 14px 0 0;
+  margin: 0;
   font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
     "Songti SC", "STSong", serif;
   font-size: 1.44rem;
   line-height: 1.15;
+}
+
+.major-race-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px;
+  align-items: end;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.major-race-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.major-race-medal-frame {
+  position: relative;
+  z-index: 1;
+  width: 112px;
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  padding: 10px;
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: rgba(249, 243, 234, 0.88);
+  border: 1px solid rgba(210, 197, 176, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+}
+
+.major-race-medal-frame::before {
+  content: none;
+}
+
+.major-race-medal {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  filter: drop-shadow(0 12px 20px rgba(74, 58, 35, 0.14));
 }
 
 .major-race-performance {
@@ -859,6 +904,15 @@ body::after {
 
   .major-race-card {
     min-height: auto;
+  }
+
+  .major-race-body {
+    grid-template-columns: minmax(0, 1fr) 104px;
+    align-items: center;
+  }
+
+  .major-race-medal-frame {
+    width: 104px;
   }
 
   .major-race-head,

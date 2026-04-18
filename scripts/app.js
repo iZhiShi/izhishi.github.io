@@ -217,6 +217,18 @@ function renderChinaMajorRaces() {
       const time = result && result.time ? result.time : "待填写";
       const date = result && result.date ? result.date : "待填写";
       const timeClass = !result || !result.time ? " pending" : "";
+      const medalMarkup = race.medalImage
+        ? `
+          <figure class="major-race-medal-frame">
+            <img
+              class="major-race-medal"
+              src="${race.medalImage}"
+              alt="${race.year} ${race.event} 奖牌"
+              loading="lazy"
+            />
+          </figure>
+        `
+        : "";
 
       return `
         <article
@@ -227,9 +239,14 @@ function renderChinaMajorRaces() {
             <span class="major-race-year">${race.year}</span>
             <span class="major-race-badge">${race.badge}</span>
           </div>
-          <h3 class="major-race-title">${race.event}</h3>
-          <div class="major-race-performance">
-            <strong class="major-race-time${timeClass}">${time}</strong>
+          <div class="major-race-body">
+            <div class="major-race-copy">
+              <h3 class="major-race-title">${race.event}</h3>
+              <div class="major-race-performance">
+                <strong class="major-race-time${timeClass}">${time}</strong>
+              </div>
+            </div>
+            ${medalMarkup}
           </div>
           <div class="major-race-footer">
             <span>完赛日期</span>
