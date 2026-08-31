@@ -56,6 +56,7 @@ export const completedMarathons = {
   广州: { date: "2025.12.21", time: "03:24:21" },
   海口: { date: "2025.12.28", time: "03:26:28" },
   石家庄: { date: "2026.03.29", time: "03:24:57" },
+  银川: { date: "2026.05.17", time: "03:19:09" },
 };
 
 // 头部成绩卡的数据；各项可填写成绩/分数和赛事，留空会显示“待填写”。
@@ -130,6 +131,6 @@ export const chinaMajorRaces = [
 
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {
-  city: "宁夏回族自治区 · 银川市",
-  date: "2026.05.17",
+  city: "青海省 · 西宁市",
+  date: "2026.09.06",
 };
