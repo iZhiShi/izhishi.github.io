@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# superpowers 工作目录（brainstorm 草稿、本地服务日志）
+.superpowers/
+
+# Python
+__pycache__/
+
+# Claude Code 本地个人配置（launch.json 和 devserver.py 是共享的，需要提交）
+.claude/settings.local.json

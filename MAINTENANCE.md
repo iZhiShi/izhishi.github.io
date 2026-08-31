@@ -7,8 +7,12 @@
 ```text
 .
 ├── index.html
+├── assets/
+│   └── 2025*.webp        奖牌图（400px 宽 WebP）
 ├── data/
 │   └── china.geojson
+├── vendor/
+│   └── echarts.min.js    ECharts 5.5.1（本地化）
 ├── styles/
 │   └── main.css
 └── scripts/
@@ -24,9 +28,16 @@
 - `styles/main.css`
   - 负责全部页面样式。
   - 颜色、间距、字号、卡片样式、地图容器尺寸都在这里修改。
+- `assets/`
+  - 大满贯奖牌图，统一为 400px 宽的 WebP。
+  - 页面里显示宽度只有 112px，不需要更大的原图。
+  - 新增奖牌见下面的「4. 新增大满贯赛事和奖牌」。
 - `data/china.geojson`
   - 本地保存的中国地图 GeoJSON 数据。
   - 页面部署到 GitHub Pages 后，地图直接读取本站文件，不再依赖第三方地图接口。
+- `vendor/echarts.min.js`
+  - 本地保存的 ECharts 5.5.1，和 GeoJSON 一样不依赖第三方 CDN。
+  - 升级时直接替换这个文件，并同步更新 `index.html` 里的版本号注释。
 - `scripts/data.js`
   - 负责可维护数据。
   - 包含省会列表、四项个人成绩、已完赛记录、下一站计划。
@@ -63,19 +74,23 @@ export const completedMarathons = {
 export const runnerProfile = {
   fullMarathonPb: {
     time: "02:59:13",
-    event: "北京马拉松",
+    event: "2025 北京马拉松",
+    date: "2025.11.07",
   },
   halfMarathonPb: {
-    time: "01:25:00",
-    event: "广州半程马拉松",
+    time: "01:27:55",
+    event: "2025 扬州鉴真半程马拉松",
+    date: "2025.03.30",
   },
   itraPerformance: {
-    score: "550",
-    event: "",
+    score: "567",
+    event: "2025 崇礼168 超级越野赛",
+    date: "2025.07.14",
   },
   utmbPerformance: {
     score: "499",
-    event: "",
+    event: "2025 大境门 By UTMB",
+    date: "2025.05.18",
   },
 };
 ```
@@ -84,9 +99,8 @@ export const runnerProfile = {
 
 - `fullMarathonPb` 显示在头部四项成绩区域中
 - `halfMarathonPb` 显示在同一区域中
-- PB 需要同时维护 `time` 和 `event`，分别显示成绩与赛事名
-- `itraPerformance` 显示 ITRA 表现分和赛事名
-- `utmbPerformance` 显示 UTMB 表现分和赛事名
+- PB 需要同时维护 `time`、`event` 和 `date`，分别显示成绩、赛事名和完赛日期
+- `itraPerformance` 和 `utmbPerformance` 用 `score` 代替 `time`，其余字段相同
 - 如果留空，页面会自动显示“待填写”
 
 ### 3. 更新下一站计划
@@ -106,7 +120,43 @@ export const nextMarathonPlan = {
 - `date` 显示比赛日期
 - 如果留空，页面会自动回退到“下一个未完成省会”并显示“待定”
 
-### 4. 修改头部文案
+### 4. 新增大满贯赛事和奖牌
+
+奖牌图统一放在 `assets/`，用 400px 宽的 WebP。原始照片不要直接放进仓库——页面里显示宽度只有 112px，1MB 的原图会让手机端加载明显变慢。
+
+先转换图片（需要 `cwebp`，用 `brew install webp` 安装）：
+
+```bash
+cwebp -q 82 -resize 400 0 原图.jpg -o assets/2025厦门马拉松.webp
+```
+
+再编辑 `scripts/data.js` 中的 `majorRaceMedals` 和 `chinaMajorRaces`：
+
+```js
+const majorRaceMedals = {
+  厦门: new URL("../assets/2025厦门马拉松.webp", import.meta.url).href,
+};
+
+export const chinaMajorRaces = [
+  {
+    city: "厦门",            // 必须和 completedMarathons 的键名一致
+    event: "厦门马拉松",
+    year: "2025",
+    badge: "海滨赛道",        // 卡片右上角的短标签
+    accent: "#2c5b97",       // 主色，用于成绩数字
+    soft: "rgba(44, 91, 151, 0.16)",  // 同色半透明，用于卡片背景
+    medalImage: majorRaceMedals.厦门,
+  },
+];
+```
+
+说明：
+
+- `city` 用来去 `completedMarathons` 里查完赛时间和日期，两处必须一致，否则卡片会显示“待填写”
+- `medalImage` 可以省略，省略后卡片不显示奖牌图
+- `accent` 和 `soft` 建议取同一个色相，`soft` 用 0.16 左右的透明度
+
+### 5. 修改头部文案
 
 编辑 `index.html`：
 
@@ -114,7 +164,7 @@ export const nextMarathonPlan = {
 - 头部四项成绩在 `.runner-stats` 区块中
 - 地图标题也在 `index.html` 中
 
-### 5. 修改样式
+### 6. 修改样式
 
 编辑 `styles/main.css`：
 
@@ -126,7 +176,7 @@ export const nextMarathonPlan = {
 - 地图大卡：`.map-card`
 - tooltip：`.tooltip-*`
 
-### 6. 修改地图交互逻辑
+### 7. 修改地图交互逻辑
 
 编辑 `scripts/app.js`：
 
@@ -134,6 +184,8 @@ export const nextMarathonPlan = {
   - 更新头部四项成绩和赛事展示
 - `updateSummary()`
   - 更新完成率和下一站展示
+- `renderChinaMajorRaces()`
+  - 渲染大满贯卡片，成绩从 `completedMarathons` 按城市名查出
 - `buildTooltip()`
   - 控制 hover 到省份上时的展示内容
 - `initMap()`
@@ -146,6 +198,16 @@ export const nextMarathonPlan = {
 - 当前地图数据已经改为读取仓库内的 `data/china.geojson`
 - 这样做的原因是避免 GitHub Pages 线上环境依赖第三方地图接口
 - 如果后续要替换地图数据文件，优先替换这个本地文件，而不是改回外链
+
+### 第三方依赖
+
+页面目前没有任何运行时外链依赖，所有资源都来自本仓库：
+
+- `vendor/echarts.min.js`：ECharts 5.5.1
+- `data/china.geojson`：中国地图数据
+- `assets/*.webp`：奖牌图
+
+这样做是为了让 GitHub Pages 上的页面不受第三方 CDN 可用性影响，国内访问也更稳定。新增功能时优先沿用这个原则，不要改回外链。
 
 ### 省份点亮规则
 
@@ -180,7 +242,7 @@ export const nextMarathonPlan = {
 如果只是日常更新进度，推荐按这个顺序操作：
 
 1. 修改 `scripts/data.js`
-2. 在项目目录运行 `python3 -m http.server 8000`
+2. 在项目目录运行 `python3 .claude/devserver.py`
 3. 打开 `http://localhost:8000` 检查页面
 4. 确认地图点亮和“下一站”显示无误
 5. 提交 git commit
@@ -189,6 +251,8 @@ export const nextMarathonPlan = {
 
 - 不建议直接双击打开 `index.html`
 - 直接以 `file://` 方式访问时，浏览器可能会拦截 ES Module 和本地 `GeoJSON` 文件读取，导致页面显示成“没有数据”或地图加载失败
+- `.claude/devserver.py` 就是标准库的 `http.server`，只是额外发送 `Cache-Control: no-store`
+- 用普通的 `python3 -m http.server 8000` 也能跑，但浏览器会缓存 `scripts/data.js` 这类 ES Module，改完数据刷新页面常常看不到变化，需要手动强制刷新
 
 ## 当前工程化拆分原则
 
