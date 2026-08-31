@@ -55,7 +55,7 @@ export const completedMarathons = {
   昆明: { date: "2025.11.30", time: "03:26:32" },
   广州: { date: "2025.12.21", time: "03:24:21" },
   海口: { date: "2025.12.28", time: "03:26:28" },
-  石家庄: { date: "2026.3.29", time: "03:24:57" },
+  石家庄: { date: "2026.03.29", time: "03:24:57" },
 };
 
 // 头部成绩卡的数据；各项可填写成绩/分数和赛事，留空会显示“待填写”。
@@ -83,10 +83,10 @@ export const runnerProfile = {
 };
 
 const majorRaceMedals = {
-  重庆: new URL("../assets/2025重庆马拉松.png", import.meta.url).href,
-  武汉: new URL("../assets/2025武汉马拉松.png", import.meta.url).href,
-  北京: new URL("../assets/2025北京马拉松.png", import.meta.url).href,
-  广州: new URL("../assets/2025广州马拉松.png", import.meta.url).href,
+  重庆: new URL("../assets/2025重庆马拉松.webp", import.meta.url).href,
+  武汉: new URL("../assets/2025武汉马拉松.webp", import.meta.url).href,
+  北京: new URL("../assets/2025北京马拉松.webp", import.meta.url).href,
+  广州: new URL("../assets/2025广州马拉松.webp", import.meta.url).href,
 };
 
 export const chinaMajorRaces = [
