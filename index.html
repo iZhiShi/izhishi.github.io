@@ -111,7 +111,9 @@
         }
       }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <!-- ECharts 5.5.1，本地化保存在 vendor/，与 data/china.geojson 一样不依赖第三方 CDN。
+         升级方式：替换 vendor/echarts.min.js 并同步更新这里的版本号注释。 -->
+    <script src="vendor/echarts.min.js"></script>
     <script type="module" src="scripts/app.js"></script>
   </body>
 </html>
