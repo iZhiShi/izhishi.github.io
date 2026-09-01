@@ -131,6 +131,6 @@ export const chinaMajorRaces = [
 
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {
-  city: "青海省 · 西宁市",
-  date: "2026.09.06",
+  city: "内蒙古自治区 · 呼和浩特市",
+  date: "2026.09.20",
 };
