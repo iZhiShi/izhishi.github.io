@@ -130,6 +130,88 @@ export const chinaMajorRaces = [
   },
 ];
 
+// HYROX 组别进阶轨：出现在 hyroxRaces 里的组别会被标为已完成。
+export const hyroxDivisions = [
+  { code: "RELAY", label: "四人" },
+  { code: "DOUBLES", label: "双人" },
+  { code: "SINGLE", label: "单人" },
+  { code: "PRO", label: "" },
+];
+
+// HYROX 赛事：每场 8 段跑 + 8 个站点，按比赛顺序排列（跑 1 → 站 1 → 跑 2 → 站 2 …）。
+// rank 为全场排名，没有数据就省略，页面只显示用时。
+// relay: true 表示接力赛，此时用 mine 标记柿子承担的站，其余站显示为队友承担。
+// short 是手机端显示的两字站名。
+export const hyroxRaces = [
+  {
+    division: "RELAY",
+    divisionLabel: "男子四人接力",
+    event: "HYROX 北京站",
+    date: "2026.09.12",
+    team: "柿子 & 3 位队友 · AG U40",
+    time: "1:19:48",
+    overall: { rank: 61, total: 197, percentile: "前 31%" },
+    ageGroup: { rank: 48, total: 151 },
+    splits: { run: "30:04", station: "42:56", roxzone: "6:52" },
+    relay: true,
+    runs: [
+      { time: "3:34" },
+      { time: "3:45" },
+      { time: "3:38" },
+      { time: "3:44" },
+      { time: "3:27" },
+      { time: "3:56" },
+      { time: "3:50" },
+      { time: "4:14" },
+    ],
+    stations: [
+      { name: "滑雪机", short: "滑雪", time: "4:31" },
+      { name: "推雪橇", short: "推橇", time: "4:25", rank: 124, mine: true },
+      { name: "拉雪橇", short: "拉橇", time: "4:48" },
+      { name: "波比跳", short: "波比", time: "7:14" },
+      { name: "划船机", short: "划船", time: "4:51", rank: 70, mine: true },
+      { name: "农夫行走", short: "农夫", time: "3:07" },
+      { name: "沙袋弓步", short: "弓步", time: "7:34" },
+      { name: "墙球", short: "墙球", time: "6:26" },
+    ],
+    footNote: "接力制：每人跑 2 段、做 2 站",
+    rankNote: "分段排名为全场排名，仅柿子承担的两站有数据",
+  },
+  {
+    division: "DOUBLES",
+    divisionLabel: "Open 男子双人",
+    event: "HYROX 北京站",
+    date: "2026.09.13",
+    team: "柿子 & 搭档 · AG 35–39",
+    time: "1:19:53",
+    overall: { rank: 351, total: 815, percentile: "前 44%" },
+    ageGroup: { rank: 93, total: 218 },
+    splits: { run: "34:06", station: "40:08", roxzone: "5:44" },
+    runs: [
+      { time: "4:02", rank: 126 },
+      { time: "4:03", rank: 82 },
+      { time: "4:16", rank: 72 },
+      { time: "4:14", rank: 75 },
+      { time: "4:10", rank: 50 },
+      { time: "4:09", rank: 58 },
+      { time: "4:15", rank: 65 },
+      { time: "5:00", rank: 97 },
+    ],
+    stations: [
+      { name: "滑雪机", short: "滑雪", time: "4:25", rank: 341 },
+      { name: "推雪橇", short: "推橇", time: "4:08", rank: 410 },
+      { name: "拉雪橇", short: "拉橇", time: "4:14", rank: 320 },
+      { name: "波比跳", short: "波比", time: "5:28", rank: 387 },
+      { name: "划船机", short: "划船", time: "5:13", rank: 323 },
+      { name: "农夫行走", short: "农夫", time: "1:37", rank: 57 },
+      { name: "沙袋弓步", short: "弓步", time: "4:02", rank: 209 },
+      { name: "墙球", short: "墙球", time: "11:01", rank: 806 },
+    ],
+    medal: "🥈 商学院赛中赛 亚军",
+    rankNote: "分段排名为全场排名",
+  },
+];
+
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {
   city: "河南省 · 郑州市",

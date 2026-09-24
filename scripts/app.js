@@ -3,6 +3,8 @@ import {
   chinaMajorRaces,
   capitals,
   completedMarathons,
+  hyroxDivisions,
+  hyroxRaces,
   nextMarathonPlan,
   runnerProfile,
 } from "./data.js";
@@ -258,6 +260,101 @@ function renderChinaMajorRaces() {
     .join("");
 }
 
+function toSeconds(text) {
+  return String(text)
+    .split(":")
+    .map(Number)
+    .reduce((total, part) => total * 60 + part, 0);
+}
+
+function renderHyroxRaces() {
+  const hyroxRaceGrid = document.getElementById("hyroxRaceGrid");
+  const hyroxDivisionTrack = document.getElementById("hyroxDivisionTrack");
+  if (!hyroxRaceGrid) {
+    return;
+  }
+
+  if (hyroxDivisionTrack) {
+    const finishedDivisions = new Set(hyroxRaces.map((race) => race.division));
+    hyroxDivisionTrack.innerHTML = hyroxDivisions
+      .map((division, index) => {
+        const arrow = index === 0 ? "" : '<i aria-hidden="true">→</i>';
+        const doneClass = finishedDivisions.has(division.code) ? " done" : "";
+        return `${arrow}<span class="hyrox-division-step${doneClass}">${division.code}${division.label ? " " + division.label : ""}</span>`;
+      })
+      .join("");
+  }
+
+  const renderCell = (className, name, shortName, time, rank) => {
+    const rankMarkup = rank
+      ? `<span class="hyrox-cell-rank">#${rank}</span>`
+      : `<span class="hyrox-cell-rank empty">&nbsp;</span>`;
+    return `
+      <div class="hyrox-cell ${className}">
+        <span class="hyrox-cell-name"><span class="full">${name}</span><span class="short">${shortName}</span></span>
+        <strong class="hyrox-cell-time">${time}</strong>
+        ${rankMarkup}
+      </div>
+    `;
+  };
+
+  hyroxRaceGrid.innerHTML = hyroxRaces
+    .map((race) => {
+      const runSeconds = toSeconds(race.splits.run);
+      const stationSeconds = toSeconds(race.splits.station);
+      const roxzoneSeconds = toSeconds(race.splits.roxzone);
+      const runCells = race.runs
+        .map((run, index) => renderCell("run", `跑 ${index + 1}`, `跑${index + 1}`, run.time, run.rank))
+        .join("");
+      const stationCells = race.stations
+        .map((station) => {
+          const className = race.relay ? (station.mine ? "mine" : "other") : "mine";
+          return renderCell(className, station.name, station.short, station.time, station.rank);
+        })
+        .join("");
+      const legend = race.relay
+        ? `<span><i class="mine"></i>柿子承担的站</span><span><i class="other"></i>队友承担的站</span><span><i class="run"></i>跑段</span>`
+        : `<span><i class="mine"></i>双人组：全部站点共同完成</span><span><i class="run"></i>跑段</span>`;
+      const footLead = race.medal
+        ? `<span class="hyrox-medal">${race.medal}</span>`
+        : `<span>${race.footNote || ""}</span>`;
+
+      return `
+        <article class="hyrox-ticket">
+          <div class="hyrox-ticket-head">
+            <span class="hyrox-division"><b>${race.division}</b> ${race.divisionLabel}</span>
+            <span class="hyrox-date">${race.date}</span>
+          </div>
+          <h3 class="hyrox-title">${race.event}<small>${race.team}</small></h3>
+          <div class="hyrox-time-row">
+            <strong class="hyrox-time">${race.time}</strong>
+            <div class="hyrox-rank">
+              <span>总排名 <strong>#${race.overall.rank} <small>/ ${race.overall.total}</small></strong> · ${race.overall.percentile}</span>
+              <span>年龄组 <strong>#${race.ageGroup.rank} <small>/ ${race.ageGroup.total}</small></strong></span>
+            </div>
+          </div>
+          <div
+            class="hyrox-split"
+            style="--run:${runSeconds}fr;--station:${stationSeconds}fr;--roxzone:${roxzoneSeconds}fr;"
+            aria-hidden="true"
+          ><i></i><i></i><i></i></div>
+          <div class="hyrox-split-legend">
+            <span><i class="run"></i>跑步 <b>${race.splits.run}</b></span>
+            <span><i class="station"></i>站点 <b>${race.splits.station}</b></span>
+            <span><i class="roxzone"></i>换项 <b>${race.splits.roxzone}</b></span>
+          </div>
+          <div class="hyrox-course">
+            <div class="hyrox-course-row"><div class="hyrox-course-label">RUN</div>${runCells}</div>
+            <div class="hyrox-course-row"><div class="hyrox-course-label">STN</div>${stationCells}</div>
+          </div>
+          <div class="hyrox-key">${legend}</div>
+          <div class="hyrox-foot">${footLead}<span>${race.rankNote || ""}</span></div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function showMapError(message) {
   const mapElement = document.getElementById("map");
   if (!mapElement) {
@@ -278,6 +375,7 @@ async function initMap() {
   updateProfile();
   updateSummary();
   renderChinaMajorRaces();
+  renderHyroxRaces();
 
   if (window.location.protocol === "file:") {
     showMapError(

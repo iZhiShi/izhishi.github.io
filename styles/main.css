@@ -89,6 +89,7 @@ body::after {
 
 .hero-card,
 .major-card,
+.hyrox-card,
 .map-card {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.55);
@@ -925,5 +926,442 @@ body::after {
 
   #map {
     height: 500px;
+  }
+}
+
+/* HYROX 赛场：近黑 + 亮黄做品牌识别，其余沿用站点暖色 */
+.hyrox-card {
+  --hx-ink: #15181a;
+  --hx-yellow: #f2d400;
+  --hx-yellow-soft: rgba(242, 212, 0, 0.18);
+  --hx-line: rgba(21, 24, 26, 0.12);
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  animation: rise-in 0.95s ease 0.08s both;
+}
+
+.hyrox-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(21, 24, 26, 0.05), transparent 38%),
+    radial-gradient(circle at top right, var(--hx-yellow-soft), transparent 30%);
+  pointer-events: none;
+}
+
+.hyrox-heading {
+  position: relative;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.hyrox-heading-panel {
+  min-width: 0;
+}
+
+.hyrox-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  color: var(--hx-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.hyrox-kicker::before {
+  content: "";
+  width: 22px;
+  height: 10px;
+  background: var(--hx-yellow);
+  transform: skewX(-18deg);
+}
+
+.hyrox-lead {
+  margin-top: 6px;
+  max-width: 44ch;
+}
+
+.hyrox-division-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+}
+
+.hyrox-division-step {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hx-line);
+  white-space: nowrap;
+}
+
+.hyrox-division-step.done {
+  background: var(--hx-ink);
+  border-color: var(--hx-ink);
+  color: #fff;
+}
+
+.hyrox-division-track i {
+  font-style: normal;
+  opacity: 0.5;
+}
+
+.hyrox-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hyrox-ticket {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  padding: 18px 18px 16px;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(249, 243, 234, 0.92));
+  border: 1px solid var(--hx-line);
+  box-shadow: 0 16px 40px rgba(74, 58, 35, 0.08);
+  overflow: hidden;
+}
+
+.hyrox-ticket::after {
+  content: "";
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 84px;
+  height: 84px;
+  background: var(--hx-yellow);
+  transform: rotate(45deg);
+  opacity: 0.9;
+}
+
+.hyrox-ticket-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hyrox-division {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--hx-ink);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.hyrox-division b {
+  color: var(--hx-yellow);
+}
+
+.hyrox-date {
+  margin-right: 44px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.hyrox-title {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Songti SC", "STSong", serif;
+  font-size: 1.36rem;
+  line-height: 1.15;
+}
+
+.hyrox-title small {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.hyrox-time-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 20px;
+}
+
+.hyrox-time,
+.hyrox-cell-time,
+.hyrox-rank strong,
+.hyrox-split-legend b {
+  font-family: "Avenir Next Condensed", "DIN Alternate", "Arial Narrow",
+    sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.hyrox-time {
+  color: var(--hx-ink);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hyrox-rank {
+  display: grid;
+  gap: 4px;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.hyrox-rank strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.hyrox-rank strong small {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.hyrox-split {
+  display: grid;
+  grid-template-columns: var(--run) var(--station) var(--roxzone);
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hyrox-split i {
+  display: block;
+}
+
+.hyrox-split i:nth-child(1),
+.hyrox-split-legend i.run,
+.hyrox-key i.run {
+  background: var(--green);
+}
+
+.hyrox-split i:nth-child(2),
+.hyrox-split-legend i.station {
+  background: var(--hx-ink);
+}
+
+.hyrox-split i:nth-child(3),
+.hyrox-split-legend i.roxzone {
+  background: var(--hx-yellow);
+}
+
+.hyrox-split-legend,
+.hyrox-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+}
+
+.hyrox-split-legend {
+  margin-top: -6px;
+}
+
+.hyrox-split-legend b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.hyrox-split-legend i,
+.hyrox-key i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: middle;
+}
+
+.hyrox-key {
+  gap: 14px;
+  font-size: 0.72rem;
+}
+
+.hyrox-key i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--hx-line);
+  border-radius: 3px;
+}
+
+.hyrox-key i.run {
+  background: rgba(47, 124, 83, 0.07);
+}
+
+.hyrox-key i.mine {
+  background: var(--hx-yellow-soft);
+}
+
+.hyrox-key i.other {
+  background: transparent;
+}
+
+.hyrox-course {
+  display: grid;
+  gap: 6px;
+}
+
+.hyrox-course-row {
+  display: grid;
+  grid-template-columns: 34px repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
+
+.hyrox-course-label {
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.hyrox-cell {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px 3px 6px;
+  border-radius: 11px;
+  border: 1px solid var(--hx-line);
+  background: rgba(21, 24, 26, 0.04);
+  text-align: center;
+  line-height: 1.15;
+}
+
+.hyrox-cell-name {
+  color: var(--ink-soft);
+  font-size: 0.6rem;
+  white-space: nowrap;
+}
+
+.hyrox-cell-name .short {
+  display: none;
+}
+
+.hyrox-cell-time {
+  color: var(--hx-ink);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.hyrox-cell-rank {
+  color: var(--ink-soft);
+  font-size: 0.62rem;
+}
+
+.hyrox-cell.run {
+  background: rgba(47, 124, 83, 0.07);
+  border-color: rgba(47, 124, 83, 0.22);
+}
+
+.hyrox-cell.run .hyrox-cell-time {
+  color: var(--green);
+}
+
+.hyrox-cell.mine {
+  background: var(--hx-yellow-soft);
+  border-color: rgba(242, 212, 0, 0.6);
+}
+
+.hyrox-cell.other {
+  background: transparent;
+}
+
+.hyrox-cell.other .hyrox-cell-time {
+  color: var(--gray);
+}
+
+.hyrox-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--hx-line);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.hyrox-medal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(200, 154, 53, 0.14);
+  color: #7b5e1f;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .hyrox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .hyrox-card {
+    padding: 18px;
+  }
+
+  .hyrox-heading {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+@media (max-width: 600px) {
+  .hyrox-course-row {
+    grid-template-columns: 24px repeat(8, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .hyrox-cell {
+    padding: 5px 1px 4px;
+    border-radius: 8px;
+  }
+
+  .hyrox-cell-name {
+    font-size: 0.52rem;
+  }
+
+  .hyrox-cell-name .full {
+    display: none;
+  }
+
+  .hyrox-cell-name .short {
+    display: inline;
+  }
+
+  .hyrox-cell-time {
+    font-size: 0.72rem;
+  }
+
+  .hyrox-cell-rank {
+    font-size: 0.52rem;
   }
 }

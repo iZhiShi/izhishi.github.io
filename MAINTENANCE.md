@@ -40,7 +40,7 @@
   - 升级时直接替换这个文件，并同步更新 `index.html` 里的版本号注释。
 - `scripts/data.js`
   - 负责可维护数据。
-  - 包含省会列表、四项个人成绩、已完赛记录、下一站计划。
+  - 包含省会列表、四项个人成绩、已完赛记录、大满贯赛事、HYROX 赛事、下一站计划。
   - 日常更新成绩时，通常只需要改这个文件。
 - `scripts/app.js`
   - 负责交互和地图逻辑。
@@ -156,7 +156,40 @@ export const chinaMajorRaces = [
 - `medalImage` 可以省略，省略后卡片不显示奖牌图
 - `accent` 和 `soft` 建议取同一个色相，`soft` 用 0.16 左右的透明度
 
-### 5. 修改头部文案
+### 5. 新增 HYROX 赛事
+
+编辑 `scripts/data.js` 中的 `hyroxRaces`，每场一个对象，8 段跑和 8 个站点按比赛顺序排列（跑 1 → 站 1 → 跑 2 → 站 2 …）：
+
+```js
+{
+  division: "DOUBLES",          // 对应 hyroxDivisions 里的 code，出现过的组别会在进阶轨上标为已完成
+  divisionLabel: "Open 男子双人",
+  event: "HYROX 上海站",
+  date: "2027.03.14",
+  team: "柿子 & 搭档 · AG 35–39",
+  time: "1:14:52",
+  overall: { rank: 120, total: 800, percentile: "前 15%" },
+  ageGroup: { rank: 30, total: 200 },
+  splits: { run: "33:10", station: "36:20", roxzone: "5:22" },  // 三色条按这三个时间自动分配宽度
+  runs: [{ time: "4:02", rank: 90 }, /* …共 8 段，rank 可省略 */],
+  stations: [
+    { name: "滑雪机", short: "滑雪", time: "4:10", rank: 200 },
+    /* …共 8 站，顺序：滑雪机 推雪橇 拉雪橇 波比跳 划船机 农夫行走 沙袋弓步 墙球 */
+  ],
+  medal: "",                    // 有奖项就写，例如 "🥈 商学院赛中赛 亚军"
+  rankNote: "分段排名为全场排名",
+}
+```
+
+说明：
+
+- `rank` 没有数据就省略，页面只显示用时，不会显示排名
+- 接力赛加 `relay: true`，并给柿子承担的站加 `mine: true`；其余站会显示为队友承担
+- 接力赛没有 `medal` 时可以用 `footNote` 写一句赛制说明
+- `short` 是手机端显示的两字站名，必填
+- 新组别（例如 SINGLE）第一次出现时，进阶轨会自动把它标黑
+
+### 6. 修改头部文案
 
 编辑 `index.html`：
 
@@ -164,7 +197,7 @@ export const chinaMajorRaces = [
 - 头部四项成绩在 `.runner-stats` 区块中
 - 地图标题也在 `index.html` 中
 
-### 6. 修改样式
+### 7. 修改样式
 
 编辑 `styles/main.css`：
 
@@ -173,10 +206,11 @@ export const chinaMajorRaces = [
 - 完成率卡：`.progress-panel`
 - 下一站卡：`.next-stop`
 - 地图顶部信息区：`.map-overview`
+- HYROX 卡片：`.hyrox-card`、`.hyrox-ticket`、`.hyrox-cell`
 - 地图大卡：`.map-card`
 - tooltip：`.tooltip-*`
 
-### 7. 修改地图交互逻辑
+### 8. 修改地图交互逻辑
 
 编辑 `scripts/app.js`：
 
@@ -186,6 +220,8 @@ export const chinaMajorRaces = [
   - 更新完成率和下一站展示
 - `renderChinaMajorRaces()`
   - 渲染大满贯卡片，成绩从 `completedMarathons` 按城市名查出
+- `renderHyroxRaces()`
+  - 渲染 HYROX 卡片和组别进阶轨，三色条宽度由 `splits` 三个时间换算
 - `buildTooltip()`
   - 控制 hover 到省份上时的展示内容
 - `initMap()`
