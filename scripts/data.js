@@ -214,6 +214,6 @@ export const hyroxRaces = [
 
 // 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
 export const nextMarathonPlan = {
-  city: "河南省 · 郑州市",
+  city: "陕西省 · 西安市",
   date: "2026.10.18",
 };
