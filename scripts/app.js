@@ -31,7 +31,7 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 // side 决定横线往左还是往右延伸，赛事名在横线上方，日期·成绩在横线下方。
 // 新省会完赛后如果和邻居撞了，在这里调它的折点。
 const mapLabelPlacement = {
-  北京: ["right", [10, -48]],
+  北京: ["right", [18, -44]],
   天津: ["right", [50, 18]],
   石家庄: ["right", [18, 38]],
   太原: ["left", [-20, 30]],
@@ -337,8 +337,9 @@ async function initMap() {
   const GOLD = "#b8862b";
   const GOLD_BRIGHT = "#d9a441";
   const GOLD_DEEP = "#8f6516";
-  const GREEN = "#2f7c53";
-  const GREEN_DEEP = "#245f40";
+  const HX_YELLOW = "#f2d400";
+  const HX_YELLOW_LINE = "#c9b000";
+  const HX_YELLOW_DEEP = "#8a7600";
   const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
   const BODY_FONT = "Avenir Next, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif";
@@ -388,7 +389,7 @@ async function initMap() {
 
     const completedProvinces = marathonData
       .filter((item) => item.completed)
-      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#d6e4d8" } }));
+      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#f7ecb9" } }));
 
     const buildOption = () => {
       const showLabels = !compact.matches;
@@ -447,11 +448,11 @@ async function initMap() {
             data: completedPoints,
             symbolSize: 12,
             itemStyle: {
-              color: GREEN,
-              borderColor: "#fff",
-              borderWidth: 1.5,
+              color: HX_YELLOW,
+              borderColor: "rgba(34, 48, 39, 0.7)",
+              borderWidth: 1.3,
               shadowBlur: 8,
-              shadowColor: "rgba(47, 124, 83, 0.45)",
+              shadowColor: "rgba(201, 176, 0, 0.45)",
             },
             label: { show: false },
             z: 3,
@@ -479,8 +480,8 @@ async function initMap() {
     const labelItems = [
       ...completedPoints.map((point) => ({
         ...point,
-        meta: point.date.slice(0, 4) + " · " + point.time + (point.subThree ? " · SUB 3" : ""),
-        lineColor: point.subThree ? GOLD_DEEP : GREEN,
+        meta: point.date.slice(0, 4) + " · " + point.time,
+        lineColor: point.subThree ? GOLD_DEEP : HX_YELLOW_LINE,
       })),
       ...plannedPoints.map((point) => ({
         ...point,
@@ -533,7 +534,7 @@ async function initMap() {
             y: elbowY + 4,
             style: {
               text: item.meta,
-              fill: emphasis || item.isNext !== undefined ? GOLD_DEEP : GREEN_DEEP,
+              fill: emphasis || item.isNext !== undefined ? GOLD_DEEP : HX_YELLOW_DEEP,
               font: (emphasis ? "700 12.5px " : "600 12px ") + NUM_FONT,
               textAlign: "left",
               textVerticalAlign: "top",

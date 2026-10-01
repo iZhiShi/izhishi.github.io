@@ -579,7 +579,8 @@ body::after {
 }
 
 .map-legend i.done {
-  background: var(--green);
+  background: #f2d400;
+  border: 1px solid rgba(34, 48, 39, 0.7);
 }
 
 .map-legend i.sub-three {
