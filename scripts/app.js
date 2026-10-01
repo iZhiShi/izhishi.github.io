@@ -330,8 +330,9 @@ async function initMap() {
 
   const chartDom = document.getElementById("map");
   const chart = window.echarts.init(chartDom, null, { renderer: "svg" });
-  const GOLD = "#e2a93b";
-  const TEXT = "#f3ead8";
+  const GOLD = "#b8862b";
+  const GOLD_BRIGHT = "#d9a441";
+  const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
   const compact = window.matchMedia("(max-width: 780px)");
 
@@ -373,7 +374,7 @@ async function initMap() {
 
     const completedProvinces = marathonData
       .filter((item) => item.completed)
-      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#2a2620" } }));
+      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#eadcbd" } }));
 
     const labelLine = (color, width) => ({
       show: true,
@@ -390,13 +391,12 @@ async function initMap() {
         animationEasing: "cubicOut",
         geo: {
           map: "china-marathon",
-          roam: true,
+          roam: false,
           zoom: showLabels ? 1.62 : 1.2,
           center: [105.2, 34.6],
-          scaleLimit: { min: 1, max: 6 },
           itemStyle: {
-            areaColor: "#1e1d1a",
-            borderColor: "rgba(226, 169, 59, 0.55)",
+            areaColor: "#f4eee3",
+            borderColor: "rgba(184, 134, 43, 0.55)",
             borderWidth: 0.9,
           },
           emphasis: { disabled: true },
@@ -406,9 +406,9 @@ async function initMap() {
           trigger: "item",
           triggerOn: "mousemove|click",
           confine: true,
-          backgroundColor: "#1c1b19",
-          borderColor: "rgba(226, 169, 59, 0.4)",
-          textStyle: { color: TEXT },
+          backgroundColor: "rgba(255, 250, 243, 0.98)",
+          borderColor: "rgba(184, 134, 43, 0.4)",
+          textStyle: { color: INK },
           formatter: (params) => {
             if (params.seriesName === "completed") {
               return `<b>${params.name}马拉松</b><br/>${params.data.date} · ${params.data.time}`;
@@ -427,7 +427,7 @@ async function initMap() {
             coordinateSystem: "geo",
             data: pendingPoints,
             symbolSize: 6,
-            itemStyle: { color: "rgba(243, 234, 216, 0.28)" },
+            itemStyle: { color: "rgba(34, 48, 39, 0.22)" },
             label: { show: false },
             z: 2,
           },
@@ -438,11 +438,11 @@ async function initMap() {
             data: completedPoints,
             symbolSize: 12,
             itemStyle: {
-              color: GOLD,
+              color: GOLD_BRIGHT,
               borderColor: "#fff",
               borderWidth: 1.5,
-              shadowBlur: 10,
-              shadowColor: "rgba(226, 169, 59, 0.7)",
+              shadowBlur: 8,
+              shadowColor: "rgba(184, 134, 43, 0.45)",
             },
             label: {
               show: showLabels,
@@ -451,11 +451,11 @@ async function initMap() {
               formatter: (params) =>
                 `{n|${params.name}马拉松}\n{t|${params.data.date.slice(0, 4)} · ${params.data.time}}`,
               rich: {
-                n: { color: TEXT, fontSize: 12.5, fontWeight: 700 },
+                n: { color: INK, fontSize: 12.5, fontWeight: 700 },
                 t: { color: GOLD, fontSize: 11.5, fontFamily: NUM_FONT },
               },
             },
-            labelLine: labelLine("rgba(226, 169, 59, 0.7)", 1),
+            labelLine: labelLine("rgba(184, 134, 43, 0.6)", 1),
             z: 3,
           },
           {
@@ -466,8 +466,8 @@ async function initMap() {
               ...point,
               symbolSize: point.isNext ? 13 : 11,
               itemStyle: point.isNext
-                ? { color: "#fff", borderColor: GOLD, borderWidth: 2, shadowBlur: 14, shadowColor: GOLD }
-                : { color: "#1c1b19", borderColor: GOLD, borderWidth: 2 },
+                ? { color: INK, borderColor: GOLD_BRIGHT, borderWidth: 2, shadowBlur: 12, shadowColor: GOLD_BRIGHT }
+                : { color: "#fff", borderColor: GOLD_BRIGHT, borderWidth: 2 },
               rippleEffect: { scale: point.isNext ? 3.2 : 0 },
             })),
             rippleEffect: { brushType: "stroke", period: 3 },
@@ -478,11 +478,11 @@ async function initMap() {
               formatter: (params) =>
                 `{n|${params.name}马拉松}\n{d|${params.data.isNext ? "NEXT · " : ""}${params.data.date}}`,
               rich: {
-                n: { color: "#fff", fontSize: 12.5, fontWeight: 800 },
+                n: { color: INK, fontSize: 12.5, fontWeight: 800 },
                 d: { color: GOLD, fontSize: 11, fontWeight: 700, letterSpacing: 1, fontFamily: NUM_FONT },
               },
             },
-            labelLine: labelLine(GOLD, 1.2),
+            labelLine: labelLine(GOLD_BRIGHT, 1.2),
             z: 4,
           },
         ],

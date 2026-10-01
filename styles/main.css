@@ -89,7 +89,8 @@ body::after {
 
 .hero-card,
 .major-card,
-.hyrox-card {
+.hyrox-card,
+.map-card {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: var(--shadow);
@@ -471,21 +472,15 @@ body::after {
   font-weight: 600;
 }
 
-/* 省会集邮册：黑金底图，完赛省会金点 + 引线标签 */
+/* 省会集邮册：米白底图，金线省界，完赛省会金点 + 引线标签 */
 .map-card {
-  --map-bg: #121212;
-  --map-gold: #e2a93b;
-  --map-text: #f3ead8;
-  --map-dim: rgba(243, 234, 216, 0.55);
-  --map-line: rgba(226, 169, 59, 0.25);
+  --map-gold: #b8862b;
+  --map-gold-bright: #d9a441;
+  --map-line: rgba(184, 134, 43, 0.28);
   position: relative;
   overflow: hidden;
   padding: 24px;
   border-radius: var(--radius-xl);
-  background: radial-gradient(ellipse at 20% 10%, #2a2823 0%, var(--map-bg) 55%);
-  border: 1px solid var(--map-line);
-  box-shadow: var(--shadow);
-  color: var(--map-text);
   animation: rise-in 1s ease 0.1s both;
 }
 
@@ -494,8 +489,8 @@ body::after {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(160deg, rgba(226, 169, 59, 0.1), transparent 40%),
-    radial-gradient(circle at 85% 90%, rgba(226, 169, 59, 0.12), transparent 35%);
+    linear-gradient(160deg, rgba(217, 164, 65, 0.1), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(217, 164, 65, 0.12), transparent 35%);
   pointer-events: none;
 }
 
@@ -504,10 +499,6 @@ body::after {
   align-items: end;
   flex-wrap: wrap;
   margin-bottom: 10px;
-}
-
-.map-heading h2 {
-  color: var(--map-text);
 }
 
 .map-heading-panel {
@@ -524,7 +515,6 @@ body::after {
 
 .map-heading .map-lead {
   margin-top: 6px;
-  color: var(--map-dim);
   font-size: 0.9rem;
 }
 
@@ -539,11 +529,11 @@ body::after {
   padding: 10px 14px;
   border-radius: 14px;
   border: 1px solid var(--map-line);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.55);
 }
 
 .map-stat span {
-  color: var(--map-dim);
+  color: var(--ink-soft);
   font-size: 0.68rem;
   letter-spacing: 0.1em;
 }
@@ -564,7 +554,7 @@ body::after {
 }
 
 .map-stat em {
-  color: var(--map-dim);
+  color: var(--ink-soft);
   font-size: 0.76rem;
   font-style: normal;
 }
@@ -575,7 +565,7 @@ body::after {
   flex-wrap: wrap;
   gap: 18px;
   margin-bottom: 6px;
-  color: var(--map-dim);
+  color: var(--ink-soft);
   font-size: 0.78rem;
 }
 
@@ -589,21 +579,21 @@ body::after {
 }
 
 .map-legend i.done {
-  background: var(--map-gold);
+  background: var(--map-gold-bright);
 }
 
 .map-legend i.next {
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(226, 169, 59, 0.45);
+  background: var(--ink);
+  box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.45);
 }
 
 .map-legend i.planned {
-  background: transparent;
-  border: 2px solid var(--map-gold);
+  background: #fff;
+  border: 2px solid var(--map-gold-bright);
 }
 
 .map-legend i.pending {
-  background: rgba(243, 234, 216, 0.25);
+  background: rgba(34, 48, 39, 0.22);
 }
 
 #map {
@@ -650,7 +640,7 @@ body::after {
   height: 100%;
   text-align: center;
   padding: 28px;
-  color: var(--map-dim);
+  color: var(--ink-soft);
   line-height: 1.8;
 }
 
