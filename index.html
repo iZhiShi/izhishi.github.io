@@ -80,33 +80,30 @@
           <div class="hyrox-grid" id="hyroxRaceGrid"></div>
         </section>
 
-        <section class="map-card">
-          <div class="section-heading">
+        <section class="map-card" aria-label="省会马拉松集邮册">
+          <div class="section-heading map-heading">
             <div class="map-heading-panel">
+              <p class="map-kicker">CAPITAL COLLECTION</p>
               <h2>省会马拉松集邮册</h2>
-              <div class="hero-tags">
-                <span class="hero-tag done">绿色省份代表已点亮</span>
-                <span class="hero-tag pending">灰色省份代表未完成</span>
+              <p class="map-lead">跑一座省会，点亮一座城。</p>
+            </div>
+            <div class="map-stats">
+              <div class="map-stat">
+                <span>已点亮</span>
+                <strong id="mapDoneValue">0 / 31</strong>
+              </div>
+              <div class="map-stat map-stat-next">
+                <span>下一站</span>
+                <strong id="mapNextCity">待定</strong>
+                <em id="mapNextDate">待填写</em>
               </div>
             </div>
-            <div class="map-overview">
-              <div class="progress-panel map-progress-panel">
-                <div class="progress-summary">
-                  <div class="progress-ring" id="progressRing">
-                    <div class="progress-inner">
-                      <strong class="progress-value" id="progressValue">0 / 31</strong>
-                      <span class="progress-label">已完成</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="next-stop map-next-stop">
-                <p class="next-stop-label">下一站</p>
-                <strong class="next-stop-city" id="nextStopCity">待定</strong>
-                <p class="next-stop-date" id="nextStopDate">比赛日期 · 待填写</p>
-              </div>
-            </div>
+          </div>
+          <div class="map-legend" aria-label="图例">
+            <span><i class="done"></i>已完赛</span>
+            <span><i class="next"></i>下一站</span>
+            <span><i class="planned"></i>已报名</span>
+            <span><i class="pending"></i>待解锁</span>
           </div>
           <div id="map" aria-label="中国省会马拉松进度地图"></div>
         </section>

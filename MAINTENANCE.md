@@ -103,22 +103,24 @@ export const runnerProfile = {
 - `itraPerformance` 和 `utmbPerformance` 用 `score` 代替 `time`，其余字段相同
 - 如果留空，页面会自动显示“待填写”
 
-### 3. 更新下一站计划
+### 3. 更新报名计划
 
-编辑 `scripts/data.js` 中的 `nextMarathonPlan`：
+编辑 `scripts/data.js` 中的 `plannedMarathons`，按日期先后排列：
 
 ```js
-export const nextMarathonPlan = {
-  city: "宁夏回族自治区 · 银川市",
-  date: "2026.05.17",
-};
+export const plannedMarathons = [
+  { city: "西安", date: "2026.10.18" },
+  { city: "杭州", date: "2026.11.01" },
+];
 ```
 
 说明：
 
-- `city` 显示在地图面板顶部的“下一站”卡片中
-- `date` 显示比赛日期
-- 如果留空，页面会自动回退到“下一个未完成省会”并显示“待定”
+- `city` 用省会城市名，和 `completedMarathons` 的键名一样
+- 第一项是“下一站”，显示在地图顶部的卡片里，地图上是白色脉冲点
+- 其余项在地图上是空心金圈 + 日期
+- 跑完一场后，把它从这里删掉，再加到 `completedMarathons`
+- 列表为空时卡片显示“待定”
 
 ### 4. 新增大满贯赛事和奖牌
 
@@ -203,12 +205,11 @@ export const chinaMajorRaces = [
 
 - 头部四项成绩布局：`.runner-stats`
 - 个人成绩容器：`.runner-card`
-- 完成率卡：`.progress-panel`
-- 下一站卡：`.next-stop`
-- 地图顶部信息区：`.map-overview`
+- 地图顶部指标块：`.map-stats`、`.map-stat`
+- 地图图例：`.map-legend`
 - HYROX 卡片：`.hyrox-card`、`.hyrox-ticket`、`.hyrox-cell`
 - 地图大卡：`.map-card`
-- tooltip：`.tooltip-*`
+- 地图标签位置：不在 CSS 里，在 `scripts/app.js` 的 `mapLabelPlacement`
 
 ### 8. 修改地图交互逻辑
 
@@ -222,10 +223,10 @@ export const chinaMajorRaces = [
   - 渲染大满贯卡片，成绩从 `completedMarathons` 按城市名查出
 - `renderHyroxRaces()`
   - 渲染 HYROX 卡片和组别进阶轨，三色条宽度由 `splits` 三个时间换算
-- `buildTooltip()`
-  - 控制 hover 到省份上时的展示内容
+- `mapLabelPlacement`
+  - 每个省会标签的方向和像素偏移，新省会完赛后如果标签和邻居重叠，在这里调
 - `initMap()`
-  - 初始化地图、颜色和交互
+  - 初始化黑金底图、三类散点（已完赛 / 已报名 / 待解锁）和 tooltip；手机端自动隐藏标签，点击省会看详情
 
 ## 数据维护注意事项
 
@@ -247,10 +248,10 @@ export const chinaMajorRaces = [
 
 ### 省份点亮规则
 
-- 页面是按“省会城市是否完赛”来决定“整个省份是否点亮”
+- 完赛的省会在地图上是金点 + 引线标签（赛事 · 年份 · 成绩），所在省份底色略亮
 - 例如：
-  - `武汉` 完赛后，`湖北省` 变绿
-  - `杭州` 完赛后，`浙江省` 变绿
+  - `武汉` 完赛后，武汉出现金点，`湖北省` 底色变亮
+  - 标签位置由 `scripts/app.js` 的 `mapLabelPlacement` 决定，重叠时调那里
 
 ### 省会基础列表
 
@@ -268,9 +269,9 @@ export const chinaMajorRaces = [
 
 - 页面是否能正常打开
 - 地图是否正常加载
-- 绿色省份是否和成绩数据一致
-- hover 省份时是否能显示日期和成绩
-- “下一站”卡片内容是否正确
+- 金点数量是否和 `completedMarathons` 条数一致，标签有无重叠
+- hover / 点击省会能否显示日期和成绩
+- “下一站”卡片和地图上的白色脉冲点是否是同一座城市
 - 手机端布局是否仍然正常
 
 ## 推荐维护顺序

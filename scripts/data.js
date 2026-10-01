@@ -212,8 +212,12 @@ export const hyroxRaces = [
   },
 ];
 
-// 可单独维护下一场计划；如果留空，会自动使用下一个未完成省会并显示“待定”。
-export const nextMarathonPlan = {
-  city: "陕西省 · 西安市",
-  date: "2026.10.18",
-};
+// 已报名、还没跑的省会赛事，按日期先后排列。
+// 第一项是“下一站”，会显示在地图顶部的卡片里；全部计划都会在地图上以空心点 + 日期标出。
+// 键名用省会城市名，跑完后把它移到 completedMarathons 即可。
+export const plannedMarathons = [
+  { city: "西安", date: "2026.10.18" },
+  { city: "杭州", date: "2026.11.01" },
+  { city: "长沙", date: "2026.11.15" },
+  { city: "上海", date: "2026.12.05" },
+];

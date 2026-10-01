@@ -5,115 +5,60 @@ import {
   completedMarathons,
   hyroxDivisions,
   hyroxRaces,
-  nextMarathonPlan,
+  plannedMarathons,
   runnerProfile,
 } from "./data.js";
 
-const marathonDataByProvince = new Map();
-
 const marathonData = capitals.map((item) => {
   const result = completedMarathons[item.city];
-  const data = {
+  return {
     ...item,
-    name: item.province,
-    value: result ? 1 : 0,
     completed: Boolean(result),
     date: result ? result.date : "",
     time: result ? result.time : "",
-    medalColor: result && result.medalColor ? result.medalColor : "#c89a35",
   };
-
-  marathonDataByProvince.set(item.province, data);
-  return data;
 });
 
-function medalSvg(color = "#c89a35", size = 22) {
-  return `
-    <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M6 2h4l1.6 6.2-3.2 1.8L6 2Z" fill="#c85656"></path>
-      <path d="M18 2h-4l-1.6 6.2 3.2 1.8L18 2Z" fill="#4f73b6"></path>
-      <circle cx="12" cy="15.2" r="5.8" fill="${color}"></circle>
-      <path d="m12 11.9 1 2 2.2.3-1.6 1.5.4 2.1-2-1.1-2 1.1.4-2.1-1.6-1.5 2.2-.3 1-2Z" fill="#fff3d1"></path>
-    </svg>
-  `;
-}
+const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 
-function normalizeProvinceName(name) {
-  if (!name) {
-    return "";
-  }
+// 地图标签的方向和像素偏移，按城市手动指定，把拥挤区的标签用引线拉到空白处。
+const mapLabelPlacement = {
+  北京: ["top", [12, -34]],
+  天津: ["right", [54, 26]],
+  石家庄: ["bottom", [-6, 36]],
+  太原: ["left", [-60, 6]],
+  济南: ["right", [60, 18]],
+  郑州: ["bottom", [0, 10]],
+  南京: ["right", [48, -34]],
+  上海: ["right", [58, -12]],
+  杭州: ["right", [58, 40]],
+  合肥: ["bottom", [0, 10]],
+  武汉: ["right", [40, 10]],
+  长沙: ["left", [-44, 26]],
+  南昌: ["right", [10, 6]],
+  福州: ["right", [40, 14]],
+  广州: ["right", [44, 12]],
+  海口: ["bottom", [0, 14]],
+  南宁: ["left", [-30, 8]],
+  重庆: ["left", [-40, 10]],
+  成都: ["left", [-36, -10]],
+  贵阳: ["bottom", [0, 10]],
+  昆明: ["left", [-30, 14]],
+  西安: ["bottom", [-12, 30]],
+  兰州: ["left", [-30, 14]],
+  银川: ["top", [-40, -30]],
+  西宁: ["left", [-10, 10]],
+  呼和浩特: ["top", [0, -26]],
+  沈阳: ["right", [44, -6]],
+  长春: ["right", [44, 2]],
+  哈尔滨: ["top", [26, -16]],
+  拉萨: ["bottom", [0, 14]],
+  乌鲁木齐: ["top", [0, -20]],
+};
 
-  const directMatch = marathonDataByProvince.get(name);
-  if (directMatch) {
-    return name;
-  }
-
-  return (
-    marathonData.find((item) => name.includes(item.province) || item.province.includes(name))
-      ?.province || name
-  );
-}
-
-function getProvinceData(name) {
-  return marathonDataByProvince.get(normalizeProvinceName(name));
-}
-
-function buildTooltip(params) {
-  const data = getProvinceData(params.name);
-  if (!data) {
-    return "";
-  }
-
-  const statusHtml = data.completed
-    ? `<span class="tooltip-status done">${medalSvg(data.medalColor, 18)} 已完成</span>`
-    : `<span class="tooltip-status pending"><span class="tooltip-status-dot"></span>待解锁</span>`;
-
-  const detailsHtml = data.completed
-    ? `
-      <div class="tooltip-row"><span>完赛日期</span><strong>${data.date}</strong></div>
-      <div class="tooltip-row"><span>完赛时间</span><strong>${data.time}</strong></div>
-    `
-    : `
-      <div class="tooltip-row"><span>当前状态</span><strong>尚未完成</strong></div>
-    `;
-
-  return `
-    <div class="tooltip-card">
-      <div class="tooltip-head">
-        <div>
-          <strong>${data.province}</strong>
-          <div class="tooltip-subtitle">省会城市：${data.city}</div>
-        </div>
-        ${statusHtml}
-      </div>
-      ${detailsHtml}
-    </div>
-  `;
-}
-
-function getTooltipPosition(point, _params, _dom, _rect, size) {
-  const gap = 12;
-  const [boxWidth, boxHeight] = size.contentSize;
-  const [viewWidth, viewHeight] = size.viewSize;
-
-  let x = point[0] + gap;
-  let y = point[1] - boxHeight - gap;
-
-  if (x + boxWidth > viewWidth - gap) {
-    x = viewWidth - boxWidth - gap;
-  }
-  if (x < gap) {
-    x = gap;
-  }
-
-  if (y < gap) {
-    y = point[1] + gap;
-  }
-  if (y + boxHeight > viewHeight - gap) {
-    y = Math.max(gap, viewHeight - boxHeight - gap);
-  }
-
-  return [x, y];
+function mapLabelFor(city) {
+  const [position, offset] = mapLabelPlacement[city] || ["right", [10, 0]];
+  return { position, offset };
 }
 
 function normalizeText(value) {
@@ -184,26 +129,20 @@ function updateProfile() {
 function updateSummary() {
   const total = marathonData.length;
   const completed = marathonData.filter((item) => item.completed).length;
-  const fallbackNext = marathonData.find((item) => !item.completed);
-  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-  const nextCity = nextMarathonPlan.city || (fallbackNext ? fallbackNext.city : "已全部完成");
-  const nextDate = nextMarathonPlan.date || (fallbackNext ? "待定" : "已点亮全部省会");
-  const progressRing = document.getElementById("progressRing");
-  const progressValue = document.getElementById("progressValue");
-  const nextStopCity = document.getElementById("nextStopCity");
-  const nextStopDate = document.getElementById("nextStopDate");
+  const next = plannedMarathons[0];
+  const nextCapital = next ? capitalByCity.get(next.city) : null;
+  const doneValue = document.getElementById("mapDoneValue");
+  const nextCity = document.getElementById("mapNextCity");
+  const nextDate = document.getElementById("mapNextDate");
 
-  if (progressRing) {
-    progressRing.style.setProperty("--progress", percent);
+  if (doneValue) {
+    doneValue.textContent = completed + " / " + total;
   }
-  if (progressValue) {
-    progressValue.textContent = completed + " / " + total;
+  if (nextCity) {
+    nextCity.textContent = nextCapital ? nextCapital.province + " · " + next.city + "市" : "待定";
   }
-  if (nextStopCity) {
-    nextStopCity.textContent = nextCity;
-  }
-  if (nextStopDate) {
-    nextStopDate.textContent = "比赛日期 · " + nextDate;
+  if (nextDate) {
+    nextDate.textContent = next ? "比赛日期 · " + next.date : "待填写";
   }
 }
 
@@ -391,6 +330,10 @@ async function initMap() {
 
   const chartDom = document.getElementById("map");
   const chart = window.echarts.init(chartDom, null, { renderer: "svg" });
+  const GOLD = "#e2a93b";
+  const TEXT = "#f3ead8";
+  const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
+  const compact = window.matchMedia("(max-width: 780px)");
 
   try {
     const response = await fetch(CHINA_GEOJSON_URL);
@@ -401,88 +344,155 @@ async function initMap() {
     const chinaGeoJSON = await response.json();
     window.echarts.registerMap("china-marathon", chinaGeoJSON);
 
-    const mapData = marathonData.map((item) => ({
-      name: item.province,
-      value: item.completed ? 1 : 0,
-      city: item.city,
-      province: item.province,
-      completed: item.completed,
-      date: item.date,
-      time: item.time,
-      medalColor: item.medalColor,
-    }));
+    const plannedCities = new Set(plannedMarathons.map((item) => item.city));
+    const nextPlan = plannedMarathons[0];
 
-    chart.setOption({
-      backgroundColor: "transparent",
-      animationDuration: 900,
-      animationEasing: "cubicOut",
-      tooltip: {
-        trigger: "item",
-        enterable: true,
-        confine: true,
-        borderWidth: 0,
-        backgroundColor: "transparent",
-        extraCssText: "box-shadow:none;padding:0;",
-        formatter: buildTooltip,
-        position: getTooltipPosition,
-      },
-      visualMap: {
-        show: false,
-        min: 0,
-        max: 1,
-        inRange: {
-          color: ["#b7bdb1", "#2f7c53"],
-        },
-      },
-      series: [
-        {
-          name: "省会马拉松进度",
-          type: "map",
-          map: "china-marathon",
-          roam: true,
-          zoom: 1.08,
-          scaleLimit: {
-            min: 1,
-            max: 6,
-          },
-          data: mapData,
-          selectedMode: false,
-          label: {
-            show: false,
-          },
-          itemStyle: {
-            areaColor: "#b7bdb1",
-            borderColor: "#f8f2e8",
-            borderWidth: 1.1,
-            shadowBlur: 10,
-            shadowColor: "rgba(74, 58, 35, 0.08)",
-          },
-          emphasis: {
-            label: {
-              show: true,
-              formatter: (params) => {
-                const data = getProvinceData(params.name);
-                return data ? data.city : params.name;
-              },
-              color: "#173424",
-              fontWeight: 700,
-              backgroundColor: "rgba(248,252,249,0.92)",
-              padding: [4, 8],
-              borderRadius: 999,
-            },
-            itemStyle: {
-              areaColor: "#3d9163",
-              borderColor: "#fff8eb",
-              borderWidth: 1.5,
-              shadowBlur: 16,
-              shadowColor: "rgba(47, 124, 83, 0.18)",
-            },
-          },
-        },
-      ],
+    const completedPoints = marathonData
+      .filter((item) => item.completed)
+      .map((item) => ({
+        name: item.city,
+        value: item.coord,
+        date: item.date,
+        time: item.time,
+        label: mapLabelFor(item.city),
+      }));
+
+    const plannedPoints = plannedMarathons
+      .filter((plan) => capitalByCity.has(plan.city) && !completedMarathons[plan.city])
+      .map((plan) => ({
+        name: plan.city,
+        value: capitalByCity.get(plan.city).coord,
+        date: plan.date,
+        isNext: plan === nextPlan,
+        label: mapLabelFor(plan.city),
+      }));
+
+    const pendingPoints = marathonData
+      .filter((item) => !item.completed && !plannedCities.has(item.city))
+      .map((item) => ({ name: item.city, value: item.coord }));
+
+    const completedProvinces = marathonData
+      .filter((item) => item.completed)
+      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#2a2620" } }));
+
+    const labelLine = (color, width) => ({
+      show: true,
+      length2: 14,
+      smooth: 0.2,
+      lineStyle: { color, width },
     });
 
+    const buildOption = () => {
+      const showLabels = !compact.matches;
+      return {
+        backgroundColor: "transparent",
+        animationDuration: 900,
+        animationEasing: "cubicOut",
+        geo: {
+          map: "china-marathon",
+          roam: true,
+          zoom: showLabels ? 1.62 : 1.2,
+          center: [105.2, 34.6],
+          scaleLimit: { min: 1, max: 6 },
+          itemStyle: {
+            areaColor: "#1e1d1a",
+            borderColor: "rgba(226, 169, 59, 0.55)",
+            borderWidth: 0.9,
+          },
+          emphasis: { disabled: true },
+          regions: completedProvinces,
+        },
+        tooltip: {
+          trigger: "item",
+          triggerOn: "mousemove|click",
+          confine: true,
+          backgroundColor: "#1c1b19",
+          borderColor: "rgba(226, 169, 59, 0.4)",
+          textStyle: { color: TEXT },
+          formatter: (params) => {
+            if (params.seriesName === "completed") {
+              return `<b>${params.name}马拉松</b><br/>${params.data.date} · ${params.data.time}`;
+            }
+            if (params.seriesName === "planned") {
+              const prefix = params.data.isNext ? "下一站" : "已报名";
+              return `<b>${params.name}马拉松</b><br/>${prefix} · ${params.data.date}`;
+            }
+            return `${params.name} · 待解锁`;
+          },
+        },
+        series: [
+          {
+            name: "pending",
+            type: "scatter",
+            coordinateSystem: "geo",
+            data: pendingPoints,
+            symbolSize: 6,
+            itemStyle: { color: "rgba(243, 234, 216, 0.28)" },
+            label: { show: false },
+            z: 2,
+          },
+          {
+            name: "completed",
+            type: "scatter",
+            coordinateSystem: "geo",
+            data: completedPoints,
+            symbolSize: 12,
+            itemStyle: {
+              color: GOLD,
+              borderColor: "#fff",
+              borderWidth: 1.5,
+              shadowBlur: 10,
+              shadowColor: "rgba(226, 169, 59, 0.7)",
+            },
+            label: {
+              show: showLabels,
+              distance: 10,
+              lineHeight: 17,
+              formatter: (params) =>
+                `{n|${params.name}马拉松}\n{t|${params.data.date.slice(0, 4)} · ${params.data.time}}`,
+              rich: {
+                n: { color: TEXT, fontSize: 12.5, fontWeight: 700 },
+                t: { color: GOLD, fontSize: 11.5, fontFamily: NUM_FONT },
+              },
+            },
+            labelLine: labelLine("rgba(226, 169, 59, 0.7)", 1),
+            z: 3,
+          },
+          {
+            name: "planned",
+            type: "effectScatter",
+            coordinateSystem: "geo",
+            data: plannedPoints.map((point) => ({
+              ...point,
+              symbolSize: point.isNext ? 13 : 11,
+              itemStyle: point.isNext
+                ? { color: "#fff", borderColor: GOLD, borderWidth: 2, shadowBlur: 14, shadowColor: GOLD }
+                : { color: "#1c1b19", borderColor: GOLD, borderWidth: 2 },
+              rippleEffect: { scale: point.isNext ? 3.2 : 0 },
+            })),
+            rippleEffect: { brushType: "stroke", period: 3 },
+            label: {
+              show: showLabels,
+              distance: 10,
+              lineHeight: 17,
+              formatter: (params) =>
+                `{n|${params.name}马拉松}\n{d|${params.data.isNext ? "NEXT · " : ""}${params.data.date}}`,
+              rich: {
+                n: { color: "#fff", fontSize: 12.5, fontWeight: 800 },
+                d: { color: GOLD, fontSize: 11, fontWeight: 700, letterSpacing: 1, fontFamily: NUM_FONT },
+              },
+            },
+            labelLine: labelLine(GOLD, 1.2),
+            z: 4,
+          },
+        ],
+      };
+    };
+
+    chart.setOption(buildOption());
+
     window.addEventListener("resize", () => chart.resize());
+    compact.addEventListener("change", () => chart.setOption(buildOption(), true));
   } catch (error) {
     console.error(error);
     chart.dispose();
