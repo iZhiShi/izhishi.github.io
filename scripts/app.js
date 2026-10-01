@@ -23,17 +23,17 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 
 // 地图标签的方向和像素偏移，按城市手动指定，把拥挤区的标签用引线拉到空白处。
 const mapLabelPlacement = {
-  北京: ["top", [12, -34]],
+  北京: ["top", [24, -36]],
   天津: ["right", [54, 26]],
   石家庄: ["bottom", [-6, 36]],
-  太原: ["left", [-60, 6]],
+  太原: ["top", [-6, -30]],
   济南: ["right", [60, 18]],
   郑州: ["bottom", [0, 10]],
   南京: ["right", [48, -34]],
   上海: ["right", [58, -12]],
   杭州: ["right", [58, 40]],
   合肥: ["bottom", [0, 10]],
-  武汉: ["right", [40, 10]],
+  武汉: ["bottom", [16, 22]],
   长沙: ["left", [-44, 26]],
   南昌: ["right", [10, 6]],
   福州: ["right", [40, 14]],
@@ -45,20 +45,30 @@ const mapLabelPlacement = {
   贵阳: ["bottom", [0, 10]],
   昆明: ["left", [-30, 14]],
   西安: ["bottom", [-12, 30]],
-  兰州: ["left", [-30, 14]],
+  兰州: ["top", [-20, -30]],
   银川: ["top", [-40, -30]],
   西宁: ["left", [-10, 10]],
-  呼和浩特: ["top", [0, -26]],
-  沈阳: ["right", [44, -6]],
-  长春: ["right", [44, 2]],
+  呼和浩特: ["top", [-34, -28]],
+  沈阳: ["right", [44, 12]],
+  长春: ["right", [44, -16]],
   哈尔滨: ["top", [26, -16]],
   拉萨: ["bottom", [0, 14]],
   乌鲁木齐: ["top", [0, -20]],
 };
 
-function mapLabelFor(city) {
+function mapLabelFor(city, { nameColor, lineColor, metaColor, numFont }) {
   const [position, offset] = mapLabelPlacement[city] || ["right", [10, 0]];
-  return { position, offset };
+  const name = city + "马拉松";
+  return {
+    position,
+    offset,
+    align: "left",
+    rich: {
+      n: { color: nameColor, fontSize: 12.5, fontWeight: 700, lineHeight: 15 },
+      l: { width: name.length * 12.5 + 2, height: 1.5, lineHeight: 6, backgroundColor: lineColor },
+      t: { color: metaColor, fontSize: 12, fontWeight: 600, lineHeight: 15, fontFamily: numFont },
+    },
+  };
 }
 
 function normalizeText(value) {
@@ -329,11 +339,19 @@ async function initMap() {
   }
 
   const chartDom = document.getElementById("map");
-  const chart = window.echarts.init(chartDom, null, { renderer: "svg" });
+  // 用 canvas：标签里的金色横线是富文本块的背景色，SVG 渲染器不画它。
+  const chart = window.echarts.init(chartDom, null, { renderer: "canvas" });
   const GOLD = "#b8862b";
   const GOLD_BRIGHT = "#d9a441";
+  const GOLD_DEEP = "#8f6516";
   const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
+  const labelStyle = {
+    nameColor: INK,
+    lineColor: GOLD,
+    metaColor: GOLD_DEEP,
+    numFont: NUM_FONT,
+  };
   const compact = window.matchMedia("(max-width: 780px)");
 
   try {
@@ -355,7 +373,7 @@ async function initMap() {
         value: item.coord,
         date: item.date,
         time: item.time,
-        label: mapLabelFor(item.city),
+        label: mapLabelFor(item.city, labelStyle),
       }));
 
     const plannedPoints = plannedMarathons
@@ -365,7 +383,7 @@ async function initMap() {
         value: capitalByCity.get(plan.city).coord,
         date: plan.date,
         isNext: plan === nextPlan,
-        label: mapLabelFor(plan.city),
+        label: mapLabelFor(plan.city, { ...labelStyle, lineColor: GOLD_BRIGHT }),
       }));
 
     const pendingPoints = marathonData
@@ -447,13 +465,8 @@ async function initMap() {
             label: {
               show: showLabels,
               distance: 10,
-              lineHeight: 17,
               formatter: (params) =>
-                `{n|${params.name}马拉松}\n{t|${params.data.date.slice(0, 4)} · ${params.data.time}}`,
-              rich: {
-                n: { color: INK, fontSize: 12.5, fontWeight: 700 },
-                t: { color: GOLD, fontSize: 11.5, fontFamily: NUM_FONT },
-              },
+                `{n|${params.name}马拉松}\n{l| }\n{t|${params.data.date.slice(0, 4)} · ${params.data.time}}`,
             },
             labelLine: labelLine("rgba(184, 134, 43, 0.6)", 1),
             z: 3,
@@ -474,13 +487,8 @@ async function initMap() {
             label: {
               show: showLabels,
               distance: 10,
-              lineHeight: 17,
               formatter: (params) =>
-                `{n|${params.name}马拉松}\n{d|${params.data.isNext ? "NEXT · " : ""}${params.data.date}}`,
-              rich: {
-                n: { color: INK, fontSize: 12.5, fontWeight: 800 },
-                d: { color: GOLD, fontSize: 11, fontWeight: 700, letterSpacing: 1, fontFamily: NUM_FONT },
-              },
+                `{n|${params.name}马拉松}\n{l| }\n{t|${params.data.isNext ? "NEXT · " : ""}${params.data.date}}`,
             },
             labelLine: labelLine(GOLD_BRIGHT, 1.2),
             z: 4,
