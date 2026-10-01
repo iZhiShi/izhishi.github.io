@@ -9,13 +9,19 @@ import {
   runnerProfile,
 } from "./data.js";
 
+const SUB_THREE_SECONDS = 3 * 60 * 60;
+
 const marathonData = capitals.map((item) => {
   const result = completedMarathons[item.city];
+  const half = Boolean(result && result.distance === "half");
   return {
     ...item,
     completed: Boolean(result),
     date: result ? result.date : "",
     time: result ? result.time : "",
+    half,
+    raceName: item.city + (half ? "半程马拉松" : "马拉松"),
+    subThree: Boolean(result) && !half && toSeconds(result.time) < SUB_THREE_SECONDS,
   };
 });
 
@@ -25,7 +31,7 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 // side 决定横线往左还是往右延伸，赛事名在横线上方，日期·成绩在横线下方。
 // 新省会完赛后如果和邻居撞了，在这里调它的折点。
 const mapLabelPlacement = {
-  北京: ["right", [26, -40]],
+  北京: ["right", [10, -48]],
   天津: ["right", [50, 18]],
   石家庄: ["right", [18, 38]],
   太原: ["left", [-20, 30]],
@@ -51,9 +57,9 @@ const mapLabelPlacement = {
   银川: ["left", [-44, -34]],
   西宁: ["left", [-14, 20]],
   呼和浩特: ["left", [-22, -32]],
-  沈阳: ["right", [44, 14]],
-  长春: ["right", [44, -16]],
-  哈尔滨: ["right", [30, -22]],
+  沈阳: ["right", [60, 36]],
+  长春: ["right", [48, -14]],
+  哈尔滨: ["right", [30, -40]],
   拉萨: ["left", [-10, 28]],
   乌鲁木齐: ["right", [14, -24]],
 };
@@ -331,6 +337,8 @@ async function initMap() {
   const GOLD = "#b8862b";
   const GOLD_BRIGHT = "#d9a441";
   const GOLD_DEEP = "#8f6516";
+  const GREEN = "#2f7c53";
+  const GREEN_DEEP = "#245f40";
   const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
   const BODY_FONT = "Avenir Next, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif";
@@ -355,6 +363,14 @@ async function initMap() {
         value: item.coord,
         date: item.date,
         time: item.time,
+        raceName: item.raceName,
+        subThree: item.subThree,
+        ...(item.subThree
+          ? {
+              symbolSize: 18,
+              itemStyle: { color: GOLD_DEEP, borderColor: INK, borderWidth: 2.2, shadowBlur: 12, shadowColor: "rgba(143, 101, 22, 0.55)" },
+            }
+          : {}),
       }));
 
     const plannedPoints = plannedMarathons
@@ -372,7 +388,7 @@ async function initMap() {
 
     const completedProvinces = marathonData
       .filter((item) => item.completed)
-      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#eadcbd" } }));
+      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#d6e4d8" } }));
 
     const buildOption = () => {
       const showLabels = !compact.matches;
@@ -388,7 +404,7 @@ async function initMap() {
           center: [105.2, 34.6],
           itemStyle: {
             areaColor: "#f4eee3",
-            borderColor: "rgba(184, 134, 43, 0.55)",
+            borderColor: "rgba(67, 81, 68, 0.32)",
             borderWidth: 0.9,
           },
           emphasis: { disabled: true },
@@ -403,7 +419,8 @@ async function initMap() {
           textStyle: { color: INK },
           formatter: (params) => {
             if (params.seriesName === "completed") {
-              return `<b>${params.name}马拉松</b><br/>${params.data.date} · ${params.data.time}`;
+              const badge = params.data.subThree ? " · 破三" : "";
+              return `<b>${params.data.raceName}</b><br/>${params.data.date} · ${params.data.time}${badge}`;
             }
             if (params.seriesName === "planned") {
               const prefix = params.data.isNext ? "下一站" : "已报名";
@@ -430,11 +447,11 @@ async function initMap() {
             data: completedPoints,
             symbolSize: 12,
             itemStyle: {
-              color: GOLD_BRIGHT,
+              color: GREEN,
               borderColor: "#fff",
               borderWidth: 1.5,
               shadowBlur: 8,
-              shadowColor: "rgba(184, 134, 43, 0.45)",
+              shadowColor: "rgba(47, 124, 83, 0.45)",
             },
             label: { show: false },
             z: 3,
@@ -462,8 +479,8 @@ async function initMap() {
     const labelItems = [
       ...completedPoints.map((point) => ({
         ...point,
-        meta: point.date.slice(0, 4) + " · " + point.time,
-        lineColor: GOLD,
+        meta: point.date.slice(0, 4) + " · " + point.time + (point.subThree ? " · SUB 3" : ""),
+        lineColor: point.subThree ? GOLD_DEEP : GREEN,
       })),
       ...plannedPoints.map((point) => ({
         ...point,
@@ -479,8 +496,9 @@ async function initMap() {
         labelItems.forEach((item) => {
           const [px, py] = chart.convertToPixel("geo", item.value);
           const [side, [dx, dy]] = mapLabelPlacement[item.name] || ["right", [30, -24]];
-          const name = item.name + "马拉松";
+          const name = (item.subThree ? "★ " : "") + (item.raceName || item.name + "马拉松");
           const ruleWidth = name.length * 12.5 + 6;
+          const emphasis = Boolean(item.subThree);
           const elbowX = px + dx;
           const elbowY = py + dy;
           const farX = side === "left" ? elbowX - ruleWidth : elbowX + ruleWidth;
@@ -491,7 +509,7 @@ async function initMap() {
             silent: true,
             z: 10,
             shape: { points: [[px, py], [elbowX, elbowY], [farX, elbowY]] },
-            style: { stroke: item.lineColor, lineWidth: 1.2, fill: "none" },
+            style: { stroke: item.lineColor, lineWidth: emphasis ? 1.8 : 1.2, fill: "none" },
           });
           elements.push({
             type: "text",
@@ -499,7 +517,13 @@ async function initMap() {
             z: 11,
             x: textX,
             y: elbowY - 3,
-            style: { text: name, fill: INK, font: "700 12.5px " + BODY_FONT, textAlign: "left", textVerticalAlign: "bottom" },
+            style: {
+              text: name,
+              fill: emphasis ? GOLD_DEEP : INK,
+              font: (emphasis ? "800 13.5px " : "700 12.5px ") + BODY_FONT,
+              textAlign: "left",
+              textVerticalAlign: "bottom",
+            },
           });
           elements.push({
             type: "text",
@@ -507,7 +531,13 @@ async function initMap() {
             z: 11,
             x: textX,
             y: elbowY + 4,
-            style: { text: item.meta, fill: GOLD_DEEP, font: "600 12px " + NUM_FONT, textAlign: "left", textVerticalAlign: "top" },
+            style: {
+              text: item.meta,
+              fill: emphasis || item.isNext !== undefined ? GOLD_DEEP : GREEN_DEEP,
+              font: (emphasis ? "700 12.5px " : "600 12px ") + NUM_FONT,
+              textAlign: "left",
+              textVerticalAlign: "top",
+            },
           });
         });
       }

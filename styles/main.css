@@ -579,7 +579,14 @@ body::after {
 }
 
 .map-legend i.done {
-  background: var(--map-gold-bright);
+  background: var(--green);
+}
+
+.map-legend i.sub-three {
+  width: 12px;
+  height: 12px;
+  background: #8f6516;
+  border: 2px solid var(--ink);
 }
 
 .map-legend i.next {
