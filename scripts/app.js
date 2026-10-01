@@ -52,7 +52,7 @@ const mapLabelPlacement = {
   成都: ["left", [-30, -30]],
   贵阳: ["left", [-14, 22]],
   昆明: ["left", [-20, 22]],
-  西安: ["right", [-42, -40]],
+  西安: ["right", [12, -16]],
   兰州: ["left", [-44, -12]],
   银川: ["left", [-44, -34]],
   西宁: ["left", [-14, 20]],
@@ -492,7 +492,7 @@ async function initMap() {
       })),
       ...plannedPoints.map((point) => ({
         ...point,
-        meta: (point.isNext ? "NEXT · " : "") + point.date,
+        meta: point.date,
         lineColor: BLUE_LINE,
         metaColor: BLUE_TEXT,
         nameColor: BLUE_TEXT,
