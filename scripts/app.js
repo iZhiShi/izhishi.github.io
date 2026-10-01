@@ -31,29 +31,29 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 // side 决定横线往左还是往右延伸，赛事名在横线上方，日期·成绩在横线下方。
 // 新省会完赛后如果和邻居撞了，在这里调它的折点。
 const mapLabelPlacement = {
-  北京: ["right", [18, -44]],
-  天津: ["right", [50, 18]],
-  石家庄: ["right", [18, 38]],
-  太原: ["left", [-20, 30]],
+  北京: ["right", [-6, -74]],
+  天津: ["right", [60, 24]],
+  石家庄: ["right", [18, 44]],
+  太原: ["left", [0, 32]],
   济南: ["right", [56, 16]],
   郑州: ["right", [14, 24]],
   南京: ["right", [44, -36]],
   上海: ["right", [56, -12]],
   杭州: ["right", [56, 40]],
   合肥: ["right", [14, 24]],
-  武汉: ["right", [22, 32]],
+  武汉: ["left", [-6, -28]],
   长沙: ["left", [-28, 42]],
   南昌: ["right", [14, 16]],
-  福州: ["right", [40, 14]],
+  福州: ["right", [0, 32]],
   广州: ["right", [44, 12]],
   海口: ["right", [12, 26]],
   南宁: ["left", [-24, 16]],
-  重庆: ["left", [-26, 18]],
-  成都: ["left", [-30, -14]],
+  重庆: ["left", [-26, 30]],
+  成都: ["left", [-30, -30]],
   贵阳: ["left", [-14, 22]],
   昆明: ["left", [-20, 22]],
-  西安: ["left", [-16, 36]],
-  兰州: ["left", [-14, -34]],
+  西安: ["right", [-6, 86]],
+  兰州: ["left", [-44, -12]],
   银川: ["left", [-44, -34]],
   西宁: ["left", [-14, 20]],
   呼和浩特: ["left", [-22, -32]],
@@ -334,12 +334,17 @@ async function initMap() {
   const chartDom = document.getElementById("map");
   // 用 canvas：标签里的金色横线是富文本块的背景色，SVG 渲染器不画它。
   const chart = window.echarts.init(chartDom, null, { renderer: "canvas" });
-  const GOLD = "#b8862b";
-  const GOLD_BRIGHT = "#d9a441";
-  const GOLD_DEEP = "#8f6516";
-  const HX_YELLOW = "#f2d400";
-  const HX_YELLOW_LINE = "#c9b000";
-  const HX_YELLOW_DEEP = "#8a7600";
+  // 配色来自 dataviz 色板（面板 #f8f2e6 上全配对验证通过）：
+  // 已完赛 = 琥珀槽 #eda100，下一站/已报名 = 蓝槽 #2a78d6，破三 = 红槽 #e34948。
+  // *_LINE 是同色相的深一档（引线），*_TEXT 是文字档（≥ 4.5:1）。
+  const AMBER = "#eda100";
+  const AMBER_LINE = "#c98500";
+  const AMBER_TEXT = "#7a5000";
+  const BLUE = "#2a78d6";
+  const BLUE_LINE = "#256abf";
+  const BLUE_TEXT = "#1c5cab";
+  const RED = "#e34948";
+  const RED_TEXT = "#b32f2e";
   const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
   const BODY_FONT = "Avenir Next, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif";
@@ -369,7 +374,7 @@ async function initMap() {
         ...(item.subThree
           ? {
               symbolSize: 18,
-              itemStyle: { color: GOLD_DEEP, borderColor: INK, borderWidth: 2.2, shadowBlur: 12, shadowColor: "rgba(143, 101, 22, 0.55)" },
+              itemStyle: { color: RED, borderColor: INK, borderWidth: 2.2, shadowBlur: 12, shadowColor: "rgba(227, 73, 72, 0.45)" },
             }
           : {}),
       }));
@@ -389,7 +394,7 @@ async function initMap() {
 
     const completedProvinces = marathonData
       .filter((item) => item.completed)
-      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#f7ecb9" } }));
+      .map((item) => ({ name: item.province, itemStyle: { areaColor: "#f6e3b4" } }));
 
     const buildOption = () => {
       const showLabels = !compact.matches;
@@ -416,7 +421,7 @@ async function initMap() {
           triggerOn: "mousemove|click",
           confine: true,
           backgroundColor: "rgba(255, 250, 243, 0.98)",
-          borderColor: "rgba(184, 134, 43, 0.4)",
+          borderColor: "rgba(34, 48, 39, 0.18)",
           textStyle: { color: INK },
           formatter: (params) => {
             if (params.seriesName === "completed") {
@@ -448,11 +453,11 @@ async function initMap() {
             data: completedPoints,
             symbolSize: 12,
             itemStyle: {
-              color: HX_YELLOW,
-              borderColor: "rgba(34, 48, 39, 0.7)",
+              color: AMBER,
+              borderColor: INK,
               borderWidth: 1.3,
               shadowBlur: 8,
-              shadowColor: "rgba(201, 176, 0, 0.45)",
+              shadowColor: "rgba(237, 161, 0, 0.4)",
             },
             label: { show: false },
             z: 3,
@@ -465,8 +470,8 @@ async function initMap() {
               ...point,
               symbolSize: point.isNext ? 13 : 11,
               itemStyle: point.isNext
-                ? { color: INK, borderColor: GOLD_BRIGHT, borderWidth: 2, shadowBlur: 12, shadowColor: GOLD_BRIGHT }
-                : { color: "#fff", borderColor: GOLD_BRIGHT, borderWidth: 2 },
+                ? { color: BLUE, borderColor: "#fff", borderWidth: 2, shadowBlur: 12, shadowColor: BLUE }
+                : { color: "#fff", borderColor: BLUE, borderWidth: 2 },
               rippleEffect: { scale: point.isNext ? 3.2 : 0 },
             })),
             rippleEffect: { brushType: "stroke", period: 3 },
@@ -481,12 +486,16 @@ async function initMap() {
       ...completedPoints.map((point) => ({
         ...point,
         meta: point.date.slice(0, 4) + " · " + point.time,
-        lineColor: point.subThree ? GOLD_DEEP : HX_YELLOW_LINE,
+        lineColor: point.subThree ? RED_TEXT : AMBER_LINE,
+        metaColor: point.subThree ? RED_TEXT : AMBER_TEXT,
+        nameColor: point.subThree ? RED_TEXT : INK,
       })),
       ...plannedPoints.map((point) => ({
         ...point,
         meta: (point.isNext ? "NEXT · " : "") + point.date,
-        lineColor: GOLD_BRIGHT,
+        lineColor: BLUE_LINE,
+        metaColor: BLUE_TEXT,
+        nameColor: BLUE_TEXT,
       })),
     ];
 
@@ -503,7 +512,18 @@ async function initMap() {
           const elbowX = px + dx;
           const elbowY = py + dy;
           const farX = side === "left" ? elbowX - ruleWidth : elbowX + ruleWidth;
-          const textX = Math.min(elbowX, farX);
+          // 文字从折点出发向外排：右侧标签左对齐、左侧标签右对齐，超长的成绩行只会往外溢，不会压回点上。
+          // 文字起点离折点至少 6px；如果引线在成绩行的高度上从文字下方穿过，再往外推到离引线 8px。
+          const metaRowY = elbowY + 11;
+          const leaderCrossesMetaRow = (metaRowY - py) * (metaRowY - elbowY) <= 0 && elbowY !== py;
+          const leaderXAtMetaRow = leaderCrossesMetaRow
+            ? px + (elbowX - px) * ((metaRowY - py) / (elbowY - py))
+            : null;
+          let textX = side === "left" ? elbowX - 6 : elbowX + 6;
+          if (leaderXAtMetaRow !== null) {
+            textX = side === "left" ? Math.min(textX, leaderXAtMetaRow - 8) : Math.max(textX, leaderXAtMetaRow + 8);
+          }
+          const textAlign = side === "left" ? "right" : "left";
 
           elements.push({
             type: "polyline",
@@ -520,9 +540,9 @@ async function initMap() {
             y: elbowY - 3,
             style: {
               text: name,
-              fill: emphasis ? GOLD_DEEP : INK,
+              fill: item.nameColor,
               font: (emphasis ? "800 13.5px " : "700 12.5px ") + BODY_FONT,
-              textAlign: "left",
+              textAlign,
               textVerticalAlign: "bottom",
             },
           });
@@ -534,9 +554,9 @@ async function initMap() {
             y: elbowY + 4,
             style: {
               text: item.meta,
-              fill: emphasis || item.isNext !== undefined ? GOLD_DEEP : HX_YELLOW_DEEP,
+              fill: item.metaColor,
               font: (emphasis ? "700 12.5px " : "600 12px ") + NUM_FONT,
-              textAlign: "left",
+              textAlign,
               textVerticalAlign: "top",
             },
           });

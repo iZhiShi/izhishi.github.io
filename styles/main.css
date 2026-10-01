@@ -474,9 +474,8 @@ body::after {
 
 /* 省会集邮册：米白底图，金线省界，完赛省会金点 + 引线标签 */
 .map-card {
-  --map-gold: #b8862b;
-  --map-gold-bright: #d9a441;
-  --map-line: rgba(184, 134, 43, 0.28);
+  --map-accent: #7a5000;
+  --map-line: rgba(34, 48, 39, 0.14);
   position: relative;
   overflow: hidden;
   padding: 24px;
@@ -489,8 +488,8 @@ body::after {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(160deg, rgba(217, 164, 65, 0.1), transparent 40%),
-    radial-gradient(circle at 85% 90%, rgba(217, 164, 65, 0.12), transparent 35%);
+    linear-gradient(160deg, rgba(237, 161, 0, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(237, 161, 0, 0.1), transparent 35%);
   pointer-events: none;
 }
 
@@ -507,7 +506,7 @@ body::after {
 
 .map-heading .map-kicker {
   margin: 0 0 6px;
-  color: var(--map-gold);
+  color: var(--map-accent);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.18em;
@@ -539,7 +538,7 @@ body::after {
 }
 
 .map-stat strong {
-  color: var(--map-gold);
+  color: var(--map-accent);
   font-family: "Avenir Next Condensed", "DIN Alternate", "Arial Narrow",
     sans-serif;
   font-size: 1.4rem;
@@ -579,25 +578,25 @@ body::after {
 }
 
 .map-legend i.done {
-  background: #f2d400;
-  border: 1px solid rgba(34, 48, 39, 0.7);
+  background: #eda100;
+  border: 1px solid var(--ink);
 }
 
 .map-legend i.sub-three {
   width: 12px;
   height: 12px;
-  background: #8f6516;
+  background: #e34948;
   border: 2px solid var(--ink);
 }
 
 .map-legend i.next {
-  background: var(--ink);
-  box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.45);
+  background: #2a78d6;
+  box-shadow: 0 0 0 3px rgba(42, 120, 214, 0.3);
 }
 
 .map-legend i.planned {
   background: #fff;
-  border: 2px solid var(--map-gold-bright);
+  border: 2px solid #2a78d6;
 }
 
 .map-legend i.pending {
