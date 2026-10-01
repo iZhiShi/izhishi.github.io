@@ -21,55 +21,42 @@ const marathonData = capitals.map((item) => {
 
 const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 
-// 地图标签的方向和像素偏移，按城市手动指定，把拥挤区的标签用引线拉到空白处。
+// 地图标签：引线从省会点出发，折到 [dx, dy]（相对点的像素偏移），再接一条水平横线；
+// side 决定横线往左还是往右延伸，赛事名在横线上方，日期·成绩在横线下方。
+// 新省会完赛后如果和邻居撞了，在这里调它的折点。
 const mapLabelPlacement = {
-  北京: ["top", [24, -36]],
-  天津: ["right", [54, 26]],
-  石家庄: ["bottom", [-6, 36]],
-  太原: ["top", [-6, -30]],
-  济南: ["right", [60, 18]],
-  郑州: ["bottom", [0, 10]],
-  南京: ["right", [48, -34]],
-  上海: ["right", [58, -12]],
-  杭州: ["right", [58, 40]],
-  合肥: ["bottom", [0, 10]],
-  武汉: ["bottom", [16, 22]],
-  长沙: ["left", [-44, 26]],
-  南昌: ["right", [10, 6]],
+  北京: ["right", [26, -40]],
+  天津: ["right", [50, 18]],
+  石家庄: ["right", [18, 38]],
+  太原: ["left", [-20, 30]],
+  济南: ["right", [56, 16]],
+  郑州: ["right", [14, 24]],
+  南京: ["right", [44, -36]],
+  上海: ["right", [56, -12]],
+  杭州: ["right", [56, 40]],
+  合肥: ["right", [14, 24]],
+  武汉: ["right", [22, 32]],
+  长沙: ["left", [-28, 42]],
+  南昌: ["right", [14, 16]],
   福州: ["right", [40, 14]],
   广州: ["right", [44, 12]],
-  海口: ["bottom", [0, 14]],
-  南宁: ["left", [-30, 8]],
-  重庆: ["left", [-40, 10]],
-  成都: ["left", [-36, -10]],
-  贵阳: ["bottom", [0, 10]],
-  昆明: ["left", [-30, 14]],
-  西安: ["bottom", [-12, 30]],
-  兰州: ["top", [-20, -30]],
-  银川: ["top", [-40, -30]],
-  西宁: ["left", [-10, 10]],
-  呼和浩特: ["top", [-34, -28]],
-  沈阳: ["right", [44, 12]],
+  海口: ["right", [12, 26]],
+  南宁: ["left", [-24, 16]],
+  重庆: ["left", [-26, 18]],
+  成都: ["left", [-30, -14]],
+  贵阳: ["left", [-14, 22]],
+  昆明: ["left", [-20, 22]],
+  西安: ["left", [-16, 36]],
+  兰州: ["left", [-14, -34]],
+  银川: ["left", [-44, -34]],
+  西宁: ["left", [-14, 20]],
+  呼和浩特: ["left", [-22, -32]],
+  沈阳: ["right", [44, 14]],
   长春: ["right", [44, -16]],
-  哈尔滨: ["top", [26, -16]],
-  拉萨: ["bottom", [0, 14]],
-  乌鲁木齐: ["top", [0, -20]],
+  哈尔滨: ["right", [30, -22]],
+  拉萨: ["left", [-10, 28]],
+  乌鲁木齐: ["right", [14, -24]],
 };
-
-function mapLabelFor(city, { nameColor, lineColor, metaColor, numFont }) {
-  const [position, offset] = mapLabelPlacement[city] || ["right", [10, 0]];
-  const name = city + "马拉松";
-  return {
-    position,
-    offset,
-    align: "left",
-    rich: {
-      n: { color: nameColor, fontSize: 12.5, fontWeight: 700, lineHeight: 15 },
-      l: { width: name.length * 12.5 + 2, height: 1.5, lineHeight: 6, backgroundColor: lineColor },
-      t: { color: metaColor, fontSize: 12, fontWeight: 600, lineHeight: 15, fontFamily: numFont },
-    },
-  };
-}
 
 function normalizeText(value) {
   if (value === undefined || value === null) {
@@ -346,12 +333,7 @@ async function initMap() {
   const GOLD_DEEP = "#8f6516";
   const INK = "#223027";
   const NUM_FONT = "Avenir Next Condensed, DIN Alternate, Arial Narrow, sans-serif";
-  const labelStyle = {
-    nameColor: INK,
-    lineColor: GOLD,
-    metaColor: GOLD_DEEP,
-    numFont: NUM_FONT,
-  };
+  const BODY_FONT = "Avenir Next, Segoe UI, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif";
   const compact = window.matchMedia("(max-width: 780px)");
 
   try {
@@ -373,7 +355,6 @@ async function initMap() {
         value: item.coord,
         date: item.date,
         time: item.time,
-        label: mapLabelFor(item.city, labelStyle),
       }));
 
     const plannedPoints = plannedMarathons
@@ -383,7 +364,6 @@ async function initMap() {
         value: capitalByCity.get(plan.city).coord,
         date: plan.date,
         isNext: plan === nextPlan,
-        label: mapLabelFor(plan.city, { ...labelStyle, lineColor: GOLD_BRIGHT }),
       }));
 
     const pendingPoints = marathonData
@@ -394,16 +374,10 @@ async function initMap() {
       .filter((item) => item.completed)
       .map((item) => ({ name: item.province, itemStyle: { areaColor: "#eadcbd" } }));
 
-    const labelLine = (color, width) => ({
-      show: true,
-      length2: 14,
-      smooth: 0.2,
-      lineStyle: { color, width },
-    });
-
     const buildOption = () => {
       const showLabels = !compact.matches;
       return {
+        graphic: { elements: [] },
         backgroundColor: "transparent",
         animationDuration: 900,
         animationEasing: "cubicOut",
@@ -462,13 +436,7 @@ async function initMap() {
               shadowBlur: 8,
               shadowColor: "rgba(184, 134, 43, 0.45)",
             },
-            label: {
-              show: showLabels,
-              distance: 10,
-              formatter: (params) =>
-                `{n|${params.name}马拉松}\n{l| }\n{t|${params.data.date.slice(0, 4)} · ${params.data.time}}`,
-            },
-            labelLine: labelLine("rgba(184, 134, 43, 0.6)", 1),
+            label: { show: false },
             z: 3,
           },
           {
@@ -484,23 +452,79 @@ async function initMap() {
               rippleEffect: { scale: point.isNext ? 3.2 : 0 },
             })),
             rippleEffect: { brushType: "stroke", period: 3 },
-            label: {
-              show: showLabels,
-              distance: 10,
-              formatter: (params) =>
-                `{n|${params.name}马拉松}\n{l| }\n{t|${params.data.isNext ? "NEXT · " : ""}${params.data.date}}`,
-            },
-            labelLine: labelLine(GOLD_BRIGHT, 1.2),
+            label: { show: false },
             z: 4,
           },
         ],
       };
     };
 
-    chart.setOption(buildOption());
+    const labelItems = [
+      ...completedPoints.map((point) => ({
+        ...point,
+        meta: point.date.slice(0, 4) + " · " + point.time,
+        lineColor: GOLD,
+      })),
+      ...plannedPoints.map((point) => ({
+        ...point,
+        meta: (point.isNext ? "NEXT · " : "") + point.date,
+        lineColor: GOLD_BRIGHT,
+      })),
+    ];
 
-    window.addEventListener("resize", () => chart.resize());
-    compact.addEventListener("change", () => chart.setOption(buildOption(), true));
+    // 引线 → 折点 → 横线，赛事名压在横线上，日期·成绩挂在横线下。
+    const drawPosterLabels = () => {
+      const elements = [];
+      if (!compact.matches) {
+        labelItems.forEach((item) => {
+          const [px, py] = chart.convertToPixel("geo", item.value);
+          const [side, [dx, dy]] = mapLabelPlacement[item.name] || ["right", [30, -24]];
+          const name = item.name + "马拉松";
+          const ruleWidth = name.length * 12.5 + 6;
+          const elbowX = px + dx;
+          const elbowY = py + dy;
+          const farX = side === "left" ? elbowX - ruleWidth : elbowX + ruleWidth;
+          const textX = Math.min(elbowX, farX);
+
+          elements.push({
+            type: "polyline",
+            silent: true,
+            z: 10,
+            shape: { points: [[px, py], [elbowX, elbowY], [farX, elbowY]] },
+            style: { stroke: item.lineColor, lineWidth: 1.2, fill: "none" },
+          });
+          elements.push({
+            type: "text",
+            silent: true,
+            z: 11,
+            x: textX,
+            y: elbowY - 3,
+            style: { text: name, fill: INK, font: "700 12.5px " + BODY_FONT, textAlign: "left", textVerticalAlign: "bottom" },
+          });
+          elements.push({
+            type: "text",
+            silent: true,
+            z: 11,
+            x: textX,
+            y: elbowY + 4,
+            style: { text: item.meta, fill: GOLD_DEEP, font: "600 12px " + NUM_FONT, textAlign: "left", textVerticalAlign: "top" },
+          });
+        });
+      }
+      chart.setOption({ graphic: { elements } }, { replaceMerge: ["graphic"] });
+    };
+
+    chart.setOption(buildOption());
+    drawPosterLabels();
+
+    window.addEventListener("resize", () => {
+      chart.resize();
+      drawPosterLabels();
+    });
+    compact.addEventListener("change", () => {
+      chart.setOption(buildOption(), true);
+      drawPosterLabels();
+    });
   } catch (error) {
     console.error(error);
     chart.dispose();
