@@ -21,12 +21,9 @@ const yearsEl = document.getElementById("years"), gridEl = document.getElementBy
 function renderYears() { const ys = [...new Set(items.map(i => i.year))].sort().reverse();
   yearsEl.innerHTML = [["all", "全部年份"], ...ys.map(y => [y, y])].map(([v, l]) => `<button class="${curYear === v ? "on" : ""}" data-y="${v}">${l}</button>`).join("");
   yearsEl.querySelectorAll("button").forEach(b => b.onclick = () => { curYear = b.dataset.y; renderYears(); renderCards(); }); }
-function rankText(r) { if (!r) return ""; const parts = []; if (r.overall) parts.push(`总排名 ${r.overall}`); if (r.gender) parts.push(`性别 ${r.gender}`); if (r.age) parts.push(`年龄组 ${r.age}`); return parts.join(" · "); }
+function rankText(r) { if (!r) return ""; const parts = []; if (r.overall) parts.push(`总排名 ${r.overall}${r.total ? ` / ${r.total}` : ""}`); if (r.gender) parts.push(`性别 ${r.gender}`); if (r.age) parts.push(`年龄组 ${r.age}`); return parts.join(" · "); }
 function card(it) {
   const tags = [];
-  if (it.index === "UTMB") tags.push(`<span class="rec-tag utmb">UTMB ${runnerProfile.utmbPerformance.score}</span>`);
-  if (it.index === "ITRA" && !it.itraScore) tags.push(`<span class="rec-tag itra">ITRA ${runnerProfile.itraPerformance.score}</span>`);
-  if (it.itraScore) tags.push(`<span class="rec-tag itra">ITRA ${it.itraScore}</span>`);
   if (it.team) tags.push(`<span class="rec-tag plain">团队赛</span>`);
   const pts = it.route ? it.route.split(" ") : null;
   const start = pts ? pts[0].split(",") : null, end = pts ? pts[pts.length - 1].split(",") : null;

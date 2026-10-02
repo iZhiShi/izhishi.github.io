@@ -8,7 +8,7 @@
 .
 ├── index.html            首页：成绩卡、PB 路径、大满贯、HYROX
 ├── training.html         训练日志（Garmin 数据）
-├── gallery.html          马拉松陈列馆（大满贯墙、完赛档案、省会地图）
+├── gallery.html          马拉松（大满贯墙、完赛档案、省会地图）
 ├── trail.html            越野跑档案
 ├── assets/
 │   └── 2025*.webp        奖牌图（400px 宽 WebP）
@@ -64,7 +64,7 @@
 - `trail.html` / `scripts/trail.js`
   - 越野跑档案：`trailRaces`（data.js）+ `data/routes.json`，样式复用 `styles/gallery.css` 的档案卡片。
 - `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
-  - 陈列馆页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
+  - 马拉松页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
 
 ## 最常见维护场景
 
