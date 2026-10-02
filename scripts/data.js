@@ -52,7 +52,7 @@ export const completedMarathons = {
   沈阳: { date: "2025.09.14", time: "03:14:20" },
   拉萨: { date: "2025.09.21", time: "01:59:55", distance: "half" },
   成都: { date: "2025.10.26", time: "03:09:54" },
-  北京: { date: "2025.11.07", time: "02:59:13" },
+  北京: { date: "2025.11.02", time: "02:59:13" },
   南京: { date: "2025.11.16", time: "03:49:48" },
   昆明: { date: "2025.11.30", time: "03:26:32" },
   广州: { date: "2025.12.21", time: "03:24:21" },
@@ -67,7 +67,7 @@ export const runnerProfile = {
   fullMarathonPb: {
     time: "02:59:13",
     event: "2025 北京马拉松",
-    date: "2025.11.07",
+    date: "2025.11.02",
   },
   halfMarathonPb: {
     time: "01:27:55",
@@ -214,12 +214,13 @@ export const hyroxRaces = [
   },
 ];
 
-// 已报名、还没跑的省会赛事，按日期先后排列。
-// 第一项是“下一站”，会显示在地图顶部的卡片里；全部计划都会在地图上以空心点 + 日期标出。
-// 键名用省会城市名，跑完后把它移到 completedMarathons 即可。
+// 已报名、还没跑的赛事，按日期先后排列。
+// 第一项是“下一站”，会显示在地图顶部的卡片里；省会赛事还会在地图上以空心点 + 日期标出，
+// 非省会城市（例如香港）只出现在卡片里。跑完省会赛事后把它移到 completedMarathons 即可。
 export const plannedMarathons = [
   { city: "西安", date: "2026.10.18" },
   { city: "杭州", date: "2026.11.01" },
   { city: "长沙", date: "2026.11.15" },
   { city: "上海", date: "2026.12.05" },
+  { city: "香港", date: "2027.01.17" },
 ];

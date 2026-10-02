@@ -142,7 +142,7 @@ function updateSummary() {
     doneValue.textContent = completed + " / " + total;
   }
   if (nextCity) {
-    nextCity.textContent = nextCapital ? nextCapital.province + " · " + next.city + "市" : "待定";
+    nextCity.textContent = next ? (nextCapital ? nextCapital.province + " · " + next.city + "市" : next.city) : "待定";
   }
   if (nextDate) {
     nextDate.textContent = next ? "比赛日期 · " + next.date : "待填写";
