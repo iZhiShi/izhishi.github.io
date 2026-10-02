@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>越野跑 · 柿子</title>
+<meta name="description" content="越野跑完赛档案：路线、成绩、距离、爬升和排名。" />
+<link rel="stylesheet" href="styles/main.css" />
+<link rel="stylesheet" href="styles/gallery.css" />
+<style>
+  .rec-grid-trail .rec-time { font-size: 1.7rem; }
+  .rec-stats { display:flex; gap: 12px; font-size:.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; flex-wrap:wrap; }
+  .rec-stats b { color: var(--ink); font-weight: 700; }
+  .rec-rank { font-size:.74rem; color: var(--ink-soft); }
+  .rec-tag.utmb { background: rgba(34,48,39,.9); color:#fff; }
+  .rec-tag.itra { background: rgba(44,91,151,.14); color:#2c5b97; }
+</style>
+</head>
+<body>
+<div class="page-shell">
+  <div class="crumb"><a href="index.html">← 回到首页</a>
+    <nav><a href="training.html">训练日志</a><a href="gallery.html">陈列馆</a><a class="on" href="trail.html">越野</a></nav></div>
+
+  <header class="hall-hero">
+    <div>
+      <p class="hall-kicker">TRAIL ARCHIVE · EST. 2023</p>
+      <h1 class="serif">越野跑<small>TRAIL · SKYRUNNING · ULTRA</small></h1>
+      <p class="intro">每一场越野一张卡：路线、成绩、距离、爬升和排名。表现分取自产生它的那一场。</p>
+    </div>
+    <div class="inventory cond" id="inventory"></div>
+  </header>
+
+  <section class="hall" id="hall1">
+    <div class="hall-title"><span class="num">档案</span><h2 class="serif">完赛档案</h2><p>路线 · 成绩 · 距离 · 爬升 · 排名</p></div>
+    <div class="years" id="years"></div>
+    <div class="records rec-grid-trail" id="records"></div>
+  </section>
+</div>
+
+<script type="module" src="scripts/trail.js"></script>
+</body>
+</html>
