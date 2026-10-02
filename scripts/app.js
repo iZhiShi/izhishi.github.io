@@ -66,12 +66,9 @@ const mapLabelPlacement = {
   乌鲁木齐: ["right", [14, -24]],
 };
 
-// 赛事名加标记：★ 放在前面（PB），其它符号（例如 🐰）跟在后面。
+// 赛事名加标记：符号跟在名字后面，例如 "北京马拉松 ⏱️"、"长春马拉松 🐰"。
 function decorateRaceName(raceName, tag) {
-  if (!tag) {
-    return raceName;
-  }
-  return tag === "★" ? "★ " + raceName : raceName + " " + tag;
+  return tag ? raceName + " " + tag : raceName;
 }
 
 const measureContext = document.createElement("canvas").getContext("2d");
