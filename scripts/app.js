@@ -409,6 +409,10 @@ async function initMap() {
   }
 
   const chartDom = document.getElementById("map");
+  if (!chartDom) {
+    // 首页没有地图（地图在 gallery.html 的展厅 III），只跑上面的渲染即可。
+    return;
+  }
   // 用 canvas：标签里的金色横线是富文本块的背景色，SVG 渲染器不画它。
   const chart = window.echarts.init(chartDom, null, { renderer: "canvas" });
   // 配色来自 dataviz 色板（面板 #f8f2e6 上全配对验证通过）：

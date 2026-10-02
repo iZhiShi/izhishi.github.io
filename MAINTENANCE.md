@@ -6,18 +6,28 @@
 
 ```text
 .
-├── index.html
+├── index.html            首页：成绩卡、PB 路径、大满贯、HYROX
+├── training.html         训练日志（Garmin 数据）
+├── gallery.html          马拉松陈列馆（大满贯墙、完赛档案、省会地图）
 ├── assets/
 │   └── 2025*.webp        奖牌图（400px 宽 WebP）
 ├── data/
-│   └── china.geojson
+│   ├── china.geojson
+│   ├── training.json     由 tools/export_training.py 生成，不要手改
+│   └── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
+├── tools/
+│   └── export_training.py
 ├── vendor/
 │   └── echarts.min.js    ECharts 5.5.1（本地化）
 ├── styles/
-│   └── main.css
+│   ├── main.css          全站通用 + 首页 + 地图
+│   ├── training.css
+│   └── gallery.css
 └── scripts/
-    ├── data.js
-    └── app.js
+    ├── data.js           全部可维护数据
+    ├── app.js            首页渲染 + 省会地图（gallery.html 也引用它来画地图）
+    ├── training.js
+    └── gallery.js
 ```
 
 各文件职责如下：
@@ -45,6 +55,12 @@
 - `scripts/app.js`
   - 负责交互和地图逻辑。
   - 包含头部四项成绩渲染、赛事展示、进度计算、tooltip 渲染、ECharts 地图初始化等逻辑。
+  - 同时被 `index.html` 和 `gallery.html` 引用；页面上没有的元素会自动跳过（首页没有 `#map`）。
+- `training.html` / `styles/training.css` / `scripts/training.js`
+  - 训练日志页：今日状态、训练日历（全部历史，按月下拉）、周跑量、训练负荷、90 天恢复趋势。
+  - 只读 `data/training.json`，不含手填数据；更新方式见「10. 更新训练日志数据」。
+- `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
+  - 陈列馆页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
 
 ## 最常见维护场景
 
@@ -143,6 +159,16 @@ export const plannedMarathons = [
 - 跑完一场后，把它从这里删掉，再加到 `completedMarathons`
 - 列表为空时卡片显示“待定”
 
+### 2b. 新增一场比赛时顺手补全（号码布、半马、路线）
+
+- 全马：在 `marathonResults` 里加 `bib: "A12345"`（号码布，陈列馆完赛档案显示；不填就空着）。
+- 半马：加到 `halfMarathons`（只收城市赛事，公园赛不放），字段同全马。
+- 路线：`data/routes.json` 里每条是 `{ date: "YYYY-MM-DD", event, km, activity_id, points }`，
+  `points` 是把 Garmin 轨迹归一化到 0–100 方框后的 `"x,y x,y …"` 点串（经度按纬度余弦校正，纵轴向下）。
+  生成办法：在 `~/Documents/workspace/garmin-data` 里用 `tmp/fetch_routes.ts`（按 `date` + `event` 匹配 Garmin 活动，
+  走 `/activity-service/activity/{id}/details` 拿 polyline），或者手动从 FIT 导出后按同样规则归一化。
+  没有路线的比赛卡片会显示「路线待补」，不影响其它内容。
+
 ### 5. 新增大满贯赛事和奖牌
 
 奖牌图统一放在 `assets/`，用 400px 宽的 WebP。原始照片不要直接放进仓库——页面里显示宽度只有 112px，1MB 的原图会让手机端加载明显变慢。
@@ -232,6 +258,20 @@ export const chinaMajorRaces = [
 - HYROX 卡片：`.hyrox-card`、`.hyrox-ticket`、`.hyrox-cell`
 - 地图大卡：`.map-card`
 - 地图标签位置：不在 CSS 里，在 `scripts/app.js` 的 `mapLabelPlacement`
+
+### 10. 更新训练日志数据
+
+数据链路：Garmin → Obsidian 插件 `garmin-cn-sync`（启动时同步 + 每 6 小时）→ `~/SynologyDrive/Garmin/*.md` → `tools/export_training.py` → `data/training.json`。
+
+```bash
+python3 tools/export_training.py && git add data/training.json && git commit -m "Update training data" && git push
+```
+
+- 脚本只读 Daily / Activities 笔记的 frontmatter，不碰 FIT；路径可用环境变量 `GARMIN_VAULT` 覆盖。
+- `training_readiness_score` 是晨起值（当天最早一次计算），`training_readiness_latest` 是同步时刻的最新值，由插件写入。
+- 页面里「不在北京」的判断顺序：`scripts/training.js` 里的 `trips` 手填行程 > 户外活动 GPS 地点 > 比赛日及前一天 = 赛事城市 > 前后两天同一外地的空档日。
+  室内课（力量、跑步机）没有定位，出差期间只练室内课的日子要靠 `trips` 补。
+- 想自动化就给 Mac 挂个 launchd 定时任务跑上面这行命令；不要把 Garmin 账号放进 GitHub Secrets。
 
 ### 9. 修改地图交互逻辑
 

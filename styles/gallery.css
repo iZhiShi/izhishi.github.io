@@ -1,0 +1,78 @@
+  :root { --amber:#eda100; --amber-text:#7a5000; --red:#e34948; --red-text:#b32f2e; --wall:#2a3630; --plaque:#f3ead6;
+  .page-shell { width: min(1240px, calc(100vw - 32px)); }
+  .serif { font-family:"Iowan Old Style","Palatino Linotype","Book Antiqua","Songti SC","STSong",serif; }
+  .cond { font-family:"Avenir Next Condensed","DIN Alternate","Arial Narrow",sans-serif; letter-spacing:-.02em; }
+  .crumb { display:flex; align-items:center; gap:12px; font-size:.85rem; color: var(--ink-soft); margin-bottom: 14px; }
+  .crumb a { color: var(--ink-soft); text-decoration:none; } .crumb nav { display:flex; gap:6px; margin-left:auto; }
+  .crumb nav a { padding: 6px 12px; border-radius: 999px; border:1px solid var(--line); background: var(--panel); }
+  .crumb nav a.on { background: var(--ink); color:#fff; border-color: var(--ink); }
+
+  .hall-hero { display:grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items:end; padding: 30px 32px 26px; border-radius: var(--radius-xl); background: var(--panel); border:1px solid var(--line); box-shadow: var(--shadow); position:relative; overflow:hidden; }
+  .hall-hero::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at 90% 0%, rgba(237,161,0,.14), transparent 38%); pointer-events:none; }
+  .hall-kicker { margin:0; font-size:.72rem; letter-spacing:.26em; font-weight:800; color: var(--amber-text); }
+  .hall-hero h1 { margin: 8px 0 0; font-size: 2.6rem; line-height: 1; }
+  .hall-hero h1 small { display:block; font-size: .95rem; letter-spacing:.3em; color: var(--ink-soft); margin-top: 10px; font-weight: 400; }
+  .hall-hero .intro { margin: 16px 0 0; color: var(--ink-soft); font-size:.95rem; max-width: 46ch; line-height: 1.6; }
+  .inventory { display:grid; grid-template-columns: repeat(4, 1fr); gap: 2px; border: 1px solid var(--line); border-radius: 16px; overflow:hidden; background: var(--line); position:relative; }
+  .inventory div { background: rgba(255,255,255,.6); padding: 14px 12px 12px; text-align:center; }
+  .inventory b { display:block; font-size: 1.9rem; line-height:1; color: var(--ink); }
+  .inventory span { display:block; margin-top: 6px; font-size:.72rem; letter-spacing:.14em; color: var(--ink-soft); }
+  .inventory div.pb b { color: var(--red-text); }
+  .hall-nav { grid-column: 1 / -1; display:flex; gap: 10px; flex-wrap:wrap; margin-top: 4px; position:relative; }
+  .hall-nav a { text-decoration:none; color: var(--ink); font-size:.84rem; padding: 8px 14px; border-radius: 999px; border:1px solid var(--line); background: rgba(255,255,255,.55); }
+  .hall-nav a b { color: var(--amber-text); margin-right: 6px; }
+
+  .hall { margin-top: 22px; padding: 24px 28px 28px; border-radius: var(--radius-xl); background: var(--panel); border:1px solid var(--line); box-shadow: var(--shadow); position:relative; overflow:hidden; }
+  .hall-title { display:flex; align-items:baseline; gap: 14px; margin-bottom: 18px; flex-wrap:wrap; }
+  .hall-title .num { font-size:.72rem; letter-spacing:.26em; font-weight:800; color: var(--amber-text); }
+  .hall-title h2 { margin:0; font-size: 1.5rem; }
+  .hall-title p { margin:0; color: var(--ink-soft); font-size:.88rem; }
+  .hall-title .tools { margin-left:auto; display:flex; gap: 6px; flex-wrap:wrap; }
+  .hall-title .tools button { border:1px solid var(--line); background:#fff; color: var(--ink-soft); border-radius: 999px; padding: 6px 12px; font-size:.78rem; cursor:pointer; }
+  .hall-title .tools button.on { background: var(--ink); color:#fff; border-color: var(--ink); }
+
+  /* medal wall */
+  .wall { border-radius: 22px; padding: 38px 28px 26px; background: radial-gradient(ellipse at 50% -10%, #44564a 0%, var(--wall) 55%, #1f2924 100%); position:relative; }
+  .wall-rail { position:absolute; left: 28px; right: 28px; top: 14px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, rgba(237,161,0,.2), rgba(237,161,0,.6), rgba(237,161,0,.2)); }
+  .medals { display:grid; grid-template-columns: repeat(4, 1fr); gap: 22px; position:relative; }
+  .medal { display:grid; justify-items:center; text-align:center; position:relative; padding-top: 10px; margin:0; }
+  .medal::before { content:""; width: 2px; height: 26px; background: linear-gradient(180deg, rgba(237,161,0,.6), rgba(237,161,0,.15)); margin-bottom: -4px; }
+  .medal img { width: 100%; max-width: 190px; aspect-ratio: 3/4; object-fit: contain; filter: drop-shadow(0 18px 24px rgba(0,0,0,.45)); position:relative; }
+  .plaque { margin-top: 14px; padding: 10px 14px; border-radius: 6px; background: var(--plaque); border: 1px solid rgba(122,80,0,.35); box-shadow: inset 0 0 0 2px rgba(255,255,255,.5), 0 6px 14px rgba(0,0,0,.35); min-width: 72%; }
+  .plaque b { display:block; font-size: .92rem; color: var(--ink); }
+  .plaque span { display:block; font-size:.74rem; color: var(--ink-soft); margin-top: 3px; letter-spacing:.04em; }
+  .plaque .t { color: var(--amber-text); font-weight:700; } .plaque .t.sub3 { color: var(--red-text); }
+  .wall-caption { margin: 18px 0 0; text-align:center; color: rgba(243,234,216,.6); font-size:.8rem; letter-spacing:.16em; }
+
+  /* race records */
+  .years { display:flex; gap: 0; border-bottom: 1px solid var(--line); margin-bottom: 18px; flex-wrap:wrap; }
+  .years button { background:none; border:0; border-bottom: 2px solid transparent; padding: 8px 14px; color: var(--ink-soft); cursor:pointer; font-size:.86rem; margin-bottom:-1px; }
+  .years button.on { color: var(--ink); border-color: var(--amber); font-weight:700; }
+  .records { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .rec { display:grid; grid-template-columns: 120px 1fr; gap: 14px; padding: 16px 18px 16px 16px; border-radius: 20px; background: rgba(255,255,255,.62); border:1px solid var(--line); box-shadow: 0 8px 22px rgba(74,58,35,.08); position:relative; }
+  .rec.sub3 { border-color: rgba(227,73,72,.35); background: linear-gradient(135deg, rgba(227,73,72,.06), rgba(255,255,255,.62) 45%); }
+  .rec-route { width: 120px; height: 120px; border-radius: 16px; background: var(--ink); display:grid; place-items:center; position:relative; overflow:hidden; }
+  .rec-route::before { content:""; position:absolute; inset:0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 12px), repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 12px); }
+  .rec-route svg { width: 96px; height: 96px; position:relative; }
+  .rec-route polyline { fill:none; stroke: #58d995; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
+  .rec-route circle { fill:#fff; }
+  .rec-route .na { color: rgba(255,255,255,.45); font-size:.66rem; letter-spacing:.14em; position:relative; }
+  .rec-body { display:grid; align-content:space-between; gap: 6px; min-width:0; }
+  .rec-city { display:flex; align-items:baseline; gap: 8px; }
+  .rec-city b { font-size: 1.35rem; line-height:1; }
+  .rec-city span { color: var(--ink-soft); font-size:.78rem; }
+  .rec-event { color: var(--ink-soft); font-size:.84rem; line-height:1.3; margin-top: 7px; }
+  .rec-time { font-size: 2rem; line-height: 1; color: var(--amber-text); margin-top: 2px; }
+  .rec.sub3 .rec-time { color: var(--red-text); }
+  .rec-meta { display:flex; justify-content:space-between; align-items:center; gap: 6px 8px; flex-wrap:wrap; font-size:.76rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .rec-meta > span { white-space:nowrap; }
+  .rec-tags { display:flex; gap: 5px; flex-wrap:wrap; }
+  .rec-tag { font-size:.66rem; font-weight:800; letter-spacing:.04em; padding: 2px 8px; border-radius: 999px; background: rgba(237,161,0,.16); color: var(--amber-text); }
+  .rec-tag.red { background: rgba(227,73,72,.14); color: var(--red-text); }
+  .rec-tag.plain { background: rgba(34,48,39,.08); color: var(--ink); }
+
+  @media (max-width: 1000px) { .records { grid-template-columns: repeat(2, 1fr); } .medals { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 780px) {
+    .hall-hero { grid-template-columns: 1fr; padding: 22px 18px; } .hall-hero h1 { font-size: 2rem; } .inventory { grid-template-columns: repeat(2,1fr); }
+    .hall { padding: 18px 16px 22px; } .records { grid-template-columns: 1fr; } .rec { grid-template-columns: 96px 1fr; } .rec-route { width: 96px; height: 96px; } .rec-route svg { width: 78px; height: 78px; } .wall { padding: 30px 16px 20px; } .medals { gap: 14px; }
+  }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>马拉松陈列馆 · 柿子</title>
+<meta name="description" content="全马与半马的完赛档案：路线、成绩、日期和城市，以及省会马拉松集邮地图。" />
+<link rel="stylesheet" href="styles/main.css" />
+<link rel="stylesheet" href="styles/gallery.css" />
+</head>
+<body>
+<div class="page-shell">
+  <div class="crumb"><a href="index.html">← 省会马拉松地图</a>
+    <nav><a href="training.html">训练日志</a><a class="on" href="gallery.html">陈列馆</a></nav></div>
+
+  <header class="hall-hero">
+    <div>
+      <p class="hall-kicker">COLLECTION HALL · EST. 2023</p>
+      <h1 class="serif">马拉松陈列馆<small>FULL · HALF · CAPITALS</small></h1>
+      <p class="intro">每一场城市马拉松一张卡：路线、成绩、日期和城市。越野和 HYROX 以后单开专题。</p>
+    </div>
+    <div class="inventory cond" id="inventory"></div>
+    <nav class="hall-nav"><a href="#hall1"><b>I</b>大满贯墙</a><a href="#hall2"><b>II</b>完赛档案</a><a href="#hall3"><b>III</b>省会地图</a></nav>
+  </header>
+
+  <section class="hall" id="hall1">
+    <div class="hall-title"><span class="num">展厅 I</span><h2 class="serif">中国大满贯墙</h2><p>四枚奖牌，一年集齐。</p></div>
+    <div class="wall"><div class="wall-rail"></div><div class="medals" id="medals"></div>
+      <p class="wall-caption">重庆 · 武汉 · 北京 · 广州 — 2025</p></div>
+  </section>
+
+  <section class="hall" id="hall2">
+    <div class="hall-title"><span class="num">展厅 II</span><h2 class="serif">完赛档案</h2><p>路线 · 成绩 · 日期 · 城市</p>
+      <div class="tools" id="typeTools"><button class="on" data-t="full">全马</button><button data-t="half">半马</button><button data-t="all">全部</button></div></div>
+    <div class="years" id="years"></div>
+    <div class="records" id="records"></div>
+  </section>
+
+  <section class="hall map-card" id="hall3" aria-label="省会马拉松集邮册">
+    <div class="section-heading map-heading">
+      <div class="map-heading-panel"><p class="map-kicker">展厅 III · CAPITAL COLLECTION</p><h2>省会马拉松集邮册</h2><p class="map-lead">跑一座省会，点亮一座城。</p></div>
+      <div class="map-stats">
+        <div class="map-stat"><span>已点亮</span><strong id="mapDoneValue">0 / 31</strong></div>
+        <div class="map-stat map-stat-next"><span>下一站</span><strong id="mapNextCity">待定</strong><em id="mapNextDate">待填写</em></div>
+      </div>
+    </div>
+    <div class="map-legend" aria-label="图例"><span><i class="done"></i>已完赛</span><span><i class="sub-three"></i>破三</span><span><i class="next"></i>下一站</span><span><i class="planned"></i>已报名</span><span><i class="pending"></i>待解锁</span></div>
+    <div id="map" aria-label="中国省会马拉松进度地图"></div>
+  </section>
+</div>
+
+<script src="vendor/echarts.min.js"></script>
+<script type="module" src="scripts/app.js"></script>
+<script type="module" src="scripts/gallery.js"></script>
+</body>
+</html>
