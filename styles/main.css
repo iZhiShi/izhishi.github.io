@@ -832,12 +832,19 @@ body::after {
   text-align: center;
 }
 
-/* 桌面：提升幅度和其间场次压在轨道那一行的左端（上方 / 下方） */
+/* 桌面：提升幅度和其间场次压在轨道那一行的左端（上方 / 下方）。
+   meta 和 rail 占同一个格子，用显式行列定位，不依赖 display: contents（Safari 里会把子项挤到同一行）。 */
 .pb-step-meta {
-  display: contents;
+  position: relative;
+  grid-column: 1;
+  grid-row: 3;
+  width: 100%;
+  height: 100%;
 }
 
 .pb-step-time {
+  grid-column: 1;
+  grid-row: 1;
   color: var(--ink);
   font-size: 2rem;
   font-weight: 700;
@@ -849,6 +856,8 @@ body::after {
 }
 
 .pb-step-race {
+  grid-column: 1;
+  grid-row: 2;
   margin-top: 8px;
   font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
     "Songti SC", "STSong", serif;
@@ -868,7 +877,9 @@ body::after {
 
 .pb-step-rail {
   position: relative;
+  grid-column: 1;
   grid-row: 3;
+  justify-self: stretch;
   display: grid;
   place-items: center;
   width: 100%;
@@ -916,14 +927,13 @@ body::after {
 
 .pb-step-delta,
 .pb-step-between {
-  grid-row: 3;
-  grid-column: 1;
-  justify-self: start;
+  position: absolute;
+  left: 0;
   white-space: nowrap;
 }
 
 .pb-step-delta {
-  align-self: start;
+  top: 0;
   transform: translate(-50%, calc(-100% + 4px));
   padding: 3px 8px;
   border-radius: 999px;
@@ -939,7 +949,7 @@ body::after {
 }
 
 .pb-step-between {
-  align-self: end;
+  bottom: 0;
   transform: translate(-50%, calc(100% - 4px));
   color: var(--ink-soft);
   font-size: 0.7rem;
@@ -1043,16 +1053,15 @@ body::after {
     grid-column: 3;
     grid-row: 2;
     align-self: start;
+    height: auto;
     padding-left: 12px;
     min-height: 1.2em;
   }
 
   .pb-step-delta,
   .pb-step-between {
-    grid-row: auto;
-    grid-column: auto;
+    position: static;
     transform: none;
-    align-self: auto;
   }
 }
 
