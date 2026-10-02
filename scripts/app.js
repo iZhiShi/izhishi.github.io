@@ -5,6 +5,7 @@ import {
   completedMarathons,
   hyroxDivisions,
   hyroxRaces,
+  marathonResults,
   plannedMarathons,
   runnerProfile,
 } from "./data.js";
@@ -21,6 +22,7 @@ const marathonData = capitals.map((item) => {
     time: result ? result.time : "",
     half,
     raceName: item.city + (half ? "半程马拉松" : "马拉松"),
+    tag: result && result.tag ? result.tag : "",
     subThree: Boolean(result) && !half && toSeconds(result.time) < SUB_THREE_SECONDS,
   };
 });
@@ -31,15 +33,15 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 // side 决定横线往左还是往右延伸，赛事名在横线上方，日期·成绩在横线下方。
 // 新省会完赛后如果和邻居撞了，在这里调它的折点。
 const mapLabelPlacement = {
-  北京: ["right", [-6, -74]],
-  天津: ["right", [60, 24]],
-  石家庄: ["right", [18, 44]],
-  太原: ["left", [-18, -40]],
-  济南: ["right", [56, 16]],
+  北京: ["right", [-24, -70]],
+  天津: ["right", [18, 2]],
+  石家庄: ["left", [-38, -38]],
+  太原: ["right", [-10, -72]],
+  济南: ["right", [18, 2]],
   郑州: ["right", [14, 24]],
-  南京: ["right", [44, -36]],
+  南京: ["left", [-18, -4]],
   上海: ["right", [56, -12]],
-  杭州: ["right", [56, 40]],
+  杭州: ["right", [42, 14]],
   合肥: ["right", [14, 24]],
   武汉: ["right", [0, 32]],
   长沙: ["left", [-28, 42]],
@@ -54,9 +56,9 @@ const mapLabelPlacement = {
   昆明: ["left", [-20, 22]],
   西安: ["right", [12, -16]],
   兰州: ["left", [-44, -12]],
-  银川: ["left", [-44, -34]],
+  银川: ["left", [-12, -46]],
   西宁: ["left", [-14, 20]],
-  呼和浩特: ["left", [-22, -32]],
+  呼和浩特: ["left", [0, -46]],
   沈阳: ["right", [60, 36]],
   长春: ["right", [48, -14]],
   哈尔滨: ["right", [30, -40]],
@@ -209,6 +211,68 @@ function toSeconds(text) {
     .reduce((total, part) => total * 60 + part, 0);
 }
 
+function formatDelta(seconds) {
+  return "−" + Math.floor(seconds / 60) + "′" + String(seconds % 60).padStart(2, "0") + "″";
+}
+
+// 全马 PB 路径：按时间顺序，每次刷新最好成绩算一级；between 是两级之间跑了几场。
+function renderPbPath() {
+  const stepper = document.getElementById("pbStepper");
+  if (!stepper) {
+    return;
+  }
+
+  const results = marathonResults.map((item) => ({ ...item, seconds: toSeconds(item.time) }));
+  const steps = [];
+  let best = Infinity;
+  let sinceLast = 0;
+  results.forEach((item) => {
+    if (item.seconds < best) {
+      steps.push({ ...item, delta: best === Infinity ? 0 : best - item.seconds, between: sinceLast });
+      best = item.seconds;
+      sinceLast = 0;
+    } else {
+      sinceLast += 1;
+    }
+  });
+  if (steps.length === 0) {
+    return;
+  }
+
+  const current = steps[steps.length - 1];
+  const setText = (id, text) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = text;
+    }
+  };
+  setText("pbCurrentValue", current.time.replace(/^0/, ""));
+  setText("pbCurrentEvent", current.date.slice(0, 4) + " " + current.event);
+  setText("pbTotalValue", formatDelta(steps[0].seconds - current.seconds));
+  setText("pbTotalNote", steps.length + " 级 · " + steps[0].date.slice(0, 4) + "–" + current.date.slice(0, 4));
+  setText("pbRaceCount", String(results.length));
+  setText("pbSubThreeCount", String(results.filter((item) => item.seconds < SUB_THREE_SECONDS).length));
+  setText("pbSinceCount", String(sinceLast));
+
+  stepper.innerHTML = steps
+    .map((step, index) => {
+      const isCurrent = index === steps.length - 1;
+      const betweenText = index === 0 ? "" : step.between ? "其间 " + step.between + " 场" : "直接刷新";
+      return `
+        <div class="pb-step${isCurrent ? " current" : ""}">
+          <strong class="pb-step-time">${step.time.replace(/^0/, "")}</strong>
+          <span class="pb-step-race">${step.event}<small>${step.date}</small></span>
+          <div class="pb-step-rail"><span class="pb-step-node"></span></div>
+          <div class="pb-step-meta">
+            ${index > 0 ? `<span class="pb-step-delta">${formatDelta(step.delta)}</span>` : ""}
+            ${betweenText ? `<span class="pb-step-between">${betweenText}</span>` : ""}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
 function renderHyroxRaces() {
   const hyroxRaceGrid = document.getElementById("hyroxRaceGrid");
   const hyroxDivisionTrack = document.getElementById("hyroxDivisionTrack");
@@ -318,6 +382,7 @@ async function initMap() {
   updateSummary();
   renderChinaMajorRaces();
   renderHyroxRaces();
+  renderPbPath();
 
   if (window.location.protocol === "file:") {
     showMapError(
@@ -370,6 +435,7 @@ async function initMap() {
         date: item.date,
         time: item.time,
         raceName: item.raceName,
+        tag: item.tag,
         subThree: item.subThree,
         ...(item.subThree
           ? {
@@ -425,8 +491,8 @@ async function initMap() {
           textStyle: { color: INK },
           formatter: (params) => {
             if (params.seriesName === "completed") {
-              const badge = params.data.subThree ? " · 破三" : "";
-              return `<b>${params.data.raceName}</b><br/>${params.data.date} · ${params.data.time}${badge}`;
+              const tag = params.data.tag ? " · " + params.data.tag : "";
+              return `<b>${params.data.raceName}${tag}</b><br/>${params.data.date} · ${params.data.time}`;
             }
             if (params.seriesName === "planned") {
               const prefix = params.data.isNext ? "下一站" : "已报名";
@@ -506,7 +572,7 @@ async function initMap() {
         labelItems.forEach((item) => {
           const [px, py] = chart.convertToPixel("geo", item.value);
           const [side, [dx, dy]] = mapLabelPlacement[item.name] || ["right", [30, -24]];
-          const name = (item.subThree ? "★ " : "") + (item.raceName || item.name + "马拉松");
+          const name = (item.raceName || item.name + "马拉松") + (item.tag ? " · " + item.tag : "");
           const ruleWidth = name.length * 12.5 + 6;
           const emphasis = Boolean(item.subThree);
           const elbowX = px + dx;

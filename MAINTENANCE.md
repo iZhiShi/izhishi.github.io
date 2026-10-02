@@ -31,7 +31,7 @@
 - `assets/`
   - 大满贯奖牌图，统一为 400px 宽的 WebP。
   - 页面里显示宽度只有 112px，不需要更大的原图。
-  - 新增奖牌见下面的「4. 新增大满贯赛事和奖牌」。
+  - 新增奖牌见下面的「5. 新增大满贯赛事和奖牌」。
 - `data/china.geojson`
   - 本地保存的中国地图 GeoJSON 数据。
   - 页面部署到 GitHub Pages 后，地图直接读取本站文件，不再依赖第三方地图接口。
@@ -40,7 +40,7 @@
   - 升级时直接替换这个文件，并同步更新 `index.html` 里的版本号注释。
 - `scripts/data.js`
   - 负责可维护数据。
-  - 包含省会列表、四项个人成绩、已完赛记录、大满贯赛事、HYROX 赛事、下一站计划。
+  - 包含省会列表、四项个人成绩、省会完赛记录、全部全马成绩、大满贯赛事、HYROX 赛事、报名计划。
   - 日常更新成绩时，通常只需要改这个文件。
 - `scripts/app.js`
   - 负责交互和地图逻辑。
@@ -64,11 +64,30 @@ export const completedMarathons = {
 - 键名使用省会城市名，例如 `北京`、`南京`、`武汉`
 - `date` 为完赛日期
 - `time` 为完赛时间
+- 想在赛事名后面挂一个标记就加 `tag`，例如 `tag: "PB"`、`tag: "Pacer"`（官方配速员），地图标签和 tooltip 都会显示成“xx马拉松 · PB”
 - 半程赛事加 `distance: "half"`，地图标签会写成“xx半程马拉松”，不参与破三判断
 - 全马 `time` 快于 3:00:00 的省会会自动标成“破三”：更大的红点、★ 前缀
 - 填入后，对应省份会自动点亮
 
-### 2. 更新头部成绩
+### 2. 更新全部全马成绩（PB 路径）
+
+编辑 `scripts/data.js` 中的 `marathonResults`，按日期追加：
+
+```js
+export const marathonResults = [
+  { date: "2026.09.19", event: "呼和浩特马拉松", time: "03:18:25" },
+  { date: "2026.10.18", event: "西安马拉松", time: "03:05:00", tag: "PB" },
+];
+```
+
+说明：
+
+- 这是全部全马（含泰安、无锡、海淀、厦门这类非省会赛事），净计时
+- 页面顶部的「全马 PB 路径」从这里算：按日期顺序，每次刷新最好成绩就是一级台阶，台阶之间的“其间 N 场”也从这里数
+- 省会赛事要在这里和 `completedMarathons` 各记一次（地图只读后者）
+- 半程不要放进来
+
+### 3. 更新头部成绩
 
 编辑 `scripts/data.js` 中的 `runnerProfile`：
 
@@ -105,7 +124,7 @@ export const runnerProfile = {
 - `itraPerformance` 和 `utmbPerformance` 用 `score` 代替 `time`，其余字段相同
 - 如果留空，页面会自动显示“待填写”
 
-### 3. 更新报名计划
+### 4. 更新报名计划
 
 编辑 `scripts/data.js` 中的 `plannedMarathons`，按日期先后排列：
 
@@ -118,13 +137,13 @@ export const plannedMarathons = [
 
 说明：
 
-- `city` 用省会城市名，和 `completedMarathons` 的键名一样
+- `city` 用城市名；省会会上地图，非省会（例如香港）只出现在“下一站”卡片里
 - 第一项是“下一站”，显示在地图顶部的卡片里，地图上是蓝色脉冲点
 - 其余项在地图上是空心蓝圈 + 日期
 - 跑完一场后，把它从这里删掉，再加到 `completedMarathons`
 - 列表为空时卡片显示“待定”
 
-### 4. 新增大满贯赛事和奖牌
+### 5. 新增大满贯赛事和奖牌
 
 奖牌图统一放在 `assets/`，用 400px 宽的 WebP。原始照片不要直接放进仓库——页面里显示宽度只有 112px，1MB 的原图会让手机端加载明显变慢。
 
@@ -160,7 +179,7 @@ export const chinaMajorRaces = [
 - `medalImage` 可以省略，省略后卡片不显示奖牌图
 - `accent` 和 `soft` 建议取同一个色相，`soft` 用 0.16 左右的透明度
 
-### 5. 新增 HYROX 赛事
+### 6. 新增 HYROX 赛事
 
 编辑 `scripts/data.js` 中的 `hyroxRaces`，每场一个对象，8 段跑和 8 个站点按比赛顺序排列（跑 1 → 站 1 → 跑 2 → 站 2 …）：
 
@@ -193,7 +212,7 @@ export const chinaMajorRaces = [
 - `short` 是手机端显示的两字站名，必填
 - 新组别（例如 SINGLE）第一次出现时，进阶轨会自动把它标黑
 
-### 6. 修改头部文案
+### 7. 修改头部文案
 
 编辑 `index.html`：
 
@@ -201,7 +220,7 @@ export const chinaMajorRaces = [
 - 头部四项成绩在 `.runner-stats` 区块中
 - 地图标题也在 `index.html` 中
 
-### 7. 修改样式
+### 8. 修改样式
 
 编辑 `styles/main.css`：
 
@@ -209,11 +228,12 @@ export const chinaMajorRaces = [
 - 个人成绩容器：`.runner-card`
 - 地图顶部指标块：`.map-stats`、`.map-stat`
 - 地图图例：`.map-legend`
+- PB 路径：`.pb-card`、`.pb-step`（手机端在 `@media (max-width: 780px)` 里改成竖排）
 - HYROX 卡片：`.hyrox-card`、`.hyrox-ticket`、`.hyrox-cell`
 - 地图大卡：`.map-card`
 - 地图标签位置：不在 CSS 里，在 `scripts/app.js` 的 `mapLabelPlacement`
 
-### 8. 修改地图交互逻辑
+### 9. 修改地图交互逻辑
 
 编辑 `scripts/app.js`：
 
@@ -225,6 +245,8 @@ export const chinaMajorRaces = [
   - 渲染大满贯卡片，成绩从 `completedMarathons` 按城市名查出
 - `renderHyroxRaces()`
   - 渲染 HYROX 卡片和组别进阶轨，三色条宽度由 `splits` 三个时间换算
+- `renderPbPath()`
+  - 从 `marathonResults` 算出 PB 台阶，渲染「全马 PB 路径」步进条和顶部两个指标块
 - `mapLabelPlacement`
   - 每个省会标签的方向和像素偏移，新省会完赛后如果标签和邻居重叠，在这里调
 - `initMap()`

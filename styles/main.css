@@ -88,6 +88,7 @@ body::after {
 }
 
 .hero-card,
+.pb-card,
 .major-card,
 .hyrox-card,
 .map-card {
@@ -685,6 +686,7 @@ body::after {
   }
 
   .hero-card,
+  .pb-card,
   .major-card,
   .map-card {
     padding: 18px;
@@ -725,6 +727,333 @@ body::after {
     flex-direction: column;
   }
 
+}
+
+/* 全马 PB 路径：五级台阶等距排在一条轨道上 */
+.pb-card {
+  --pb-red: #e34948;
+  --pb-red-text: #b32f2e;
+  --pb-amber: #eda100;
+  --pb-amber-text: #7a5000;
+  --pb-rail: rgba(34, 48, 39, 0.16);
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  animation: rise-in 0.95s ease 0.03s both;
+}
+
+.pb-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(227, 73, 72, 0.06), transparent 36%),
+    radial-gradient(circle at top right, rgba(237, 161, 0, 0.1), transparent 30%);
+  pointer-events: none;
+}
+
+.pb-heading {
+  position: relative;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.pb-heading-panel {
+  min-width: 0;
+}
+
+.pb-heading .pb-kicker {
+  margin: 0 0 6px;
+  color: var(--pb-red-text);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.pb-heading .pb-lead {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.pb-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.pb-stat {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(34, 48, 39, 0.14);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.pb-stat span {
+  color: var(--ink-soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+.pb-stat strong,
+.pb-step-time {
+  font-family: "Avenir Next Condensed", "DIN Alternate", "Arial Narrow",
+    sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.pb-stat strong {
+  color: var(--pb-red-text);
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.pb-stat em {
+  color: var(--ink-soft);
+  font-size: 0.74rem;
+  font-style: normal;
+}
+
+.pb-stepper {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.pb-step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto 44px;
+  justify-items: center;
+  min-width: 0;
+  padding-bottom: 26px;
+  text-align: center;
+}
+
+/* 桌面：提升幅度和其间场次压在轨道那一行的左端（上方 / 下方） */
+.pb-step-meta {
+  display: contents;
+}
+
+.pb-step-time {
+  color: var(--ink);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pb-step.current .pb-step-time {
+  color: var(--pb-red-text);
+}
+
+.pb-step-race {
+  margin-top: 8px;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Songti SC", "STSong", serif;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.pb-step-race small {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink-soft);
+  font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 400;
+}
+
+.pb-step-rail {
+  position: relative;
+  grid-row: 3;
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.pb-step-rail::before,
+.pb-step-rail::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 50%;
+  height: 2px;
+  background: var(--pb-rail);
+}
+
+.pb-step-rail::before {
+  left: 0;
+}
+
+.pb-step-rail::after {
+  right: 0;
+}
+
+.pb-step:first-child .pb-step-rail::before,
+.pb-step:last-child .pb-step-rail::after {
+  display: none;
+}
+
+.pb-step-node {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--pb-amber);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+
+.pb-step.current .pb-step-node {
+  width: 18px;
+  height: 18px;
+  background: var(--pb-red);
+}
+
+.pb-step-delta,
+.pb-step-between {
+  grid-row: 3;
+  grid-column: 1;
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.pb-step-delta {
+  align-self: start;
+  transform: translate(-50%, calc(-100% + 4px));
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(237, 161, 0, 0.16);
+  color: var(--pb-amber-text);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.pb-step.current .pb-step-delta {
+  background: rgba(227, 73, 72, 0.14);
+  color: var(--pb-red-text);
+}
+
+.pb-step-between {
+  align-self: end;
+  transform: translate(-50%, calc(100% - 4px));
+  color: var(--ink-soft);
+  font-size: 0.7rem;
+}
+
+.pb-foot {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(34, 48, 39, 0.14);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.pb-foot b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 780px) {
+  .pb-heading {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .pb-stats {
+    width: 100%;
+  }
+
+  .pb-stat {
+    flex: 1;
+  }
+
+  /* 手机端竖排：成绩 · 轨道 · 赛事，三列 */
+  .pb-stepper {
+    grid-template-columns: 1fr;
+  }
+
+  .pb-step {
+    grid-template-columns: 104px 32px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    justify-items: start;
+    min-height: 76px;
+    padding-bottom: 0;
+    text-align: left;
+  }
+
+  .pb-step-time {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    justify-self: end;
+    padding-right: 12px;
+    font-size: 1.6rem;
+  }
+
+  .pb-step-rail {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    height: 100%;
+  }
+
+  .pb-step-rail::before,
+  .pb-step-rail::after {
+    top: auto;
+    left: 50%;
+    width: 2px;
+    height: 50%;
+    margin-left: -1px;
+  }
+
+  .pb-step-rail::before {
+    top: 0;
+  }
+
+  .pb-step-rail::after {
+    bottom: 0;
+  }
+
+  .pb-step-race {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: end;
+    margin-top: 0;
+    padding-left: 12px;
+  }
+
+  .pb-step-race small {
+    display: inline;
+    margin-left: 6px;
+  }
+
+  .pb-step-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    grid-column: 3;
+    grid-row: 2;
+    align-self: start;
+    padding-left: 12px;
+    min-height: 1.2em;
+  }
+
+  .pb-step-delta,
+  .pb-step-between {
+    grid-row: auto;
+    grid-column: auto;
+    transform: none;
+    align-self: auto;
+  }
 }
 
 /* HYROX 赛场：近黑 + 亮黄做品牌识别，其余沿用站点暖色 */
