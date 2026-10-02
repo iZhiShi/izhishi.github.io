@@ -265,12 +265,12 @@ export const halfMarathons = [
 // ITRA 个人页：https://itra.run/RunnerSpace/zhi.shi.5256619
 export const trailRaces = [
   { date: "2023.10.21", event: "香山国际登山节", group: "20KM 精英组", distanceKm: 20, time: "04:20:32" },
-  { date: "2023.12.03", event: "北京三峰连穿越野赛（冬）", group: "22KM", distanceKm: 22.96, elevationM: 1856, time: "06:20:42", rank: { gender: 81 } },
-  { date: "2024.03.31", event: "温岭黄金海岸跑山赛", group: "38KM", distanceKm: 36, elevationM: 1955, time: "07:39:04", rank: { overall: 515, gender: 382 } },
-  { date: "2024.07.13", event: "崇礼168超级越野赛 TTC", group: "共舞50 · 五人组", distanceKm: 51.2, elevationM: 2497, time: "09:25:19", rank: { gender: 329 }, team: true },
-  { date: "2025.05.18", event: "大境门古长城越野赛 by UTMB", group: "20K", distanceKm: 33.1, elevationM: 1348, time: "03:46:39", rank: { overall: 73, gender: 68, age: 20 }, index: "UTMB" },
+  { date: "2023.12.03", event: "北京三峰连穿越野赛（冬）", group: "22KM", distanceKm: 22.96, elevationM: 1856, time: "06:20:42", itraScore: 316, rank: { overall: 111, gender: 82, age: 29 }, finishers: "176 / 193" },
+  { date: "2024.03.31", event: "温岭黄金海岸跑山赛", group: "38KM", distanceKm: 36, elevationM: 1955, time: "07:39:04", rank: { overall: 515, gender: 382 }, itraScore: 363 },
+  { date: "2024.07.13", event: "崇礼168超级越野赛 TTC", group: "共舞50 · 五人组", distanceKm: 51.2, elevationM: 2497, time: "09:25:19", rank: { gender: 329 }, team: true, itraScore: 416 },
+  { date: "2025.05.18", event: "大境门古长城越野赛 by UTMB", group: "20K", distanceKm: 33.1, elevationM: 1348, time: "03:46:39", rank: { overall: 73, gender: 68, age: 20 }, index: "UTMB", itraScore: 534 },
   { date: "2025.06.14", event: "赤城168超级越野赛", group: "30KM", distanceKm: 29.31, elevationM: 973, time: "03:29:16", rank: { gender: 17 } },
-  { date: "2025.07.13", event: "崇礼168超级越野赛 云顶30", group: "云顶30", distanceKm: 26.5, elevationM: 1084, time: "03:12:53", rank: { overall: 51, gender: 45, age: 21 }, index: "ITRA" },
+  { date: "2025.07.13", event: "崇礼168超级越野赛 云顶30", group: "云顶30", distanceKm: 26.5, elevationM: 1084, time: "03:12:53", rank: { overall: 51, gender: 45, age: 21 }, index: "ITRA", itraScore: 567 },
   { date: "2025.11.09", event: "大武夷超级山径赛", group: "虎啸九曲 20KM", distanceKm: 19.31, elevationM: 625, time: "02:33:52", rank: { overall: 50, gender: 41 } },
   { date: "2026.04.12", event: "莫干山越野赛 by UTMB", group: "20K", distanceKm: 25, elevationM: 1208, time: "03:56:13", rank: { overall: 461, gender: 371, age: 95 } },
 ];
