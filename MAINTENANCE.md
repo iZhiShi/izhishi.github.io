@@ -169,7 +169,8 @@ export const plannedMarathons = [
 - 半马：加到 `halfMarathons`（只收城市赛事，公园赛不放），字段同全马。
 - 越野：加到 `trailRaces`，字段见 data.js 里的注释（组别、实际距离、爬升、官方成绩、排名、是否团队赛、是否产生 UTMB/ITRA 分）。
   没有证书的比赛，成绩和排名可以去 ITRA 个人页（https://itra.run/RunnerSpace/zhi.shi.5256619 ，公开）抄；
-  每场的 ITRA 单场积分要登录后才看得到，拿到后填进 `itraScore`，卡片会显示「ITRA xxx」。
+  每场的 ITRA / UTMB 单场积分都要登录后才看得到（UTMB 个人页 https://utmb.world/en/runner/6373808.zhi.shi ），
+  拿到后可填进 `itraScore`，目前卡片上不显示，只存数据。
 - 路线：`data/routes.json` 里每条是 `{ date: "YYYY-MM-DD", event, km, activity_id, points }`，
   `points` 是把 Garmin 轨迹归一化到 0–100 方框后的 `"x,y x,y …"` 点串（经度按纬度余弦校正，纵轴向下）。
   生成办法：在 `~/Documents/workspace/garmin-data` 里用 `tmp/fetch_routes.ts`（按 `date` + `event` 匹配 Garmin 活动，
