@@ -35,7 +35,7 @@ const capitalByCity = new Map(capitals.map((item) => [item.city, item]));
 const mapLabelPlacement = {
   北京: ["right", [18, 0]],
   天津: ["right", [12, 24]],
-  石家庄: ["right", [42, 42]],
+  石家庄: ["right", [0, -76]],
   太原: ["left", [-18, -42]],
   济南: ["right", [12, 54]],
   郑州: ["right", [14, 24]],
@@ -65,6 +65,21 @@ const mapLabelPlacement = {
   拉萨: ["left", [-10, 28]],
   乌鲁木齐: ["right", [14, -24]],
 };
+
+// 赛事名加标记：★ 放在前面（PB），其它符号（例如 🐰）跟在后面。
+function decorateRaceName(raceName, tag) {
+  if (!tag) {
+    return raceName;
+  }
+  return tag === "★" ? "★ " + raceName : raceName + " " + tag;
+}
+
+const measureContext = document.createElement("canvas").getContext("2d");
+
+function measureText(text, font) {
+  measureContext.font = font;
+  return measureContext.measureText(text).width;
+}
 
 function normalizeText(value) {
   if (value === undefined || value === null) {
@@ -491,8 +506,7 @@ async function initMap() {
           textStyle: { color: INK },
           formatter: (params) => {
             if (params.seriesName === "completed") {
-              const tag = params.data.tag ? " · " + params.data.tag : "";
-              return `<b>${params.data.raceName}${tag}</b><br/>${params.data.date} · ${params.data.time}`;
+              return `<b>${decorateRaceName(params.data.raceName, params.data.tag)}</b><br/>${params.data.date} · ${params.data.time}`;
             }
             if (params.seriesName === "planned") {
               const prefix = params.data.isNext ? "下一站" : "已报名";
@@ -572,9 +586,10 @@ async function initMap() {
         labelItems.forEach((item) => {
           const [px, py] = chart.convertToPixel("geo", item.value);
           const [side, [dx, dy]] = mapLabelPlacement[item.name] || ["right", [30, -24]];
-          const name = (item.raceName || item.name + "马拉松") + (item.tag ? " · " + item.tag : "");
-          const ruleWidth = name.length * 12.5 + 6;
+          const name = decorateRaceName(item.raceName || item.name + "马拉松", item.tag);
           const emphasis = Boolean(item.subThree);
+          const nameFont = (emphasis ? "800 13.5px " : "700 12.5px ") + BODY_FONT;
+          const ruleWidth = measureText(name, nameFont) + 6;
           const elbowX = px + dx;
           const elbowY = py + dy;
           const farX = side === "left" ? elbowX - ruleWidth : elbowX + ruleWidth;

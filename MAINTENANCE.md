@@ -64,7 +64,7 @@ export const completedMarathons = {
 - 键名使用省会城市名，例如 `北京`、`南京`、`武汉`
 - `date` 为完赛日期
 - `time` 为完赛时间
-- 想在赛事名后面挂一个标记就加 `tag`，例如 `tag: "PB"`、`tag: "Pacer"`（官方配速员），地图标签和 tooltip 都会显示成“xx马拉松 · PB”
+- 想给赛事挂个标记就加 `tag`，用一个符号：`tag: "🐰"`（官方配速员）会显示成“长春马拉松 🐰”；`tag: "★"` 特殊，显示在前面：“★ 北京马拉松”
 - 半程赛事加 `distance: "half"`，地图标签会写成“xx半程马拉松”，不参与破三判断
 - 全马 `time` 快于 3:00:00 的省会会自动标成“破三”：更大的红点、★ 前缀
 - 填入后，对应省份会自动点亮
@@ -76,7 +76,7 @@ export const completedMarathons = {
 ```js
 export const marathonResults = [
   { date: "2026.09.19", event: "呼和浩特马拉松", time: "03:18:25" },
-  { date: "2026.10.18", event: "西安马拉松", time: "03:05:00", tag: "PB" },
+  { date: "2026.10.18", event: "西安马拉松", time: "02:55:00", tag: "★" },
 ];
 ```
 
