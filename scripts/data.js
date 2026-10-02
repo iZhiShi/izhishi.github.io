@@ -262,7 +262,8 @@ export const halfMarathons = [
 // time（官方成绩）/ rank { overall, gender, age, total }（ITRA 个人页公开的排名和总人数，香山不在 ITRA 里用证书）/ team（团队赛）/ index（"UTMB" 或 "ITRA"：
 // 这场比赛产生了头部的 UTMB / ITRA 表现分）/ itraScore（这一场的 ITRA 单场积分；两者目前都只存数据，卡片上不显示）。
 // 路线同样来自 data/routes.json，按 date + event 匹配。没有证书的比赛（赤城）成绩和排名取自 ITRA 公开记录。
-// ITRA 个人页：https://itra.run/RunnerSpace/zhi.shi.5256619
+// ITRA 个人页：https://itra.run/RunnerSpace/zhi.shi.5256619　UTMB 个人页：https://utmb.world/en/runner/6373808.zhi.shi
+// 两个站的单场积分都要登录后才看得到；综合指数是公开的。
 export const trailRaces = [
   { date: "2023.10.21", event: "香山国际登山节", group: "20KM 精英组", distanceKm: 20, time: "04:20:32", rank: { overall: 63, gender: 48 }, bib: "A0165" },
   { date: "2023.12.03", event: "北京三峰连穿越野赛（冬）", group: "22KM", distanceKm: 22.96, elevationM: 1856, time: "06:20:42", itraScore: 316, rank: { overall: 111, gender: 82, age: 29, total: 193 } },
