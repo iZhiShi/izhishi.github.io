@@ -124,14 +124,14 @@ export const runnerProfile = {
     date: "2025.03.30",
   },
   itraPerformance: {
-    score: "567",
-    event: "2025 崇礼168 超级越野赛",
-    date: "2025.07.14",
+    score: "548",
+    event: "ITRA 综合指数 · Intermediate 1",
+    date: "2026.10.03",
   },
   utmbPerformance: {
-    score: "499",
-    event: "2025 大境门 By UTMB",
-    date: "2025.05.18",
+    score: "503",
+    event: "UTMB Index · General",
+    date: "2026.10.03",
   },
 };
 ```
@@ -141,7 +141,8 @@ export const runnerProfile = {
 - `fullMarathonPb` 显示在头部四项成绩区域中
 - `halfMarathonPb` 显示在同一区域中
 - PB 需要同时维护 `time`、`event` 和 `date`，分别显示成绩、赛事名和完赛日期
-- `itraPerformance` 和 `utmbPerformance` 用 `score` 代替 `time`，其余字段相同
+- `itraPerformance` 和 `utmbPerformance` 用 `score` 代替 `time`，显示的是当前综合指数（不是单场分），
+  隔一阵去 ITRA / UTMB 个人页（链接在 data.js 注释里）抄最新值，`date` 填抄的日期，页面上标「更新日期」
 - 如果留空，页面会自动显示“待填写”
 
 ### 4. 更新报名计划

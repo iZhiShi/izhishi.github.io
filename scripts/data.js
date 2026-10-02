@@ -76,15 +76,17 @@ export const runnerProfile = {
     event: "2025 扬州鉴真半程马拉松",
     date: "2025.03.30",
   },
+  // ITRA / UTMB 显示的是“当前综合指数”，不是某一场的单场分；更新时去两个个人页抄最新值并改 date：
+  // https://itra.run/RunnerSpace/zhi.shi.5256619　https://utmb.world/en/runner/6373808.zhi.shi
   itraPerformance: {
-    score: "567",
-    event: "2025 崇礼168 超级越野赛",
-    date: "2025.07.14",
+    score: "548",
+    event: "ITRA 综合指数 · Intermediate 1",
+    date: "2026.10.03",
   },
   utmbPerformance: {
-    score: "499",
-    event: "2025 大境门 By UTMB",
-    date: "2025.05.18",
+    score: "503",
+    event: "UTMB Index · General",
+    date: "2026.10.03",
   },
 };
 

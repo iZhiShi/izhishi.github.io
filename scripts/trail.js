@@ -23,8 +23,6 @@ function renderYears() { const ys = [...new Set(items.map(i => i.year))].sort().
   yearsEl.querySelectorAll("button").forEach(b => b.onclick = () => { curYear = b.dataset.y; renderYears(); renderCards(); }); }
 function rankText(r) { if (!r) return ""; const parts = []; if (r.overall) parts.push(`总排名 ${r.overall}${r.total ? ` / ${r.total}` : ""}`); if (r.gender) parts.push(`性别 ${r.gender}`); if (r.age) parts.push(`年龄组 ${r.age}`); return parts.join(" · "); }
 function card(it) {
-  const tags = [];
-  if (it.team) tags.push(`<span class="rec-tag plain">团队赛</span>`);
   const pts = it.route ? it.route.split(" ") : null;
   const start = pts ? pts[0].split(",") : null, end = pts ? pts[pts.length - 1].split(",") : null;
   return `<article class="rec">
@@ -33,7 +31,7 @@ function card(it) {
       <div><div class="rec-city"><b class="serif">${placeOf(it.event)}</b><span>${it.date.replaceAll(".", "-")}</span></div><div class="rec-event">${it.event} · ${it.group}</div></div>
       <div class="rec-time cond">${fmtT(it.time)}</div>
       <div class="rec-stats"><span><b>${it.distanceKm}</b> km</span>${it.elevationM ? `<span><b>${it.elevationM.toLocaleString()}</b> m↑</span>` : ""}</div>
-      <div class="rec-meta"><span class="rec-rank">${rankText(it.rank)}</span><div class="rec-tags">${tags.join("")}</div></div>
+      <div class="rec-meta"><span class="rec-rank">${rankText(it.rank)}</span></div>
     </div></article>`;
 }
 function renderCards() { gridEl.innerHTML = items.filter(i => curYear === "all" || i.year === curYear).map(card).join(""); }
