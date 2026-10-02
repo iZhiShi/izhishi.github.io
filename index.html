@@ -6,7 +6,7 @@
     <title>省会马拉松地图</title>
     <meta
       name="description"
-      content="用中国地图记录省会马拉松收集进度，绿色表示已完成，灰色表示未完成。"
+      content="柿子的跑步主页：全马 PB 路径、中国大满贯、HYROX，以及训练日志和马拉松陈列馆。"
     />
     <link rel="stylesheet" href="styles/main.css" />
   </head>
@@ -15,7 +15,13 @@
       <div class="preview-alert" id="previewAlert" hidden></div>
 
       <header class="hero-card">
-        <div class="section-kicker hero-frame-title">柿子 · 奔跑在路上</div>
+        <div class="hero-frame-title">
+          <div class="section-kicker">柿子 · 奔跑在路上</div>
+          <nav class="site-nav" aria-label="子页面">
+            <a href="training.html">训练日志</a>
+            <a href="gallery.html">马拉松陈列馆</a>
+          </nav>
+        </div>
         <section class="runner-card" aria-label="个人成绩">
           <div class="runner-stats">
             <div class="runner-stat">
@@ -105,35 +111,6 @@
             <div class="hyrox-division-track" id="hyroxDivisionTrack" aria-label="组别进阶"></div>
           </div>
           <div class="hyrox-grid" id="hyroxRaceGrid"></div>
-        </section>
-
-        <section class="map-card" aria-label="省会马拉松集邮册">
-          <div class="section-heading map-heading">
-            <div class="map-heading-panel">
-              <p class="map-kicker">CAPITAL COLLECTION</p>
-              <h2>省会马拉松集邮册</h2>
-              <p class="map-lead">跑一座省会，点亮一座城。</p>
-            </div>
-            <div class="map-stats">
-              <div class="map-stat">
-                <span>已点亮</span>
-                <strong id="mapDoneValue">0 / 31</strong>
-              </div>
-              <div class="map-stat map-stat-next">
-                <span>下一站</span>
-                <strong id="mapNextCity">待定</strong>
-                <em id="mapNextDate">待填写</em>
-              </div>
-            </div>
-          </div>
-          <div class="map-legend" aria-label="图例">
-            <span><i class="done"></i>已完赛</span>
-            <span><i class="sub-three"></i>破三</span>
-            <span><i class="next"></i>下一站</span>
-            <span><i class="planned"></i>已报名</span>
-            <span><i class="pending"></i>待解锁</span>
-          </div>
-          <div id="map" aria-label="中国省会马拉松进度地图"></div>
         </section>
       </main>
     </div>

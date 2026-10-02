@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>训练日志 · 柿子</title>
+<meta name="description" content="跑步、力量和恢复指标汇在同一本日历里，数据来自 Garmin。" />
+<link rel="stylesheet" href="styles/main.css" />
+<link rel="stylesheet" href="styles/training.css" />
+</head>
+<body>
+<div class="page-shell">
+  <div class="crumb"><a href="index.html">← 省会马拉松地图</a>
+    <nav><a class="on" href="training.html">训练日志</a><a href="gallery.html">陈列馆</a></nav></div>
+
+  <div class="tl-head">
+    <div><p class="kicker">TRAINING LOG · GARMIN</p><h1>训练日志</h1>
+      <p class="sub">跑步、力量和恢复指标汇在同一本日历里。数据来自 Garmin Connect 导出，图表默认 90 天。</p></div>
+    <div class="sync"><i></i><span id="syncNote">最近同步 —</span></div>
+  </div>
+
+  <section class="card">
+    <div class="card-head"><h2>今日状态</h2><span class="note" id="todayNote"></span></div>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>训练日历</h2>
+      <div class="legend"><span><i style="background:var(--amber)"></i>路跑</span><span><i style="background:var(--amber);border:2px double var(--amber-line);box-sizing:border-box"></i>场地</span><span><i style="background:rgba(237,161,0,.35)"></i>跑步机</span><span><i style="background:var(--blue)"></i>力量</span><span><i style="background:var(--mute)"></i>其它</span><span><i style="background:var(--amber);border-radius:999px"></i>比赛</span><span><i style="background:#fff;border:1.5px dashed rgba(42,120,214,.7);box-sizing:border-box"></i>✈ 不在北京</span><span style="opacity:.75">右上角小字 = 晨起训练准备度</span></div>
+      <div class="cal-tools"><select id="calTitle" aria-label="选择月份"></select></div>
+    </div>
+    <div class="cal" id="cal"></div>
+    <div class="month-sum" id="monthSum"></div>
+  </section>
+
+  <div class="two">
+    <section class="card" style="margin:0"><div class="card-head"><h2>周跑量 · 12 周</h2><span class="note">柱 = 跑量，点线 = 力量课次</span></div><div class="chart" id="weekly"></div></section>
+    <section class="card" style="margin:0"><div class="card-head"><h2>训练负荷</h2><span class="note">日负荷 · 7 日急性 / 28 日慢性</span></div><div class="chart" id="load"></div></section>
+  </div>
+
+  <section class="card">
+    <div class="card-head"><h2>恢复趋势 · 90 天</h2><span class="note">细线为日值，粗线为 7 日均值</span></div>
+    <div class="trends">
+      <div class="trend"><div class="t"><span>HRV（夜间）</span><b id="tHrv"></b></div><div class="c" id="cHrv"></div></div>
+      <div class="trend"><div class="t"><span>静息心率</span><b id="tRhr"></b></div><div class="c" id="cRhr"></div></div>
+      <div class="trend"><div class="t"><span>睡眠评分 / 时长</span><b id="tSleep"></b></div><div class="c" id="cSleep"></div></div>
+      <div class="trend"><div class="t"><span>晨起训练准备度</span><b id="tReady"></b></div><div class="c" id="cReady"></div></div>
+    </div>
+  </section>
+</div>
+
+<script src="vendor/echarts.min.js"></script>
+<script type="module" src="scripts/training.js"></script>
+</body>
+</html>
