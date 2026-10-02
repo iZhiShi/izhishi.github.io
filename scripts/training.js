@@ -1,5 +1,7 @@
 import { marathonResults } from "./data.js";
+performance.mark("training:fetch");
 const data = await (await fetch("data/training.json")).json();
+performance.mark("training:parsed");
 const daily = data.daily, acts = data.activities;
 const byDate = Object.fromEntries(daily.map(d => [d.date, d]));
 const actsByDate = {}; for (const a of acts) (actsByDate[a.date] ||= []).push(a);
@@ -154,3 +156,4 @@ document.getElementById("tRhr").textContent = `${last.resting_hr} bpm · 7日 ${
 document.getElementById("tSleep").textContent = `${last.sleep_score} · ${fmtH(last.sleep_total_sec)}`;
 document.getElementById("tReady").textContent = `${last.training_readiness_score} · ${readyLv[0]}`;
 window.addEventListener("resize", () => document.querySelectorAll(".chart,.trend .c,.spark").forEach(el => echarts.getInstanceByDom(el)?.resize()));
+performance.mark("training:rendered");

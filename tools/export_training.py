@@ -23,8 +23,8 @@ def fm(path):
             except: pass
         d[k.strip()] = v
     return d
-DK = ["date","steps","resting_hr","sleep_score","sleep_total_sec","sleep_deep_sec","sleep_rem_sec","hrv","hrv_status","training_readiness_score","training_readiness_level","training_readiness_latest","body_battery_highest","body_battery_lowest","stress_avg","vigorous_intensity_min","moderate_intensity_min","active_kcal"]
-AK = ["date","activity_id","activity_type","activity_group","activity_label","activity_name","distance_km","duration_sec","pace_sec_per_km","avg_hr","max_hr","training_load","aerobic_te","anaerobic_te","vo2max","elevation_gain_m","cadence_avg","total_sets","total_reps","training_effect_label"]
+DK = ["date","resting_hr","sleep_score","sleep_total_sec","sleep_deep_sec","sleep_rem_sec","hrv","hrv_status","training_readiness_score","training_readiness_level","training_readiness_latest"]  # 页面用到的字段；加字段记得同步 scripts/training.js
+AK = ["date","activity_type","activity_group","activity_label","activity_name","distance_km","duration_sec","pace_sec_per_km","training_load","vo2max"]
 daily = [fm(p) for p in sorted(glob.glob(f"{ROOT}/Daily/*/*.md"))]
 daily = [{k:d.get(k) for k in DK} for d in daily if d.get("date") and d["date"] >= SINCE]
 acts = [fm(p) for p in sorted(glob.glob(f"{ROOT}/Activities/*/*.md"))]
