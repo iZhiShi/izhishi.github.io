@@ -9,6 +9,7 @@
 ├── index.html            首页：成绩卡、PB 路径、大满贯、HYROX
 ├── training.html         训练日志（Garmin 数据）
 ├── gallery.html          马拉松陈列馆（大满贯墙、完赛档案、省会地图）
+├── trail.html            越野跑档案
 ├── assets/
 │   └── 2025*.webp        奖牌图（400px 宽 WebP）
 ├── data/
@@ -22,12 +23,13 @@
 ├── styles/
 │   ├── main.css          全站通用 + 首页 + 地图
 │   ├── training.css
-│   └── gallery.css
+│   └── gallery.css       陈列馆 + 越野页共用（档案卡片样式）
 └── scripts/
     ├── data.js           全部可维护数据
     ├── app.js            首页渲染 + 省会地图（gallery.html 也引用它来画地图）
     ├── training.js
-    └── gallery.js
+    ├── gallery.js
+    └── trail.js
 ```
 
 各文件职责如下：
@@ -59,6 +61,8 @@
 - `training.html` / `styles/training.css` / `scripts/training.js`
   - 训练日志页：今日状态、训练日历（全部历史，按月下拉）、周跑量、训练负荷、90 天恢复趋势。
   - 只读 `data/training.json`，不含手填数据；更新方式见「10. 更新训练日志数据」。
+- `trail.html` / `scripts/trail.js`
+  - 越野跑档案：`trailRaces`（data.js）+ `data/routes.json`，样式复用 `styles/gallery.css` 的档案卡片。
 - `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
   - 陈列馆页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
 
@@ -163,6 +167,8 @@ export const plannedMarathons = [
 
 - 全马：在 `marathonResults` 里加 `bib: "A12345"`（号码布，陈列馆完赛档案显示；不填就空着）。
 - 半马：加到 `halfMarathons`（只收城市赛事，公园赛不放），字段同全马。
+- 越野：加到 `trailRaces`，字段见 data.js 里的注释（组别、实际距离、爬升、官方成绩、排名、是否团队赛、是否产生 UTMB/ITRA 分）。
+  没有证书只有手表记录的比赛，时间填 Garmin 时长并加 `timeSource: "garmin"`，卡片会标「表计时」。
 - 路线：`data/routes.json` 里每条是 `{ date: "YYYY-MM-DD", event, km, activity_id, points }`，
   `points` 是把 Garmin 轨迹归一化到 0–100 方框后的 `"x,y x,y …"` 点串（经度按纬度余弦校正，纵轴向下）。
   生成办法：在 `~/Documents/workspace/garmin-data` 里用 `tmp/fetch_routes.ts`（按 `date` + `event` 匹配 Garmin 活动，

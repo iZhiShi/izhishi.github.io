@@ -258,6 +258,21 @@ export const halfMarathons = [
   { date: "2026.03.15", event: "眉山仁寿半程马拉松", time: "01:33:22", bib: "A8553" },
 ];
 
+// 越野跑（trail.html）。字段：date / event / group（组别）/ distanceKm（实际距离，证书或 Garmin）/ elevationM（累计爬升）/
+// time（官方成绩）/ rank { overall, gender, age }（证书上有什么填什么）/ team（团队赛）/ index（"UTMB" 或 "ITRA"：
+// 这场比赛产生了头部的 UTMB / ITRA 表现分）。路线同样来自 data/routes.json，按 date + event 匹配。
+export const trailRaces = [
+  { date: "2023.10.21", event: "香山国际登山节", group: "20KM 精英组", distanceKm: 20, time: "04:20:32" },
+  { date: "2023.12.03", event: "北京三峰连穿越野赛（冬）", group: "22KM", distanceKm: 22.96, elevationM: 1856, time: "06:20:42", rank: { gender: 81 } },
+  { date: "2024.03.31", event: "温岭黄金海岸跑山赛", group: "38KM", distanceKm: 36, elevationM: 1955, time: "07:39:04", rank: { overall: 515, gender: 382 } },
+  { date: "2024.07.13", event: "崇礼168超级越野赛 TTC", group: "共舞50 · 五人组", distanceKm: 51.2, elevationM: 2497, time: "09:25:19", team: true },
+  { date: "2025.05.18", event: "大境门古长城越野赛 by UTMB", group: "20K", distanceKm: 33.1, elevationM: 1348, time: "03:46:39", rank: { overall: 73, gender: 68, age: 20 }, index: "UTMB" },
+  { date: "2025.06.14", event: "赤城168超级越野赛", group: "30KM", distanceKm: 29.31, elevationM: 973, time: "03:29:28", timeSource: "garmin" },
+  { date: "2025.07.13", event: "崇礼168超级越野赛 云顶30", group: "云顶30", distanceKm: 26.5, elevationM: 1084, time: "03:12:53", rank: { overall: 51, gender: 45, age: 21 }, index: "ITRA" },
+  { date: "2025.11.09", event: "大武夷超级山径赛", group: "虎啸九曲 20KM", distanceKm: 19.31, elevationM: 625, time: "02:33:52", rank: { overall: 50, gender: 41 } },
+  { date: "2026.04.12", event: "莫干山越野赛 by UTMB", group: "20K", distanceKm: 25, elevationM: 1208, time: "03:56:13", rank: { overall: 461, gender: 371, age: 95 } },
+];
+
 // 已报名、还没跑的赛事，按日期先后排列。
 // 第一项是“下一站”，会显示在地图顶部的卡片里；省会赛事还会在地图上以空心点 + 日期标出，
 // 非省会城市（例如香港）只出现在卡片里。跑完省会赛事后把它移到 completedMarathons 即可。
