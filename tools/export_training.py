@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
-# /// script
-# dependencies = ["cryptography"]
-# ///
-"""从 Obsidian 库里的 Garmin 笔记（~/SynologyDrive/Garmin）抽取训练日志页需要的数据，用 data/training.key 里的口令加密后写到 data/training.enc。
+"""从 Obsidian 库里的 Garmin 笔记（~/SynologyDrive/Garmin）抽取训练日志页需要的数据，写到 data/training.json。
 
-用法：uv run tools/export_training.py   （Obsidian 插件同步完之后跑一次，再 git commit / push；uv 会自动装 cryptography）
+用法：python3 tools/export_training.py   （Obsidian 插件同步完之后跑一次，再 git commit / push）
 """
-import os, re, json, glob, sys, gzip, hashlib
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os, re, json, glob, sys
 ROOT = os.environ.get("GARMIN_VAULT", os.path.expanduser("~/SynologyDrive/Garmin"))
-DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
-OUT, KEY = os.path.join(DATA, "training.enc"), os.path.join(DATA, "training.key")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "training.json")
 SINCE = "2023-01-01"
 def fm(path):
     t = open(path, encoding="utf-8").read()
@@ -47,13 +42,7 @@ def place(a):
     return re.sub(r"(市|布依族苗族自治州|苗族侗族自治州|藏族羌族自治州)$", "", cand)
 acts = [dict({k:a.get(k) for k in AK}, place=place(a)) for a in acts if a.get("date") and a["date"] >= SINCE]
 strip = lambda rows: [{k:v for k,v in r.items() if v is not None} for r in rows]
-body = json.dumps({"since":SINCE,"daily":strip(daily),"activities":strip(acts)}, ensure_ascii=False, separators=(",",":")).encode()
-# 口令 → PBKDF2-SHA256 → AES-256-GCM 密钥；JSON 先 gzip 再加密；文件 = 16 字节盐 + 12 字节 IV + 密文。scripts/training.js 用 WebCrypto 按同样参数解，改参数两边一起改。
-if not os.path.exists(KEY): sys.exit(f"缺少口令文件 {KEY}")
-passphrase = open(KEY, encoding="utf-8").read().strip().encode()
-salt, iv = os.urandom(16), os.urandom(12)
-key = hashlib.pbkdf2_hmac("sha256", passphrase, salt, 600_000, 32)
-open(OUT, "wb").write(salt + iv + AESGCM(key).encrypt(iv, gzip.compress(body), None))
+json.dump({"since":SINCE,"daily":strip(daily),"activities":strip(acts)}, open(OUT,"w"), ensure_ascii=False, separators=(",",":"))
 print(len(daily),"daily;",len(acts),"activities")
 from collections import Counter
 print("written", OUT, os.path.getsize(OUT)//1024, "KB")

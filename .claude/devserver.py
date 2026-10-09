@@ -6,10 +6,6 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-cache")
         super().end_headers()
-    def send_head(self):  # 服务器监听所有网卡，训练数据的口令文件不能对外
-        if self.path.split("?")[0].endswith("training.key"):
-            self.send_error(403); return None
-        return super().send_head()
 
 class DualStackServer(socketserver.ThreadingTCPServer):
     address_family = socket.AF_INET6
