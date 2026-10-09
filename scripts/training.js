@@ -1,6 +1,25 @@
 import { marathonResults } from "./data.js";
 performance.mark("training:fetch");
-const data = await (await fetch("data/training.json")).json();
+// data/training.enc = 16 字节盐 + 12 字节 IV + AES-256-GCM 密文（内容是 gzip 过的 JSON），密钥由口令经 PBKDF2-SHA256 派生；参数要和 tools/export_training.py 一致。
+const enc = new Uint8Array(await (await fetch("data/training.enc")).arrayBuffer());
+const salt = enc.slice(0, 16), iv = enc.slice(16, 28), body = enc.slice(28);
+async function decrypt(pass) {
+  const raw = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt, iterations: 600000 }, raw, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, body);
+  return new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream("gzip"))).json();
+}
+// 口令记在本机 localStorage，输一次就行；解不开（比如换过口令）就重新问。
+const unlock = document.getElementById("unlock");
+let pass = localStorage.getItem("trainingPass"), data = pass && await decrypt(pass).catch(() => null);
+while (!data) {
+  unlock.hidden = false; unlock.pass.focus();
+  pass = await new Promise(res => unlock.onsubmit = e => { e.preventDefault(); res(unlock.pass.value); });
+  data = await decrypt(pass).catch(() => null);
+  if (!data) unlock.querySelector(".err").textContent = "口令不对，再试一次";
+}
+localStorage.setItem("trainingPass", pass);
+unlock.hidden = true; document.getElementById("content").hidden = false;
 performance.mark("training:parsed");
 const daily = data.daily, acts = data.activities;
 const byDate = Object.fromEntries(daily.map(d => [d.date, d]));

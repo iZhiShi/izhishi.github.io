@@ -14,7 +14,8 @@
 │   └── 2025*.webp        奖牌图（400px 宽 WebP）
 ├── data/
 │   ├── china.geojson
-│   ├── training.json     由 tools/export_training.py 生成，不要手改
+│   ├── training.enc      训练数据密文，由 tools/export_training.py 生成，不要手改
+│   ├── training.key      加密口令（已 gitignore，只在本机）
 │   └── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
 ├── tools/
 │   └── export_training.py
@@ -60,7 +61,7 @@
   - 同时被 `index.html` 和 `gallery.html` 引用；页面上没有的元素会自动跳过（首页没有 `#map`）。
 - `training.html` / `styles/training.css` / `scripts/training.js`
   - 训练日志页：今日状态、训练日历（全部历史，按月下拉）、周跑量、训练负荷、90 天恢复趋势。
-  - 只读 `data/training.json`，不含手填数据；更新方式见「10. 更新训练日志数据」。
+  - 只读 `data/training.enc`，输入口令后在浏览器里解密；不含手填数据。更新方式见「10. 更新训练日志数据」。
 - `trail.html` / `scripts/trail.js`
   - 越野跑档案：`trailRaces`（data.js）+ `data/routes.json`，样式复用 `styles/gallery.css` 的档案卡片。
 - `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
@@ -270,12 +271,16 @@ export const chinaMajorRaces = [
 
 ### 10. 更新训练日志数据
 
-数据链路：Garmin → Obsidian 插件 `garmin-cn-sync`（启动时同步 + 每 6 小时）→ `~/SynologyDrive/Garmin/*.md` → `tools/export_training.py` → `data/training.json`。
+数据链路：Garmin → Obsidian 插件 `garmin-cn-sync`（启动时同步 + 每 6 小时）→ `~/SynologyDrive/Garmin/*.md` → `tools/export_training.py` → `data/training.enc`。
 
 ```bash
-python3 tools/export_training.py && git add data/training.json && git commit -m "Update training data" && git push
+uv run tools/export_training.py && git add data/training.enc && git commit -m "Update training data" && git push
 ```
 
+- 训练数据是私密的：仓库和线上只有密文 `data/training.enc`，明文 JSON 不落盘。口令在 `data/training.key`（已 gitignore，不进仓库；丢了就随便写一个新的再导出一次）。
+- 加密方式：口令经 PBKDF2-SHA256（60 万次）派生 AES-256-GCM 密钥，JSON 先 gzip 再加密，文件 = 16 字节盐 + 12 字节 IV + 密文。`scripts/training.js` 用浏览器自带的 WebCrypto 按同样参数解密，改参数两边要一起改。
+- 打开训练页会要口令，输一次记在该浏览器的 localStorage 里，之后不再问。换口令 = 改 `data/training.key` 后重新导出，各设备再输一次新口令。
+- 脚本依赖 `cryptography`，用 `uv run` 跑会自动装（脚本头部已声明）；直接 `python3` 跑要自己装。
 - 脚本只读 Daily / Activities 笔记的 frontmatter，不碰 FIT；路径可用环境变量 `GARMIN_VAULT` 覆盖。
 - `training_readiness_score` 是晨起值（当天最早一次计算），`training_readiness_latest` 是同步时刻的最新值，由插件写入。
 - 页面里「不在北京」的判断顺序：`scripts/training.js` 里的 `trips` 手填行程 > 户外活动 GPS 地点 > 比赛日及前一天 = 赛事城市 > 前后两天同一外地的空档日。

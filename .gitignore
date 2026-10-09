@@ -9,3 +9,7 @@ __pycache__/
 
 # Claude Code 本地个人配置（launch.json 和 devserver.py 是共享的，需要提交）
 .claude/settings.local.json
+
+# 训练数据：明文和口令都不进仓库，线上只有密文 data/training.enc
+data/training.json
+data/training.key

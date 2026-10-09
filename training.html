@@ -19,6 +19,12 @@
     <div class="sync"><i></i><span id="syncNote">最近同步 —</span></div>
   </div>
 
+  <form class="card unlock" id="unlock" hidden>
+    <p>训练数据是加密的，输入口令后在本机解密；口令只记在这台设备上。</p>
+    <div class="row"><input type="password" name="pass" autocomplete="current-password" placeholder="口令" required /><button type="submit">查看</button><span class="err"></span></div>
+  </form>
+
+  <div id="content" hidden>
   <section class="card">
     <div class="card-head"><h2>今日状态</h2><span class="note" id="todayNote"></span></div>
     <div class="tiles" id="tiles"></div>
@@ -48,6 +54,7 @@
       <div class="trend"><div class="t"><span>晨起训练准备度</span><b id="tReady"></b></div><div class="c" id="cReady"></div></div>
     </div>
   </section>
+  </div>
 </div>
 
 <script src="vendor/echarts.min.js"></script>
