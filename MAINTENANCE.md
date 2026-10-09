@@ -175,7 +175,7 @@ export const plannedMarathons = [
   拿到后可填进 `itraScore`，目前卡片上不显示，只存数据。
 - 路线：`data/routes.json` 里每条是 `{ date: "YYYY-MM-DD", event, km, activity_id, points }`，
   `points` 是把 Garmin 轨迹归一化到 0–100 方框后的 `"x,y x,y …"` 点串（经度按纬度余弦校正，纵轴向下）。
-  生成办法：在 `~/Documents/workspace/garmin-data` 里用 `tmp/fetch_routes.ts`（按 `date` + `event` 匹配 Garmin 活动，
+  生成办法：在 `~/Documents/workspace/garmin-data` 里用 `scripts/fetch_routes.ts`（按 `date` + `event` 匹配 Garmin 活动，
   走 `/activity-service/activity/{id}/details` 拿 polyline），或者手动从 FIT 导出后按同样规则归一化。
   没有路线的比赛卡片会显示「路线待补」，不影响其它内容。
 
