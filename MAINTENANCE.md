@@ -278,6 +278,7 @@ python3 tools/export_training.py && git add data/training.json && git commit -m 
 
 - 脚本只读 Daily / Activities 笔记的 frontmatter，不碰 FIT；路径可用环境变量 `GARMIN_VAULT` 覆盖。
 - `training_readiness_score` 是晨起值（当天最早一次计算），`training_readiness_latest` 是同步时刻的最新值，由插件写入。
+- 日历里跑步 chip 前的 恢复 / 有氧 / 节奏 / 阈值 / VO₂max / 无氧 来自 Garmin 的 `training_effect_label`，是训练效果判定、不是课表结构（硬拉的马拉松也会被判成 VO₂max）；映射表在 `scripts/training.js` 的 `EFFECT`。
 - 页面里「不在北京」的判断顺序：`scripts/training.js` 里的 `trips` 手填行程 > 户外活动 GPS 地点 > 比赛日及前一天 = 赛事城市 > 前后两天同一外地的空档日。
   室内课（力量、跑步机）没有定位，出差期间只练室内课的日子要靠 `trips` 补。
 - 想自动化就给 Mac 挂个 launchd 定时任务跑上面这行命令；不要把 Garmin 账号放进 GitHub Secrets。

@@ -15,6 +15,8 @@ const fmtH = s => `${Math.floor(s/3600)}h${String(Math.round((s%3600)/60)).padSt
 const avg = arr => { const v = arr.filter(x => x != null); return v.length ? v.reduce((a,b)=>a+b,0)/v.length : null; };
 const lastN = (n, key) => daily.slice(-n).map(d => d[key]);
 const kind = a => a.activity_group === "strength" ? "strength" : a.activity_type === "track_running" ? "track" : a.activity_type === "treadmill_running" ? "treadmill" : a.activity_group === "running" ? "run" : "other";
+// Garmin 对每次跑步的训练效果判定（training_effect_label）。按心率和负荷算出来的效果，不是课表结构：间歇课通常落在 VO₂max / 无氧，但硬拉的马拉松也会被判成 VO₂max。
+const EFFECT = { RECOVERY:"恢复", AEROBIC_BASE:"有氧", TEMPO:"节奏", LACTATE_THRESHOLD:"阈值", VO2MAX:"VO₂max", ANAEROBIC_CAPACITY:"无氧", SPEED:"冲刺" };
 
 document.getElementById("syncNote").textContent = `最近同步 ${TODAY}`;
 document.getElementById("todayNote").textContent = `${TODAY} · 今晨`;
@@ -56,7 +58,8 @@ tiles.forEach((t,i) => t.spark && spark(`sp${i}`, t.spark, t.color));
 
 // ---- calendar
 let view = new Date(TODAY + "T00:00:00"); if (view.getDate() < 10) view.setMonth(view.getMonth()-1); view.setDate(1);
-const months = []; { const first = new Date(daily[0].date + "T00:00:00"); first.setDate(1); for (const d = new Date(first); d <= view || d.getMonth() === view.getMonth() && d.getFullYear() === view.getFullYear(); d.setMonth(d.getMonth()+1)) months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`); }
+// 下拉列到当月为止（默认视图在 1–9 号是上个月，但当月也要能选）
+const months = []; { const first = new Date(daily[0].date + "T00:00:00"); first.setDate(1); const last = new Date(TODAY + "T00:00:00"); last.setDate(1); for (const d = new Date(first); d <= last; d.setMonth(d.getMonth()+1)) months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`); }
 const titleEl = document.getElementById("calTitle");
 titleEl.innerHTML = months.map(m => `<option value="${m}">${m.slice(0,4)} 年 ${+m.slice(5)} 月</option>`).join("");
 titleEl.onchange = () => { view = new Date(titleEl.value + "-01T00:00:00"); renderCal(); };
@@ -96,7 +99,7 @@ function renderCal() {
         if (race && k === "run" && a.distance_km > 40) { chips += `<div class="chip race"><span>${race.event}</span><small>${race.time.replace(/^0/,"")}</small></div>`; }
         else if (k === "strength") chips += `<div class="chip strength"><span>力量</span><small>${fmtMin(a.duration_sec)}</small></div>`;
         else if (k === "other") chips += `<div class="chip other"><span>${a.activity_label}</span><small>${fmtMin(a.duration_sec)}</small></div>`;
-        else chips += `<div class="chip ${k}"><span>${k==="track"?"场地 ":k==="treadmill"?"跑步机 ":""}${a.distance_km.toFixed(1)}k</span><small>${fmtPace(a.pace_sec_per_km)}</small></div>`;
+        else chips += `<div class="chip ${k}"><span>${k==="track"?"场地 ":k==="treadmill"?"跑步机 ":""}${EFFECT[a.training_effect_label] ? EFFECT[a.training_effect_label] + " " : ""}${a.distance_km.toFixed(1)}k</span><small>${fmtPace(a.pace_sec_per_km)}</small></div>`;
         if (inMonth) { if (a.activity_group === "running") { monthKm += a.distance_km; monthRuns++; } if (k==="strength") monthStr++; monthMin += a.duration_sec; }
         if (a.activity_group === "running") wkKm += a.distance_km; if (k==="strength") wkStr++; wkMin += a.duration_sec;
       }

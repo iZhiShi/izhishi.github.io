@@ -24,7 +24,7 @@ def fm(path):
         d[k.strip()] = v
     return d
 DK = ["date","resting_hr","sleep_score","sleep_total_sec","sleep_deep_sec","sleep_rem_sec","hrv","hrv_status","training_readiness_score","training_readiness_level","training_readiness_latest"]  # 页面用到的字段；加字段记得同步 scripts/training.js
-AK = ["date","activity_type","activity_group","activity_label","activity_name","distance_km","duration_sec","pace_sec_per_km","training_load","vo2max"]
+AK = ["date","activity_type","activity_group","activity_label","activity_name","distance_km","duration_sec","pace_sec_per_km","training_load","vo2max","training_effect_label"]
 daily = [fm(p) for p in sorted(glob.glob(f"{ROOT}/Daily/*/*.md"))]
 daily = [{k:d.get(k) for k in DK} for d in daily if d.get("date") and d["date"] >= SINCE]
 acts = [fm(p) for p in sorted(glob.glob(f"{ROOT}/Activities/*/*.md"))]
