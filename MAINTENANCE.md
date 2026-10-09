@@ -286,7 +286,7 @@ python3 tools/export_training.py && git add data/training.json && git commit -m 
 - 自动同步：`tools/sync_training.sh` 做的就是上面这行（有变化才提交，而且只提交 `data/training.json`；有未推送的提交才推送）。由 Claude 桌面端的定时任务「训练数据同步到网站」每天 8:00 / 14:00 / 20:00 跑一次，任务定义在 `~/.claude/scheduled-tasks/sync-training-data/SKILL.md`，在 Claude 侧栏的 Scheduled 里能看运行记录、暂停或立刻运行。
   - 定时任务只在 Claude 桌面端开着时跑，关着就等下次打开补跑。
   - 不能用 launchd / cron：macOS 不让它们启动的进程读 `~/Documents`，而仓库就在那里。
-  - 笔记本身靠 Obsidian 插件更新（开着 Obsidian 才会同步），脚本只负责把笔记里的数据搬上网站。不要把 Garmin 账号放进 GitHub Secrets。
+  - 笔记本身靠 Obsidian 插件 `garmin-cn-sync` 更新（源码在 `~/Documents/Claude/Projects/garmin-data`，NAS 上构建），插件按固定钟点同步，默认 7:30 / 13:30 / 19:30，定时任务错开半小时跟在后面。改插件的同步时刻，记得把定时任务也挪到之后。不要把 Garmin 账号放进 GitHub Secrets。
 
 ### 9. 修改地图交互逻辑
 
