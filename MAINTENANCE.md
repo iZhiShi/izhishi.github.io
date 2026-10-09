@@ -17,7 +17,8 @@
 │   ├── training.json     由 tools/export_training.py 生成，不要手改
 │   └── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
 ├── tools/
-│   └── export_training.py
+│   ├── export_training.py
+│   └── sync_training.sh  定时同步：导出 + 提交 + 推送
 ├── vendor/
 │   └── echarts.min.js    ECharts 5.5.1（本地化）
 ├── styles/
@@ -282,7 +283,10 @@ python3 tools/export_training.py && git add data/training.json && git commit -m 
 - 日历里跑步 chip 前的 恢复 / 有氧 / 节奏 / 阈值 / VO₂max / 无氧 来自 Garmin 的 `training_effect_label`，是训练效果判定、不是课表结构（硬拉的马拉松也会被判成 VO₂max）；映射表在 `scripts/training.js` 的 `EFFECT`。
 - 页面里「不在北京」的判断顺序：`scripts/training.js` 里的 `trips` 手填行程 > 户外活动 GPS 地点 > 比赛日及前一天 = 赛事城市 > 前后两天同一外地的空档日。
   室内课（力量、跑步机）没有定位，出差期间只练室内课的日子要靠 `trips` 补。
-- 想自动化就给 Mac 挂个 launchd 定时任务跑上面这行命令；不要把 Garmin 账号放进 GitHub Secrets。
+- 自动同步：`tools/sync_training.sh` 做的就是上面这行（有变化才提交，而且只提交 `data/training.json`；有未推送的提交才推送）。由 Claude 桌面端的定时任务「训练数据同步到网站」每天 8:00 / 14:00 / 20:00 跑一次，任务定义在 `~/.claude/scheduled-tasks/sync-training-data/SKILL.md`，在 Claude 侧栏的 Scheduled 里能看运行记录、暂停或立刻运行。
+  - 定时任务只在 Claude 桌面端开着时跑，关着就等下次打开补跑。
+  - 不能用 launchd / cron：macOS 不让它们启动的进程读 `~/Documents`，而仓库就在那里。
+  - 笔记本身靠 Obsidian 插件更新（开着 Obsidian 才会同步），脚本只负责把笔记里的数据搬上网站。不要把 Garmin 账号放进 GitHub Secrets。
 
 ### 9. 修改地图交互逻辑
 

@@ -57,8 +57,8 @@ document.getElementById("tiles").innerHTML = tiles.map((t,i) => `
 tiles.forEach((t,i) => t.spark && spark(`sp${i}`, t.spark, t.color));
 
 // ---- calendar
-let view = new Date(TODAY + "T00:00:00"); if (view.getDate() < 10) view.setMonth(view.getMonth()-1); view.setDate(1);
-// 下拉列到当月为止（默认视图在 1–9 号是上个月，但当月也要能选）
+let view = new Date(TODAY + "T00:00:00"); view.setDate(1);
+// 月份下拉从最早的数据列到当月
 const months = []; { const first = new Date(daily[0].date + "T00:00:00"); first.setDate(1); const last = new Date(TODAY + "T00:00:00"); last.setDate(1); for (const d = new Date(first); d <= last; d.setMonth(d.getMonth()+1)) months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`); }
 const titleEl = document.getElementById("calTitle");
 titleEl.innerHTML = months.map(m => `<option value="${m}">${m.slice(0,4)} 年 ${+m.slice(5)} 月</option>`).join("");
