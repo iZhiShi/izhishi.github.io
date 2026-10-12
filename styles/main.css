@@ -1828,6 +1828,14 @@ body::after {
   white-space: nowrap;
 }
 
+.h2c-leg .name small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  white-space: normal;
+}
+
 .h2c-leg .nums {
   color: var(--ink-soft);
   text-align: right;

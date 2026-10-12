@@ -294,19 +294,19 @@ export const triathlonRaces = [
   },
 ];
 
-// 越山向海人车接力（首页板块）。team 只写队名；myLegs 是我自己跑的赛段（来自 Garmin，id 对应 data/hoodtocoast-course.json 里的轨迹），
-// verified = 核实成绩（组委会扣掉行车/受影响赛段后的成绩），live = 实时/净时成绩。
+// 越山向海人车接力（首页板块）。team 只写队名；myLegs 是我自己跑的赛段：id/distanceKm/time 来自 Garmin（id 对应 data/hoodtocoast-course.json 里的轨迹），
+// officialKm/up/down/grade/night 来自当年路书；verified = 核实成绩（组委会扣掉行车/受影响赛段后的成绩），live = 实时/净时成绩。
 export const hoodToCoastRaces = [
   {
     date: "2024.06.28", dateEnd: "2024.06.29", event: "越山向海人车接力中国赛 · 张家口", team: "601 · 不畏风雨", teamSize: 5,
     distanceKm: 143.1, verified: "13:11:07", live: "12:19:28", liveLabel: "完赛净时",
     rank: { overall: 68, group: 41, groupName: "混合组" },
-    // 赛段名按 2025 路书对应（2024 的 EX12→EX13 官方叫「清五营→阳坡村」，是山海10速竞速段）
+    // 路书字段：officialKm 官方里程 / up、down 分段爬升下降 / grade E·M·H·VH / night 夜段；time、distanceKm 来自 Garmin
     myLegs: [
-      { id: 383987912, from: "EX1", to: "EX2", name: "宋家营 → 小二台", distanceKm: 9.18, time: "00:43:51", elevationM: 97 },
-      { id: 384077654, from: "EX4", to: "EX5", name: "西滩村 → 迎宾廊道", distanceKm: 9.33, time: "00:48:10", elevationM: 240 },
-      { id: 384128295, from: "EX6", to: "EX7", name: "格桑花海 → 布达拉观景台", distanceKm: 7.13, time: "00:35:31", elevationM: 159 },
-      { id: 384188578, from: "EX12", to: "EX13", name: "清五营 → 阳坡村（山海10速）", distanceKm: 10.12, time: "00:42:56", elevationM: 46 },
+      { id: 383987912, from: "EX1", to: "EX2", name: "宋家营 → 小二台停车场", distanceKm: 9.18, time: "00:43:51", officialKm: 9.3, up: 92, down: 14, grade: "E", night: true },
+      { id: 384077654, from: "EX4", to: "EX5", name: "西滩村 → 迎宾廊道", distanceKm: 9.33, time: "00:48:10", officialKm: 9.2, up: 214, down: 197, grade: "M", night: true },
+      { id: 384128295, from: "EX7", to: "EX8", name: "布达拉观景台 → 大圆囤停车场", distanceKm: 7.13, time: "00:35:31", officialKm: 7.2, up: 159, down: 213, grade: "M" },
+      { id: 384188578, from: "EX12", to: "EX13", name: "清五营 → 阳坡村（山海10速）", distanceKm: 10.12, time: "00:42:56", officialKm: 10.0, up: 14, down: 174, grade: "M" },
     ],
   },
   {
@@ -314,8 +314,9 @@ export const hoodToCoastRaces = [
     distanceKm: 142.6, verified: "08:39:19", verifiedNote: "扣除受影响赛段 EX7–EX11", live: "12:36:24", liveLabel: "实时成绩",
     rank: { overall: 78, group: 40, groupName: "混合组" },
     myLegs: [
-      { id: 492289647, from: "EX1", to: "EX2", name: "宋家营 → 小二台", distanceKm: 9.16, time: "00:41:42", elevationM: 97 },
-      { id: 492428302, from: "EX14", to: "EX15", name: "翠云山 → 马丈子", distanceKm: 14.25, time: "01:01:02", elevationM: 121 },
+      { id: 492289647, from: "EX1", to: "EX2", name: "宋家营 → 小二台停车场", distanceKm: 9.16, time: "00:41:42", officialKm: 9.3, up: 92, down: 14, grade: "M", night: true },
+      { from: "EX9", to: "EX10", name: "木屋停车场 → 塔娜谷停车场", officialKm: 9.3, up: 207, down: 175, grade: "VH", night: true },   // 手表没记录
+      { id: 492428302, from: "EX14", to: "EX15", name: "翠云山 → 马丈子村停车场", distanceKm: 14.25, time: "01:01:02", officialKm: 14.0, up: 128, down: 68, grade: "H" },
     ],
   },
 ];

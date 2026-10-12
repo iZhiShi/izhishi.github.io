@@ -469,14 +469,23 @@ async function renderHoodToCoast() {
         const [sx, sy] = P(pts[0]);
         legsSvg += '<circle class="leg-dot" cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="5"/>';
       });
-      const mySec = r.myLegs.reduce((a, l) => a + secs(l.time), 0), myKm = r.myLegs.reduce((a, l) => a + l.distanceKm, 0);
+      const timed = r.myLegs.filter((l) => l.time);
+      const mySec = timed.reduce((a, l) => a + secs(l.time), 0), myKm = timed.reduce((a, l) => a + l.distanceKm, 0);
+      const allKm = r.myLegs.reduce((a, l) => a + (l.distanceKm || l.officialKm || 0), 0);
       const dates = r.dateEnd ? r.date.replaceAll(".", "-") + " ~ " + r.dateEnd.slice(5).replaceAll(".", "-") : r.date.replaceAll(".", "-");
-      const legRows = r.myLegs.map((l, i) => '<div class="h2c-leg"><b class="n">' + (i + 1) + '</b><span class="name">' + l.name + '</span><span class="nums"><b>' + l.distanceKm + "</b> km · <b>" + trim(l.time) + "</b> · " + pace(secs(l.time), l.distanceKm) + "/km" + (l.elevationM ? " · ↑" + l.elevationM + " m" : "") + "</span></div>").join("");
+      const gradeName = { E: "简单", M: "中等", H: "困难", VH: "极难" };
+      const legRows = r.myLegs
+        .map((l, i) => {
+          const book = (l.officialKm ? l.officialKm + " km" : "") + (l.up != null ? " · ↑" + l.up + " ↓" + l.down : "") + (l.grade ? " · " + (gradeName[l.grade] || l.grade) : "") + (l.night ? " · 夜" : "");
+          const mine = l.time ? "<b>" + trim(l.time) + "</b> · " + pace(secs(l.time), l.distanceKm) + "/km" : "手表未记录";
+          return '<div class="h2c-leg"><b class="n">' + (i + 1) + '</b><span class="name">' + l.name + '<small>' + book + '</small></span><span class="nums">' + mine + "</span></div>";
+        })
+        .join("");
       return (
         '<article class="h2c-row"><div class="h2c-map"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + r.date.slice(0, 4) + ' 越山向海赛道示意图">' + courseSvg + legsSvg + exSvg + "</svg></div>" +
         '<div class="h2c-body"><div><div class="h2c-title"><b>' + r.date.slice(0, 4) + "</b><span>" + dates + '</span></div><div class="h2c-sub">' + r.event + " · " + r.team + " · " + r.distanceKm + " km</div></div>" +
         '<div class="h2c-time">' + trim(r.verified) + "<small>核实成绩" + (r.verifiedNote ? "（" + r.verifiedNote + "）" : "") + "</small></div>" +
-        '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span><span>我的赛段 <b>" + r.myLegs.length + "</b> 段 · <b>" + myKm.toFixed(1) + "</b> km · <b>" + pace(mySec, myKm) + "</b>/km</span></div>" +
+        '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span><span>我的赛段 <b>" + r.myLegs.length + "</b> 段 · <b>" + allKm.toFixed(1) + "</b> km" + (myKm ? " · <b>" + pace(mySec, myKm) + "</b>/km" : "") + "</span></div>" +
         '<div class="h2c-legs">' + legRows + "</div></div></article>"
       );
     })
