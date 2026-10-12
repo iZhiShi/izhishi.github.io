@@ -279,7 +279,7 @@ export const trailRaces = [
   { date: "2026.04.12", event: "莫干山越野赛 by UTMB", group: "20K", distanceKm: 25, elevationM: 1208, time: "03:56:13", rank: { overall: 461, gender: 371, age: 97, total: 1342 } },
 ];
 
-// 铁人三项（triathlon.html）。接力赛：legs 里每一棒谁跑用 mine 标出；成绩和排名来自证书。
+// 铁人三项（首页板块）。接力赛：legs 里每一棒谁跑用 mine 标出；成绩和排名来自证书。
 export const triathlonRaces = [
   {
     date: "2023.10.29", event: "阳朔铁人三项赛", place: "桂林 · 阳朔", group: "半程大铁 · 三人接力", bib: "57-C",
@@ -294,20 +294,29 @@ export const triathlonRaces = [
   },
 ];
 
-// 越山向海人车接力（hoodtocoast.html）。team 只写队名；myLegs 是我自己跑的赛段（来自 Garmin），
+// 越山向海人车接力（首页板块）。team 只写队名；myLegs 是我自己跑的赛段（来自 Garmin，id 对应 data/hoodtocoast-course.json 里的轨迹），
 // verified = 核实成绩（组委会扣掉行车/受影响赛段后的成绩），live = 实时/净时成绩。
 export const hoodToCoastRaces = [
   {
     date: "2024.06.28", dateEnd: "2024.06.29", event: "越山向海人车接力中国赛 · 张家口", team: "601 · 不畏风雨", teamSize: 5,
     distanceKm: 143.1, verified: "13:11:07", live: "12:19:28", liveLabel: "完赛净时",
     rank: { overall: 68, group: 41, groupName: "混合组" },
-    myLegs: [ { distanceKm: 9.18, time: "00:43:51", elevationM: 97 }, { distanceKm: 9.33, time: "00:48:10", elevationM: 240 }, { distanceKm: 7.13, time: "00:35:31", elevationM: 159 }, { distanceKm: 10.12, time: "00:42:56", elevationM: 46 } ],
+    // 赛段名按 2025 路书对应（2024 的 EX12→EX13 官方叫「清五营→阳坡村」，是山海10速竞速段）
+    myLegs: [
+      { id: 383987912, from: "EX1", to: "EX2", name: "宋家营 → 小二台", distanceKm: 9.18, time: "00:43:51", elevationM: 97 },
+      { id: 384077654, from: "EX4", to: "EX5", name: "西滩村 → 迎宾廊道", distanceKm: 9.33, time: "00:48:10", elevationM: 240 },
+      { id: 384128295, from: "EX6", to: "EX7", name: "格桑花海 → 布达拉观景台", distanceKm: 7.13, time: "00:35:31", elevationM: 159 },
+      { id: 384188578, from: "EX12", to: "EX13", name: "清五营 → 阳坡村（山海10速）", distanceKm: 10.12, time: "00:42:56", elevationM: 46 },
+    ],
   },
   {
     date: "2025.06.27", dateEnd: "2025.06.28", event: "越山向海人车接力中国赛 · 张家口", team: "932 · 沧澜破晓队", teamSize: 5,
     distanceKm: 142.6, verified: "08:39:19", verifiedNote: "扣除受影响赛段 EX7–EX11", live: "12:36:24", liveLabel: "实时成绩",
     rank: { overall: 78, group: 40, groupName: "混合组" },
-    myLegs: [ { distanceKm: 9.16, time: "00:41:42", elevationM: 97 }, { distanceKm: 14.25, time: "01:01:02", elevationM: 121 } ],
+    myLegs: [
+      { id: 492289647, from: "EX1", to: "EX2", name: "宋家营 → 小二台", distanceKm: 9.16, time: "00:41:42", elevationM: 97 },
+      { id: 492428302, from: "EX14", to: "EX15", name: "翠云山 → 马丈子", distanceKm: 14.25, time: "01:01:02", elevationM: 121 },
+    ],
   },
 ];
 

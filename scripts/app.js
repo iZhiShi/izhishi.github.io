@@ -5,6 +5,8 @@ import {
   completedMarathons,
   hyroxDivisions,
   hyroxRaces,
+  triathlonRaces,
+  hoodToCoastRaces,
   marathonResults,
   plannedMarathons,
   runnerProfile,
@@ -389,11 +391,135 @@ function showMapError(message) {
   `;
 }
 
+// ---- 铁人三项（接力）：分段条 + 团队成绩 + 我的那一棒
+function renderTriathlon() {
+  const grid = document.getElementById("triGrid");
+  if (!grid) {
+    return;
+  }
+  const secs = (t) => t.split(":").reduce((a, b) => a * 60 + Number(b), 0);
+  const trim = (t) => (t ? t.replace(/^0/, "") : "—");
+  const pace = (t, km) => {
+    const v = secs(t) / km;
+    return Math.floor(v / 60) + ":" + String(Math.round(v % 60)).padStart(2, "0");
+  };
+  grid.innerHTML = [...triathlonRaces]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((r) => {
+      const maxS = Math.max(...r.legs.filter((l) => !l.transition).map((l) => secs(l.time)));
+      const legs = r.legs
+        .map((l) => '<div class="tri-leg' + (l.mine ? " mine" : "") + (l.transition ? " t" : "") + '"><span>' + l.name + '</span><i style="width:' + Math.max(6, (secs(l.time) / maxS) * 100) + '%"></i></div>')
+        .join("");
+      const my = r.legs.find((l) => l.mine);
+      return (
+        '<article class="tri-ticket"><div class="tri-legs">' + legs + "</div><div class=\"tri-body\">" +
+        '<div><div class="tri-title"><b>' + r.place + "</b><span>" + r.date.replaceAll(".", "-") + '</span></div><div class="tri-sub">' + r.event + " · " + r.group + "</div></div>" +
+        '<div class="tri-time">' + trim(r.total) + "<small>团队成绩</small></div>" +
+        '<div class="tri-stats"><span>我的跑步棒 <b>' + trim(my.time) + "</b></span><span>" + my.distanceKm + " km · <b>" + pace(my.time, my.distanceKm) + "</b>/km</span>" +
+        (r.rank && r.rank.group ? "<span>组别排名 <b>" + r.rank.group + "</b></span>" : "") + "</div></div></article>"
+      );
+    })
+    .join("");
+}
+
+// ---- 越山向海：全程示意图（灰）+ 我的赛段（绿，带数据标注）+ 团队成绩
+async function renderHoodToCoast() {
+  const list = document.getElementById("h2cList");
+  if (!list) {
+    return;
+  }
+  let course;
+  try {
+    course = await (await fetch(new URL("../data/hoodtocoast-course.json", import.meta.url))).json();
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+  const secs = (t) => t.split(":").reduce((a, b) => a * 60 + Number(b), 0);
+  const trim = (t) => (t ? t.replace(/^0/, "") : "—");
+  const fmtS = (v) => (v >= 3600 ? Math.floor(v / 3600) + ":" + String(Math.floor((v % 3600) / 60)).padStart(2, "0") : Math.floor(v / 60)) + ":" + String(Math.round(v % 60)).padStart(2, "0");
+  const pace = (v, km) => fmtS(v / km);
+  // 投影：等距圆柱，经度按纬度余弦缩放，装进 viewBox
+  const all = [...course.course, ...course.drive].flatMap((seg) => seg.pts);
+  const lat0 = all.reduce((a, p) => a + p[1], 0) / all.length;
+  const k = Math.cos((lat0 * Math.PI) / 180);
+  const minX = Math.min(...all.map((p) => p[0] * k)), maxX = Math.max(...all.map((p) => p[0] * k));
+  const minY = Math.min(...all.map((p) => p[1])), maxY = Math.max(...all.map((p) => p[1]));
+  const W = 720, PAD = 70, scale = (W - PAD * 2) / Math.max(maxX - minX, (maxY - minY));
+  const H = Math.round((maxY - minY) * scale + 70 + 40);
+  const P = (p) => [PAD + (p[0] * k - minX) * scale, 48 + (maxY - p[1]) * scale];
+  const poly = (pts) => pts.map((p) => P(p).map((v) => v.toFixed(1)).join(",")).join(" ");
+  const courseSvg = course.course.map((seg) => '<polyline class="course" points="' + poly(seg.pts) + '"/>').join("") + course.drive.map((seg) => '<polyline class="drive" points="' + poly(seg.pts) + '"/>').join("");
+  const exSvg = Object.entries(course.points)
+    .map(([key, pt]) => {
+      const [x, y] = P([pt.lon, pt.lat]);
+      const end = key === "START" || key === "FINISH";
+      const name = key === "START" ? "起点 · " + pt.name : key === "FINISH" ? "终点 · 雪如意" : "";
+      const toLeft = x > W * 0.6;
+      return '<circle class="' + (end ? "ex-end" : "ex") + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (end ? 5.5 : 2.6) + '"/>' +
+        (name ? '<text class="ex-name" x="' + (x + (toLeft ? -10 : 10)).toFixed(1) + '" y="' + (y - 9).toFixed(1) + '" text-anchor="' + (toLeft ? "end" : "start") + '">' + name + "</text>" : "");
+    })
+    .join("");
+  const courseXY = all.map(P);
+
+  list.innerHTML = [...hoodToCoastRaces]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((r) => {
+      let legsSvg = "", labelsSvg = "";
+      const placed = [];
+      r.myLegs.forEach((leg, i) => {
+        const pts = course.legs[String(leg.id)] || [];
+        if (!pts.length) return;
+        legsSvg += '<polyline class="mine" points="' + poly(pts) + '"/>';
+        const [sx, sy] = P(pts[0]);
+        legsSvg += '<circle class="leg-dot" cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="5"/>';
+        // 标注：候选位置里挑离赛道最远、不出画面、不和已放的标注重叠的一个
+        const mid = P(pts[Math.floor(pts.length / 2)]);
+        const line1 = (i + 1) + "  " + leg.name;
+        const line2 = leg.distanceKm + " km · " + trim(leg.time) + " · " + pace(secs(leg.time), leg.distanceKm) + "/km" + (leg.elevationM ? " · ↑" + leg.elevationM + " m" : "");
+        const est = (t) => [...t].reduce((a, ch) => a + (/[\u4e00-\u9fff]/.test(ch) ? 16 : 7.5), 0);
+        const bw = Math.max(est(line1), est(line2) * 0.85), bh = 34;
+        const cands = [[44, -34], [44, 34], [-44, -34], [-44, 34], [0, -52], [0, 52], [70, 0], [-70, 0]];
+        let best = null, bestScore = -1e9;
+        for (const [dx, dy] of cands) {
+          const anchor = dx < 0 ? "end" : dx > 0 ? "start" : "middle";
+          let lx = mid[0] + dx, ly = mid[1] + dy;
+          const left = anchor === "end" ? lx - bw : anchor === "start" ? lx : lx - bw / 2;
+          if (left < 8 || left + bw > W - 8 || ly - 18 < 8 || ly + 18 > H - 8) continue;
+          const box = [left, ly - 18, left + bw, ly + 18];
+          if (placed.some((b) => box[0] < b[2] && box[2] > b[0] && box[1] < b[3] && box[3] > b[1])) continue;
+          const d = Math.min(...courseXY.map((q) => Math.hypot(q[0] - Math.max(box[0], Math.min(q[0], box[2])), q[1] - Math.max(box[1], Math.min(q[1], box[3])))));
+          const score = d - Math.hypot(dx, dy) * 0.15;
+          if (score > bestScore) { bestScore = score; best = [dx, dy, anchor, box]; }
+        }
+        const [dx, dy, anchor, box] = best || [44, -34, "start", [mid[0] + 44, mid[1] - 52, mid[0] + 44 + bw, mid[1] - 16]];
+        placed.push(box);
+        const lx = mid[0] + dx, ly = mid[1] + dy;
+        labelsSvg += '<line class="callout-line" x1="' + mid[0].toFixed(1) + '" y1="' + mid[1].toFixed(1) + '" x2="' + lx.toFixed(1) + '" y2="' + ly.toFixed(1) + '"/>' +
+          '<text x="' + lx.toFixed(1) + '" y="' + (ly - 2).toFixed(1) + '" text-anchor="' + anchor + '"><tspan class="lbl-num">' + (i + 1) + "</tspan>  " + leg.name + "</text>" +
+          '<text class="lbl-dim" x="' + lx.toFixed(1) + '" y="' + (ly + 16).toFixed(1) + '" text-anchor="' + anchor + '">' + line2 + "</text>";
+      });
+      const mySec = r.myLegs.reduce((a, l) => a + secs(l.time), 0), myKm = r.myLegs.reduce((a, l) => a + l.distanceKm, 0);
+      const dates = r.dateEnd ? r.date.replaceAll(".", "-") + " ~ " + r.dateEnd.slice(5).replaceAll(".", "-") : r.date.replaceAll(".", "-");
+      const legRows = r.myLegs.map((l, i) => '<div class="h2c-leg"><b class="n">' + (i + 1) + '</b><span class="name">' + l.name + '</span><span class="nums"><b>' + l.distanceKm + "</b> km · <b>" + trim(l.time) + "</b> · " + pace(secs(l.time), l.distanceKm) + "/km" + (l.elevationM ? " · ↑" + l.elevationM + " m" : "") + "</span></div>").join("");
+      return (
+        '<article class="h2c-row"><div class="h2c-map"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + r.date.slice(0, 4) + ' 越山向海赛道示意图">' + courseSvg + legsSvg + exSvg + labelsSvg + "</svg></div>" +
+        '<div class="h2c-body"><div><div class="h2c-title"><b>' + r.date.slice(0, 4) + "</b><span>" + dates + '</span></div><div class="h2c-sub">' + r.event + " · " + r.team + " · " + r.distanceKm + " km</div></div>" +
+        '<div class="h2c-time">' + trim(r.verified) + "<small>核实成绩" + (r.verifiedNote ? "（" + r.verifiedNote + "）" : "") + "</small></div>" +
+        '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span><span>我的赛段 <b>" + r.myLegs.length + "</b> 段 · <b>" + myKm.toFixed(1) + "</b> km · <b>" + pace(mySec, myKm) + "</b>/km</span></div>" +
+        '<div class="h2c-legs">' + legRows + "</div></div></article>"
+      );
+    })
+    .join("");
+}
+
 async function initMap() {
   updateProfile();
   updateSummary();
   renderChinaMajorRaces();
   renderHyroxRaces();
+  renderTriathlon();
+  renderHoodToCoast();
   renderPbPath();
 
   if (window.location.protocol === "file:") {

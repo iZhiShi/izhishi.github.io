@@ -1549,3 +1549,324 @@ body::after {
     font-size: 0.52rem;
   }
 }
+
+
+/* ---- 铁人三项 / 越山向海（首页板块，样式沿用卡片体系） ---- */
+.tri-card,
+.h2c-card {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border-radius: var(--radius-xl);
+  animation: rise-in 0.95s ease 0.1s both;
+}
+
+.tri-card::before,
+.h2c-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(47, 124, 83, 0.12), transparent 32%);
+  pointer-events: none;
+}
+
+.tri-kicker,
+.h2c-kicker {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.tri-lead,
+.h2c-lead {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.tri-grid,
+.h2c-list {
+  position: relative;
+  display: grid;
+  gap: 14px;
+}
+
+.tri-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tri-ticket,
+.h2c-row {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(249, 243, 234, 0.92));
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 40px rgba(74, 58, 35, 0.08);
+}
+
+.tri-ticket {
+  grid-template-columns: 150px 1fr;
+}
+
+.tri-legs {
+  display: grid;
+  gap: 7px;
+  align-content: center;
+  padding: 14px 12px;
+  border-radius: 16px;
+  background: var(--ink);
+}
+
+.tri-leg {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.tri-leg i {
+  display: block;
+  height: 9px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.tri-leg.mine {
+  color: #58d995;
+}
+
+.tri-leg.mine i {
+  background: #58d995;
+}
+
+.tri-leg.t i {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tri-body,
+.h2c-body {
+  display: grid;
+  gap: 8px;
+  align-content: space-between;
+  min-width: 0;
+}
+
+.tri-title,
+.h2c-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tri-title b,
+.h2c-title b {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Songti SC", "STSong", serif;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.tri-title span,
+.h2c-title span,
+.tri-sub,
+.h2c-sub {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.tri-time,
+.h2c-time {
+  font-family: "Avenir Next Condensed", "DIN Alternate", "Arial Narrow", sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--green);
+}
+
+.tri-time small,
+.h2c-time small {
+  font-family: "Avenir Next", "PingFang SC", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0;
+  color: var(--ink-soft);
+  margin-left: 6px;
+}
+
+.tri-stats,
+.h2c-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.tri-stats b,
+.h2c-stats b {
+  color: var(--ink);
+}
+
+.h2c-row {
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+  align-items: start;
+}
+
+.h2c-map {
+  position: relative;
+  border-radius: 18px;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.h2c-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.h2c-map .course {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.h2c-map .drive {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 2.6;
+  stroke-dasharray: 7 7;
+}
+
+.h2c-map .mine {
+  fill: none;
+  stroke: #58d995;
+  stroke-width: 6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.h2c-map .ex {
+  fill: rgba(255, 255, 255, 0.8);
+}
+
+.h2c-map .ex-end {
+  fill: #fff;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.h2c-map .leg-dot {
+  fill: #58d995;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.h2c-map text {
+  font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-size: 16px;
+  fill: rgba(255, 255, 255, 0.92);
+}
+
+.h2c-map text.lbl-num {
+  font-weight: 800;
+  fill: #58d995;
+}
+
+.h2c-map text.lbl-dim {
+  fill: rgba(255, 255, 255, 0.65);
+  font-size: 13.5px;
+}
+
+.h2c-map text.ex-name {
+  fill: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+}
+
+.h2c-map .callout-line {
+  stroke: rgba(88, 217, 149, 0.6);
+  stroke-width: 1.4;
+  fill: none;
+}
+
+.h2c-legs {
+  display: grid;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.h2c-leg {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: rgba(47, 124, 83, 0.08);
+}
+
+.h2c-leg b.n {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.h2c-leg .name {
+  color: var(--ink);
+}
+
+.h2c-leg .nums {
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.h2c-leg .nums b {
+  color: var(--ink);
+}
+
+@media (max-width: 1000px) {
+  .tri-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .h2c-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .tri-card,
+  .h2c-card {
+    padding: 18px;
+  }
+
+  .tri-ticket {
+    grid-template-columns: 110px 1fr;
+  }
+
+  .h2c-leg {
+    grid-template-columns: 22px 1fr;
+  }
+
+  .h2c-leg .nums {
+    grid-column: 2;
+    white-space: normal;
+  }
+}
