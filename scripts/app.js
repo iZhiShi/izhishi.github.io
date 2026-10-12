@@ -455,13 +455,13 @@ function renderHoodToCoast() {
       const ran = r.myLegs.filter((m) => !m.skipped);
       const mySec = ran.reduce((x, m) => x + secs(m.time), 0), myKm = ran.reduce((x, m) => x + m.distanceKm, 0);
       const myOfficial = ran.reduce((x, m) => x + legOf(m.to).km, 0), myUp = ran.reduce((x, m) => x + (legOf(m.to).up || 0), 0);
-      const nights = ran.filter((m) => legOf(m.to).night).length;
+      const nights = ran.filter((m) => m.night).length;
       const dates = r.dateEnd ? r.date.replaceAll(".", "-") + " ~ " + r.dateEnd.slice(5).replaceAll(".", "-") : r.date.replaceAll(".", "-");
       const legRows = r.myLegs
         .map((m) => {
           const l = legOf(m.to), idx = r.legs.indexOf(l) + 1;
           const prev = idx > 1 ? r.legs[idx - 2].name : "起点";
-          const book = l.km + " km · ↑" + l.up + " ↓" + l.down + " · " + (gradeName[l.grade] || l.grade) + (l.night ? " · 夜" : "");
+          const book = l.km + " km · ↑" + l.up + " ↓" + l.down + " · " + (gradeName[l.grade] || l.grade) + (m.night ? " · 夜跑" : "");
           const badge = l.badge ? '<em class="h2c-badge">' + l.badge + "</em>" : "";
           const right = m.skipped ? '<span class="nums"><b>未跑</b> · ' + m.skipped + "</span>" : '<span class="nums"><b>' + trim(m.time) + "</b> · " + pace(secs(m.time), m.distanceKm) + "/km</span>";
           return '<div class="h2c-leg' + (m.skipped ? " skipped" : "") + '"><b class="n">' + idx + '</b><span class="name">' + prev.replace(/停车场|旅游度假区|风景区/g, "") + " → " + l.name.replace(/停车场|旅游度假区|风景区/g, "") + badge + "<small>" + book + "</small></span>" + right + "</div>";
@@ -474,7 +474,7 @@ function renderHoodToCoast() {
         '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span></div>" +
         '<div class="h2c-strip" aria-label="全程赛段">' + strip + "</div>" +
         '<div class="h2c-strip-legend"><span><i class="mine"></i>我跑的</span>' + (r.myLegs.some((m) => m.skipped) ? '<span><i class="skipped"></i>排给我但没跑</span>' : "") + (affected.size ? '<span><i class="affected"></i>' + (r.affectedNote || "中断") + "赛段</span>" : "") + '<span><i class="drive"></i>行车</span></div>' +
-        '<div class="h2c-stats h2c-mine"><span>我跑了 <b>' + ran.length + "</b> 段 · <b>" + myOfficial.toFixed(1) + "</b> km（" + Math.round((myOfficial / runKm) * 100) + "%）</span><span>均速 <b>" + pace(mySec, myKm) + "</b>/km</span><span>爬升 <b>" + myUp + "</b> m</span>" + (nights ? "<span>夜段 <b>" + nights + "</b></span>" : "") + "</div>" +
+        '<div class="h2c-stats h2c-mine"><span>我跑了 <b>' + ran.length + "</b> 段 · <b>" + myOfficial.toFixed(1) + "</b> km（" + Math.round((myOfficial / runKm) * 100) + "%）</span><span>均速 <b>" + pace(mySec, myKm) + "</b>/km</span><span>爬升 <b>" + myUp + "</b> m</span>" + (nights ? "<span>夜跑 <b>" + nights + "</b> 段</span>" : "") + "</div>" +
         '<div class="h2c-legs">' + legRows + "</div></article>"
       );
     })

@@ -296,7 +296,8 @@ export const triathlonRaces = [
 
 // 越山向海人车接力（首页板块）。team 只写队名。
 // legs 是当年路书的全部赛段（to = 该段终点接力点；km / up / down / grade 来自路书；drive 为行车段；badge 为特殊赛段名）。
-// myLegs 是排给我的赛段：to 对应 legs 里的段，distanceKm / time 来自 Garmin，id 是 Garmin 活动 id；skipped 填原因表示没跑（灰显）。
+// 路书上的「日/夜」是赛段开放时段，不是我实际跑的时间，所以夜跑标在 myLegs 上（night: true = 戴头灯跑的）。
+// myLegs 是排给我的赛段：to 对应 legs 里的段，distanceKm / time 来自 Garmin，id 是 Garmin 活动 id；skipped 填原因表示没跑（灰显）；night 表示实际是夜里跑的。
 // verified = 核实成绩（组委会扣掉行车 / 受影响赛段后的成绩），live = 实时 / 净时成绩；affected = 因天气被中断、不计成绩的赛段。
 export const hoodToCoastRaces = [
   {
@@ -304,12 +305,12 @@ export const hoodToCoastRaces = [
     distanceKm: 143.1, verified: "13:11:07", live: "12:19:28", liveLabel: "完赛净时",
     rank: { overall: 68, group: 41, groupName: "混合组" },
     legs: [
-      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "E", night: true },
-      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "E", night: true },
-      { to: "EX3", name: "牧马人酒店", km: 8.9, up: 173, down: 166, grade: "E", night: true },
-      { to: "EX4", name: "西滩村", km: 8.2, up: 138, down: 119, grade: "M", night: true },
-      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "M", night: true },
-      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H", night: true },
+      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "E" },
+      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "E" },
+      { to: "EX3", name: "牧马人酒店", km: 8.9, up: 173, down: 166, grade: "E" },
+      { to: "EX4", name: "西滩村", km: 8.2, up: 138, down: 119, grade: "M" },
+      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "M" },
+      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H" },
       { to: "EX7", name: "布达拉观景台停车场", km: 7.3, up: 231, down: 97, grade: "VH" },
       { to: "EX8", name: "大圆囤停车场", km: 7.2, up: 159, down: 213, grade: "M" },
       { to: "EX9", name: "木屋停车场", km: 6.8, up: 295, down: 62, grade: "VH" },
@@ -335,16 +336,16 @@ export const hoodToCoastRaces = [
     rank: { overall: 78, group: 40, groupName: "混合组" },
     affected: ["EX7", "EX8", "EX9", "EX10", "EX11"], affectedNote: "暴雨中断",
     legs: [
-      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "M", night: true },
-      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "M", night: true },
-      { to: "EX3", name: "柳条坝营地", km: 6.4, up: 100, down: 126, grade: "M", night: true },
-      { to: "EX4", name: "西滩村", km: 10.7, up: 211, down: 159, grade: "H", night: true },
-      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "H", night: true },
-      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H", night: true },
-      { to: "EX7", name: "布达拉观景台", km: 7.3, up: 231, down: 97, grade: "H", night: true },
-      { to: "EX8", name: "大圆囤停车场", km: 6.8, up: 152, down: 203, grade: "H", night: true },
-      { to: "EX9", name: "木屋停车场", km: 7.1, up: 295, down: 72, grade: "VH", night: true },
-      { to: "EX10", name: "塔娜谷停车场", km: 9.3, up: 207, down: 175, grade: "VH", night: true, badge: "坡王" },
+      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "M" },
+      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "M" },
+      { to: "EX3", name: "柳条坝营地", km: 6.4, up: 100, down: 126, grade: "M" },
+      { to: "EX4", name: "西滩村", km: 10.7, up: 211, down: 159, grade: "H" },
+      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "H" },
+      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H" },
+      { to: "EX7", name: "布达拉观景台", km: 7.3, up: 231, down: 97, grade: "H" },
+      { to: "EX8", name: "大圆囤停车场", km: 6.8, up: 152, down: 203, grade: "H" },
+      { to: "EX9", name: "木屋停车场", km: 7.1, up: 295, down: 72, grade: "VH" },
+      { to: "EX10", name: "塔娜谷停车场", km: 9.3, up: 207, down: 175, grade: "VH", badge: "坡王" },
       { to: "EX11", name: "桦皮岭风景区", km: 12.9, up: 354, down: 409, grade: "VH" },
       { to: "EX12", name: "清三营", km: 9.3, up: 4, down: 274, grade: "M" },
       { to: "EX13", name: "阳坡村", km: 6.0, up: 10, down: 80, grade: "E" },
@@ -357,7 +358,7 @@ export const hoodToCoastRaces = [
     myLegs: [
       { id: 492289647, to: "EX2", distanceKm: 9.16, time: "00:41:42" },
       { to: "EX10", skipped: "暴雨中断" },
-      { id: 492428302, to: "EX15", distanceKm: 14.25, time: "01:01:02" },
+      { id: 492428302, to: "EX15", distanceKm: 14.25, time: "01:01:02", night: true },   // 头灯夜跑
     ],
   },
 ];
