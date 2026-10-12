@@ -1634,12 +1634,12 @@ body::after {
 }
 
 .h2c-row {
-  grid-template-columns: 190px 1fr;
-  align-items: start;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-content: start;
 }
 
-.tri-legs,
-.h2c-map {
+.tri-legs {
   align-self: stretch;
   border-radius: 16px;
   background: rgba(34, 48, 39, 0.06);
@@ -1684,50 +1684,103 @@ body::after {
   background: rgba(34, 48, 39, 0.1);
 }
 
-.h2c-map {
-  display: grid;
-  place-items: center;
-  padding: 10px;
-  overflow: hidden;
+.h2c-strip {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  margin-top: 4px;
 }
 
-.h2c-map svg {
+.h2c-seg {
   display: block;
-  width: 100%;
-  height: auto;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  background: rgba(34, 48, 39, 0.16);
 }
 
-.h2c-map .course {
-  fill: none;
-  stroke: rgba(34, 48, 39, 0.45);
-  stroke-width: 3.2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
+.h2c-seg.drive {
+  background: repeating-linear-gradient(90deg, rgba(34, 48, 39, 0.35) 0 2px, transparent 2px 4px);
 }
 
-.h2c-map .drive {
-  fill: none;
-  stroke: rgba(34, 48, 39, 0.3);
-  stroke-width: 2.6;
-  stroke-dasharray: 7 7;
+.h2c-seg.mine {
+  background: var(--green);
 }
 
-.h2c-map .mine {
-  fill: none;
-  stroke: var(--green);
-  stroke-width: 7;
-  stroke-linejoin: round;
-  stroke-linecap: round;
+.h2c-seg.skipped {
+  background: rgba(34, 48, 39, 0.12);
+  border: 1.5px dashed rgba(34, 48, 39, 0.45);
 }
 
-.h2c-map .ex {
-  fill: rgba(34, 48, 39, 0.5);
+.h2c-seg.affected {
+  background-image: repeating-linear-gradient(135deg, rgba(176, 71, 52, 0.55) 0 2px, transparent 2px 5px);
 }
 
-.h2c-map .ex-end {
-  fill: #fff;
-  stroke: var(--ink);
-  stroke-width: 2.5;
+.h2c-strip-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+.h2c-strip-legend i {
+  display: inline-block;
+  width: 14px;
+  height: 9px;
+  border-radius: 2px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  background: rgba(34, 48, 39, 0.16);
+}
+
+.h2c-strip-legend i.mine {
+  background: var(--green);
+}
+
+.h2c-strip-legend i.skipped {
+  background: rgba(34, 48, 39, 0.12);
+  border: 1.5px dashed rgba(34, 48, 39, 0.45);
+}
+
+.h2c-strip-legend i.affected {
+  background-image: repeating-linear-gradient(135deg, rgba(176, 71, 52, 0.55) 0 2px, transparent 2px 5px);
+}
+
+.h2c-strip-legend i.drive {
+  background: repeating-linear-gradient(90deg, rgba(34, 48, 39, 0.35) 0 2px, transparent 2px 4px);
+}
+
+.h2c-mine {
+  padding-top: 4px;
+  border-top: 1px dashed rgba(34, 48, 39, 0.14);
+}
+
+.h2c-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(237, 161, 0, 0.18);
+  color: #7a5000;
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  vertical-align: 1px;
+}
+
+.h2c-leg.skipped {
+  background: rgba(34, 48, 39, 0.05);
+  color: var(--ink-soft);
+}
+
+.h2c-leg.skipped b.n {
+  background: rgba(34, 48, 39, 0.3);
+}
+
+.h2c-leg.skipped .name,
+.h2c-leg.skipped .nums b {
+  color: var(--ink-soft);
 }
 
 .tri-body,
@@ -1860,14 +1913,6 @@ body::after {
 
   .tri-ticket {
     grid-template-columns: 110px 1fr;
-  }
-
-  .h2c-row {
-    grid-template-columns: 1fr;
-  }
-
-  .h2c-map {
-    max-width: 260px;
   }
 
   .h2c-leg {

@@ -422,71 +422,60 @@ function renderTriathlon() {
     .join("");
 }
 
-// ---- 越山向海：全程示意图（灰）+ 我的赛段（绿，带数据标注）+ 团队成绩
-async function renderHoodToCoast() {
+// ---- 越山向海：全程赛段条（我的段绿色、没跑的灰、中断段划掉）+ 团队成绩 + 我的赛段明细
+function renderHoodToCoast() {
   const list = document.getElementById("h2cList");
   if (!list) {
     return;
   }
-  let course;
-  try {
-    course = await (await fetch(new URL("../data/hoodtocoast-course.json", import.meta.url))).json();
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-  const secs = (t) => t.split(":").reduce((a, b) => a * 60 + Number(b), 0);
+  const secs = (t) => t.split(":").reduce((x, y) => x * 60 + Number(y), 0);
   const trim = (t) => (t ? t.replace(/^0/, "") : "—");
   const fmtS = (v) => (v >= 3600 ? Math.floor(v / 3600) + ":" + String(Math.floor((v % 3600) / 60)).padStart(2, "0") : Math.floor(v / 60)) + ":" + String(Math.round(v % 60)).padStart(2, "0");
   const pace = (v, km) => fmtS(v / km);
-  // 投影：等距圆柱，经度按纬度余弦缩放，装进 viewBox
-  const all = [...course.course, ...course.drive].flatMap((seg) => seg.pts);
-  const lat0 = all.reduce((a, p) => a + p[1], 0) / all.length;
-  const k = Math.cos((lat0 * Math.PI) / 180);
-  const minX = Math.min(...all.map((p) => p[0] * k)), maxX = Math.max(...all.map((p) => p[0] * k));
-  const minY = Math.min(...all.map((p) => p[1])), maxY = Math.max(...all.map((p) => p[1]));
-  const W = 720, PAD = 24, scale = (W - PAD * 2) / Math.max(maxX - minX, (maxY - minY));
-  const H = Math.round((maxY - minY) * scale + PAD * 2);
-  const P = (p) => [PAD + (p[0] * k - minX) * scale, PAD + (maxY - p[1]) * scale];
-  const poly = (pts) => pts.map((p) => P(p).map((v) => v.toFixed(1)).join(",")).join(" ");
-  const courseSvg = course.course.map((seg) => '<polyline class="course" points="' + poly(seg.pts) + '"/>').join("") + course.drive.map((seg) => '<polyline class="drive" points="' + poly(seg.pts) + '"/>').join("");
-  const exSvg = Object.entries(course.points)
-    .map(([key, pt]) => {
-      const [x, y] = P([pt.lon, pt.lat]);
-      const end = key === "START" || key === "FINISH";
-      return '<circle class="' + (end ? "ex-end" : "ex") + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + (end ? 6 : 2.8) + '"/>';
-    })
-    .join("");
+  const gradeName = { E: "简单", M: "中等", H: "困难", VH: "极难" };
+  const esc = (t) => String(t).replace(/</g, "&lt;");
 
   list.innerHTML = [...hoodToCoastRaces]
-    .sort((a, b) => b.date.localeCompare(a.date))
+    .sort((x, y) => y.date.localeCompare(x.date))
     .map((r) => {
-      let legsSvg = "";
-      r.myLegs.forEach((leg, i) => {
-        const pts = course.legs[String(leg.id)] || [];
-        if (!pts.length) return;
-        legsSvg += '<polyline class="mine" points="' + poly(pts) + '"/>';
-        const [sx, sy] = P(pts[0]);
-        legsSvg += '<circle class="leg-dot" cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="5"/>';
-      });
-      const timed = r.myLegs.filter((l) => l.time);
-      const mySec = timed.reduce((a, l) => a + secs(l.time), 0), myKm = timed.reduce((a, l) => a + l.distanceKm, 0);
-      const allKm = r.myLegs.reduce((a, l) => a + (l.distanceKm || l.officialKm || 0), 0);
-      const dates = r.dateEnd ? r.date.replaceAll(".", "-") + " ~ " + r.dateEnd.slice(5).replaceAll(".", "-") : r.date.replaceAll(".", "-");
-      const gradeName = { E: "简单", M: "中等", H: "困难", VH: "极难" };
-      const legRows = r.myLegs
+      const legOf = (to) => r.legs.find((l) => l.to === to);
+      const mineBy = Object.fromEntries(r.myLegs.map((m) => [m.to, m]));
+      const affected = new Set(r.affected || []);
+      const runKm = r.legs.reduce((x, l) => x + l.km, 0);
+      // 赛段条：宽度按官方里程；行车段画成细段
+      const strip = r.legs
         .map((l, i) => {
-          const book = (l.officialKm ? l.officialKm + " km" : "") + (l.up != null ? " · ↑" + l.up + " ↓" + l.down : "") + (l.grade ? " · " + (gradeName[l.grade] || l.grade) : "") + (l.night ? " · 夜" : "");
-          const mine = l.time ? "<b>" + trim(l.time) + "</b> · " + pace(secs(l.time), l.distanceKm) + "/km" : "手表未记录";
-          return '<div class="h2c-leg"><b class="n">' + (i + 1) + '</b><span class="name">' + l.name + '<small>' + book + '</small></span><span class="nums">' + mine + "</span></div>";
+          const mine = mineBy[l.to];
+          const cls = ["h2c-seg", l.drive ? "drive" : "", mine && !mine.skipped ? "mine" : "", mine && mine.skipped ? "skipped" : "", affected.has(l.to) ? "affected" : ""].filter(Boolean).join(" ");
+          const w = l.drive ? 1.2 : (l.km / runKm) * 100;
+          const title = (i + 1) + " · " + l.name + (l.drive ? "（行车）" : " · " + l.km + " km") + (l.badge ? " · " + l.badge : "") + (affected.has(l.to) ? " · " + (r.affectedNote || "中断") : "");
+          return '<i class="' + cls + '" style="flex-basis:' + w.toFixed(2) + '%" title="' + esc(title) + '"></i>';
+        })
+        .join("");
+      const ran = r.myLegs.filter((m) => !m.skipped);
+      const mySec = ran.reduce((x, m) => x + secs(m.time), 0), myKm = ran.reduce((x, m) => x + m.distanceKm, 0);
+      const myOfficial = ran.reduce((x, m) => x + legOf(m.to).km, 0), myUp = ran.reduce((x, m) => x + (legOf(m.to).up || 0), 0);
+      const nights = ran.filter((m) => legOf(m.to).night).length;
+      const dates = r.dateEnd ? r.date.replaceAll(".", "-") + " ~ " + r.dateEnd.slice(5).replaceAll(".", "-") : r.date.replaceAll(".", "-");
+      const legRows = r.myLegs
+        .map((m) => {
+          const l = legOf(m.to), idx = r.legs.indexOf(l) + 1;
+          const prev = idx > 1 ? r.legs[idx - 2].name : "起点";
+          const book = l.km + " km · ↑" + l.up + " ↓" + l.down + " · " + (gradeName[l.grade] || l.grade) + (l.night ? " · 夜" : "");
+          const badge = l.badge ? '<em class="h2c-badge">' + l.badge + "</em>" : "";
+          const right = m.skipped ? '<span class="nums"><b>未跑</b> · ' + m.skipped + "</span>" : '<span class="nums"><b>' + trim(m.time) + "</b> · " + pace(secs(m.time), m.distanceKm) + "/km</span>";
+          return '<div class="h2c-leg' + (m.skipped ? " skipped" : "") + '"><b class="n">' + idx + '</b><span class="name">' + prev.replace(/停车场|旅游度假区|风景区/g, "") + " → " + l.name.replace(/停车场|旅游度假区|风景区/g, "") + badge + "<small>" + book + "</small></span>" + right + "</div>";
         })
         .join("");
       return (
-        '<article class="h2c-row"><div class="h2c-map"><svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + r.date.slice(0, 4) + ' 越山向海赛道示意图">' + courseSvg + legsSvg + exSvg + "</svg></div>" +
-        '<div class="h2c-body"><div><div class="h2c-title"><b>' + r.date.slice(0, 4) + "</b><span>" + dates + '</span></div><div class="h2c-sub">' + r.event + " · " + r.team + " · " + r.distanceKm + " km</div></div>" +
+        '<article class="h2c-row">' +
+        '<div class="h2c-head"><div class="h2c-title"><b>' + r.date.slice(0, 4) + "</b><span>" + dates + '</span></div><div class="h2c-sub">' + r.event + " · " + r.team + " · " + r.teamSize + " 人 · " + r.distanceKm + " km</div></div>" +
         '<div class="h2c-time">' + trim(r.verified) + "<small>核实成绩" + (r.verifiedNote ? "（" + r.verifiedNote + "）" : "") + "</small></div>" +
-        '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span><span>我的赛段 <b>" + r.myLegs.length + "</b> 段 · <b>" + allKm.toFixed(1) + "</b> km" + (myKm ? " · <b>" + pace(mySec, myKm) + "</b>/km" : "") + "</span></div>" +
-        '<div class="h2c-legs">' + legRows + "</div></div></article>"
+        '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span></div>" +
+        '<div class="h2c-strip" aria-label="全程赛段">' + strip + "</div>" +
+        '<div class="h2c-strip-legend"><span><i class="mine"></i>我跑的</span>' + (r.myLegs.some((m) => m.skipped) ? '<span><i class="skipped"></i>排给我但没跑</span>' : "") + (affected.size ? '<span><i class="affected"></i>' + (r.affectedNote || "中断") + "赛段</span>" : "") + '<span><i class="drive"></i>行车</span></div>' +
+        '<div class="h2c-stats h2c-mine"><span>我跑了 <b>' + ran.length + "</b> 段 · <b>" + myOfficial.toFixed(1) + "</b> km（" + Math.round((myOfficial / runKm) * 100) + "%）</span><span>均速 <b>" + pace(mySec, myKm) + "</b>/km</span><span>爬升 <b>" + myUp + "</b> m</span>" + (nights ? "<span>夜段 <b>" + nights + "</b></span>" : "") + "</div>" +
+        '<div class="h2c-legs">' + legRows + "</div></article>"
       );
     })
     .join("");

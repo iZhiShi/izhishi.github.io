@@ -294,29 +294,70 @@ export const triathlonRaces = [
   },
 ];
 
-// 越山向海人车接力（首页板块）。team 只写队名；myLegs 是我自己跑的赛段：id/distanceKm/time 来自 Garmin（id 对应 data/hoodtocoast-course.json 里的轨迹），
-// officialKm/up/down/grade/night 来自当年路书；verified = 核实成绩（组委会扣掉行车/受影响赛段后的成绩），live = 实时/净时成绩。
+// 越山向海人车接力（首页板块）。team 只写队名。
+// legs 是当年路书的全部赛段（to = 该段终点接力点；km / up / down / grade 来自路书；drive 为行车段；badge 为特殊赛段名）。
+// myLegs 是排给我的赛段：to 对应 legs 里的段，distanceKm / time 来自 Garmin，id 是 Garmin 活动 id；skipped 填原因表示没跑（灰显）。
+// verified = 核实成绩（组委会扣掉行车 / 受影响赛段后的成绩），live = 实时 / 净时成绩；affected = 因天气被中断、不计成绩的赛段。
 export const hoodToCoastRaces = [
   {
     date: "2024.06.28", dateEnd: "2024.06.29", event: "越山向海人车接力中国赛 · 张家口", team: "601 · 不畏风雨", teamSize: 5,
     distanceKm: 143.1, verified: "13:11:07", live: "12:19:28", liveLabel: "完赛净时",
     rank: { overall: 68, group: 41, groupName: "混合组" },
-    // 路书字段：officialKm 官方里程 / up、down 分段爬升下降 / grade E·M·H·VH / night 夜段；time、distanceKm 来自 Garmin
+    legs: [
+      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "E", night: true },
+      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "E", night: true },
+      { to: "EX3", name: "牧马人酒店", km: 8.9, up: 173, down: 166, grade: "E", night: true },
+      { to: "EX4", name: "西滩村", km: 8.2, up: 138, down: 119, grade: "M", night: true },
+      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "M", night: true },
+      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H", night: true },
+      { to: "EX7", name: "布达拉观景台停车场", km: 7.3, up: 231, down: 97, grade: "VH" },
+      { to: "EX8", name: "大圆囤停车场", km: 7.2, up: 159, down: 213, grade: "M" },
+      { to: "EX9", name: "木屋停车场", km: 6.8, up: 295, down: 62, grade: "VH", badge: "坡儿王" },
+      { to: "EX10", name: "塔娜谷停车场", km: 9.2, up: 207, down: 175, grade: "VH", badge: "坡儿后" },
+      { to: "EX11", name: "桦皮岭", km: 11.9, up: 301, down: 409, grade: "VH" },
+      { to: "EX12", name: "清五营", km: 6.3, up: 73, down: 180, grade: "M" },
+      { to: "EX13", name: "阳坡村", km: 10.0, up: 14, down: 174, grade: "M", badge: "山海10速" },
+      { to: "EX14", name: "翠云山旅游度假区", km: 0, drive: true },
+      { to: "EX15", name: "马丈子村停车场", km: 14.3, up: 128, down: 68, grade: "H", badge: "日行千里" },
+      { to: "EX16", name: "转枝莲停车场", km: 6.5, up: 140, down: 15, grade: "M" },
+      { to: "FINISH", name: "国家跳台滑雪中心（雪如意）", km: 7.7, up: 160, down: 5, grade: "H" },
+    ],
     myLegs: [
-      { id: 383987912, from: "EX1", to: "EX2", name: "宋家营 → 小二台停车场", distanceKm: 9.18, time: "00:43:51", officialKm: 9.3, up: 92, down: 14, grade: "E", night: true },
-      { id: 384077654, from: "EX4", to: "EX5", name: "西滩村 → 迎宾廊道", distanceKm: 9.33, time: "00:48:10", officialKm: 9.2, up: 214, down: 197, grade: "M", night: true },
-      { id: 384128295, from: "EX7", to: "EX8", name: "布达拉观景台 → 大圆囤停车场", distanceKm: 7.13, time: "00:35:31", officialKm: 7.2, up: 159, down: 213, grade: "M" },
-      { id: 384188578, from: "EX12", to: "EX13", name: "清五营 → 阳坡村（山海10速）", distanceKm: 10.12, time: "00:42:56", officialKm: 10.0, up: 14, down: 174, grade: "M" },
+      { id: 383987912, to: "EX2", distanceKm: 9.18, time: "00:43:51" },
+      { id: 384077654, to: "EX5", distanceKm: 9.33, time: "00:48:10" },
+      { id: 384128295, to: "EX8", distanceKm: 7.13, time: "00:35:31" },
+      { id: 384188578, to: "EX13", distanceKm: 10.12, time: "00:42:56" },
     ],
   },
   {
     date: "2025.06.27", dateEnd: "2025.06.28", event: "越山向海人车接力中国赛 · 张家口", team: "932 · 沧澜破晓队", teamSize: 5,
-    distanceKm: 142.6, verified: "08:39:19", verifiedNote: "扣除受影响赛段 EX7–EX11", live: "12:36:24", liveLabel: "实时成绩",
+    distanceKm: 142.6, verified: "08:39:19", verifiedNote: "扣除受影响赛段", live: "12:36:24", liveLabel: "实时成绩",
     rank: { overall: 78, group: 40, groupName: "混合组" },
+    affected: ["EX7", "EX8", "EX9", "EX10", "EX11"], affectedNote: "暴雨中断",
+    legs: [
+      { to: "EX1", name: "宋家营", km: 10.6, up: 50, down: 50, grade: "M", night: true },
+      { to: "EX2", name: "小二台停车场", km: 9.3, up: 92, down: 14, grade: "M", night: true },
+      { to: "EX3", name: "柳条坝营地", km: 6.4, up: 100, down: 126, grade: "M", night: true },
+      { to: "EX4", name: "西滩村", km: 10.7, up: 211, down: 159, grade: "H", night: true },
+      { to: "EX5", name: "迎宾廊道", km: 9.2, up: 214, down: 197, grade: "H", night: true },
+      { to: "EX6", name: "格桑花海", km: 9.7, up: 195, down: 214, grade: "H", night: true },
+      { to: "EX7", name: "布达拉观景台", km: 7.3, up: 231, down: 97, grade: "H", night: true },
+      { to: "EX8", name: "大圆囤停车场", km: 6.8, up: 152, down: 203, grade: "H", night: true },
+      { to: "EX9", name: "木屋停车场", km: 7.1, up: 295, down: 72, grade: "VH", night: true },
+      { to: "EX10", name: "塔娜谷停车场", km: 9.3, up: 207, down: 175, grade: "VH", night: true },
+      { to: "EX11", name: "桦皮岭风景区", km: 12.9, up: 354, down: 409, grade: "VH" },
+      { to: "EX12", name: "清三营", km: 9.3, up: 4, down: 274, grade: "M" },
+      { to: "EX13", name: "阳坡村", km: 6.0, up: 10, down: 80, grade: "E" },
+      { to: "EX14", name: "翠云山旅游度假区", km: 0, drive: true },
+      { to: "EX15", name: "马丈子村停车场", km: 14.0, up: 128, down: 68, grade: "H", badge: "日行千里" },
+      { to: "EX16", name: "转枝莲", km: 5.0, up: 113, down: 7, grade: "M" },
+      { to: "FINISH", name: "国家跳台滑雪中心（雪如意）", km: 9.0, up: 187, down: 13, grade: "H" },
+    ],
+    // skipped = 排给我但没跑的棒次（页面上灰显）
     myLegs: [
-      { id: 492289647, from: "EX1", to: "EX2", name: "宋家营 → 小二台停车场", distanceKm: 9.16, time: "00:41:42", officialKm: 9.3, up: 92, down: 14, grade: "M", night: true },
-      { from: "EX9", to: "EX10", name: "木屋停车场 → 塔娜谷停车场", officialKm: 9.3, up: 207, down: 175, grade: "VH", night: true },   // 手表没记录
-      { id: 492428302, from: "EX14", to: "EX15", name: "翠云山 → 马丈子村停车场", distanceKm: 14.25, time: "01:01:02", officialKm: 14.0, up: 128, down: 68, grade: "H" },
+      { id: 492289647, to: "EX2", distanceKm: 9.16, time: "00:41:42" },
+      { to: "EX10", skipped: "暴雨中断" },
+      { id: 492428302, to: "EX15", distanceKm: 14.25, time: "01:01:02" },
     ],
   },
 ];

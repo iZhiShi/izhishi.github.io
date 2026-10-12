@@ -17,7 +17,6 @@
 │   ├── china.geojson
 │   ├── training.json     由 tools/export_training.py 生成，不要手改
 │   ├── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
-│   └── hoodtocoast-course.json  越山向海全程示意轨迹 + 我跑过赛段的 GPS（经纬度）
 │   └── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
 ├── tools/
 │   ├── export_training.py
@@ -69,9 +68,8 @@
   - 越野跑档案：`trailRaces`（data.js）+ `data/routes.json`，样式复用 `styles/gallery.css` 的档案卡片。
 - 首页的「铁人三项」「越山向海」板块（和 HYROX 一样先放首页，比赛多了再独立成页）
   - 数据在 `triathlonRaces`、`hoodToCoastRaces`（字段见 data.js 注释），渲染在 `app.js` 的 `renderTriathlon()` / `renderHoodToCoast()`。
-  - 越山向海的地图读 `data/hoodtocoast-course.json`：`course` / `drive` 是全程示意线（由我跑过的赛段 GPS + 路书上的接力点沿公路拼接，不是官方 GPX），
-    `legs` 按 Garmin 活动 id 存我跑过赛段的经纬度。新跑一届：把新赛段的 id 加进 `hoodToCoastRaces[].myLegs`，
-    再用 `garmin-data` 里的 `tmp/dump_polylines.ts` 把对应 id 的轨迹补进 `legs`。拿到官方 GPX 的话直接替换 `course`。
+  - 越山向海不画地图：卡片上是按官方里程比例画的全程赛段条（`legs`），我的段绿色、排给我但没跑的灰色虚框、中断赛段红色斜纹。
+    新跑一届：把路书抄进 `legs`（名称、里程、爬升、下降、难度、夜段、特殊赛段 badge），`myLegs` 填我的棒次和 Garmin 成绩。
 - `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
   - 马拉松页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
 
