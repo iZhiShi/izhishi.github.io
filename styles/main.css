@@ -1554,6 +1554,11 @@ body::after {
 
 
 /* ---- 铁人三项 / 越山向海（首页板块，跟 HYROX 同一套面板 + 票卡样式） ---- */
+.h2c-card {
+  --htc-orange: #ef7a2f;
+  --htc-soft: rgba(240, 122, 48, 0.16);
+}
+
 .tri-card,
 .h2c-card {
   position: relative;
@@ -1600,6 +1605,10 @@ body::after {
   transform: skewX(-18deg);
 }
 
+.h2c-kicker::before {
+  background: var(--htc-orange);
+}
+
 /* .section-heading p 把 margin 归零了，这里用更高优先级把标题/副标题间距和 PB 卡对齐（上下各 6px，副标题 0.9rem） */
 .section-heading .hyrox-kicker,
 .section-heading .tri-kicker,
@@ -1644,6 +1653,20 @@ body::after {
   grid-template-columns: 1fr;
   gap: 10px;
   align-content: start;
+  border-top: 3px solid var(--htc-orange);
+  padding-top: 16px;
+}
+
+.h2c-logo {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  height: 40px;
+  width: auto;
+}
+
+.h2c-head {
+  padding-right: 90px;
 }
 
 .tri-legs {
@@ -1782,8 +1805,8 @@ body::after {
   margin-left: 6px;
   padding: 1px 7px;
   border-radius: 999px;
-  background: rgba(237, 161, 0, 0.18);
-  color: #7a5000;
+  background: var(--htc-soft);
+  color: #b4511a;
   font-size: 0.66rem;
   font-style: normal;
   font-weight: 800;

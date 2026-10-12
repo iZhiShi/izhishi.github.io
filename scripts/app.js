@@ -423,6 +423,8 @@ function renderTriathlon() {
 }
 
 // ---- 越山向海：全程赛段条（我的段绿色、没跑的灰、中断段划掉）+ 团队成绩 + 我的赛段明细
+const hoodToCoastLogo = new URL("../assets/hoodtocoast-logo.webp", import.meta.url).href;
+
 function renderHoodToCoast() {
   const list = document.getElementById("h2cList");
   if (!list) {
@@ -469,6 +471,7 @@ function renderHoodToCoast() {
         .join("");
       return (
         '<article class="h2c-row">' +
+        '<img class="h2c-logo" src="' + hoodToCoastLogo + '" alt="越山向海" loading="lazy" />' +
         '<div class="h2c-head"><div class="h2c-title"><b>' + r.date.slice(0, 4) + "</b><span>" + dates + '</span></div><div class="h2c-sub">' + r.event + " · " + r.team + " · " + r.teamSize + " 人 · " + r.distanceKm + " km</div></div>" +
         '<div class="h2c-time">' + trim(r.verified) + "<small>核实成绩" + (r.verifiedNote ? "（" + r.verifiedNote + "）" : "") + "</small></div>" +
         '<div class="h2c-stats"><span>' + r.liveLabel + " <b>" + trim(r.live) + "</b></span><span>总榜 <b>" + r.rank.overall + "</b> · " + r.rank.groupName + " <b>" + r.rank.group + "</b></span></div>" +
