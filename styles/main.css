@@ -1715,7 +1715,7 @@ body::after {
 
 .h2c-seg {
   display: block;
-  flex: 0 0 auto;
+  min-width: 0;
   border-radius: 3px;
   background: rgba(34, 48, 39, 0.16);
 }
@@ -1811,6 +1811,12 @@ body::after {
   gap: 8px;
   align-content: start;
   min-width: 0;
+}
+
+/* 右侧文字块上下沿和左侧分段条对齐 */
+.tri-body {
+  align-content: space-between;
+  padding: 2px 0;
 }
 
 .tri-title,

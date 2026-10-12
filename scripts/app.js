@@ -447,9 +447,9 @@ function renderHoodToCoast() {
         .map((l, i) => {
           const mine = mineBy[l.to];
           const cls = ["h2c-seg", l.drive ? "drive" : "", mine && !mine.skipped ? "mine" : "", mine && mine.skipped ? "skipped" : "", affected.has(l.to) ? "affected" : ""].filter(Boolean).join(" ");
-          const w = l.drive ? 1.2 : (l.km / runKm) * 100;
           const title = (i + 1) + " · " + l.name + (l.drive ? "（行车）" : " · " + l.km + " km") + (l.badge ? " · " + l.badge : "") + (affected.has(l.to) ? " · " + (r.affectedNote || "中断") : "");
-          return '<i class="' + cls + '" style="flex-basis:' + w.toFixed(2) + '%" title="' + esc(title) + '"></i>';
+          // 用 flex-grow 按里程分配宽度，间隙由 flex 自己吃掉，不会溢出右边框
+          return '<i class="' + cls + '" style="' + (l.drive ? "flex:0 0 6px" : "flex:" + l.km + " 1 0") + '" title="' + esc(title) + '"></i>';
         })
         .join("");
       const ran = r.myLegs.filter((m) => !m.skipped);
