@@ -1600,10 +1600,19 @@ body::after {
   transform: skewX(-18deg);
 }
 
-.tri-lead,
-.h2c-lead {
+/* .section-heading p 把 margin 归零了，这里用更高优先级把标题/副标题间距和 PB 卡对齐（上下各 6px，副标题 0.9rem） */
+.section-heading .hyrox-kicker,
+.section-heading .tri-kicker,
+.section-heading .h2c-kicker {
+  margin-bottom: 6px;
+}
+
+.section-heading .hyrox-lead,
+.section-heading .tri-lead,
+.section-heading .h2c-lead {
   margin-top: 6px;
-  max-width: 44ch;
+  max-width: 48ch;
+  font-size: 0.9rem;
 }
 
 .tri-grid,
@@ -1653,7 +1662,7 @@ body::after {
 
 .tri-leg {
   display: grid;
-  grid-template-columns: 34px 1fr;
+  grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 6px;
   font-size: 0.62rem;
@@ -1668,9 +1677,24 @@ body::after {
   background: rgba(34, 48, 39, 0.18);
 }
 
+.tri-leg em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.64rem;
+  color: var(--ink-soft);
+}
+
+.tri-leg.t em {
+  display: none;
+}
+
 .tri-leg.mine {
   color: var(--green);
   font-weight: 700;
+}
+
+.tri-leg.mine em {
+  color: var(--green);
 }
 
 .tri-leg.mine i {

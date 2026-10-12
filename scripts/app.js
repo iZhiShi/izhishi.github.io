@@ -408,7 +408,7 @@ function renderTriathlon() {
     .map((r) => {
       const maxS = Math.max(...r.legs.filter((l) => !l.transition).map((l) => secs(l.time)));
       const legs = r.legs
-        .map((l) => '<div class="tri-leg' + (l.mine ? " mine" : "") + (l.transition ? " t" : "") + '"><span>' + l.name + '</span><i style="width:' + Math.max(6, (secs(l.time) / maxS) * 100) + '%"></i></div>')
+        .map((l) => '<div class="tri-leg' + (l.mine ? " mine" : "") + (l.transition ? " t" : "") + '"><span>' + l.name + '</span><i style="width:' + Math.max(6, (secs(l.time) / maxS) * 100) + '%"></i>' + (l.transition ? "" : "<em>" + trim(l.time) + "</em>") + "</div>")
         .join("");
       const my = r.legs.find((l) => l.mine);
       return (
