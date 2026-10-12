@@ -26,7 +26,7 @@ function card(it) {
   const pts = it.route ? it.route.split(" ") : null;
   const start = pts ? pts[0].split(",") : null, end = pts ? pts[pts.length - 1].split(",") : null;
   return `<article class="rec">
-    <div class="rec-route">${pts ? `<svg viewBox="-4 -4 108 108"><polyline points="${it.route}"/><circle cx="${start[0]}" cy="${start[1]}" r="2.8"/><circle cx="${end[0]}" cy="${end[1]}" r="2.8" style="fill:#58d995"/></svg>` : `<span class="na">路线待补</span>`}</div>
+    <div class="rec-route">${pts ? `<svg viewBox="-4 -4 108 108"><polyline points="${it.route}"/><circle cx="${start[0]}" cy="${start[1]}" r="2.8"/><circle cx="${end[0]}" cy="${end[1]}" r="2.8" style="fill:#58d995"/></svg>` : it.routeImage ? `<img src="${it.routeImage}" alt="" loading="lazy" />` : `<span class="na">路线待补</span>`}</div>
     <div class="rec-body">
       <div><div class="rec-city"><b class="serif">${placeOf(it.event)}</b><span>${it.date.replaceAll(".", "-")}</span></div><div class="rec-event">${it.event} · ${it.group}</div></div>
       <div class="rec-time cond">${fmtT(it.time)}</div>

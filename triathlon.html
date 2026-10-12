@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>铁人三项 · 柿子</title>
+<meta name="description" content="铁人三项接力赛成绩：游泳、自行车、跑步分段与团队成绩。" />
+<link rel="stylesheet" href="styles/main.css" />
+<link rel="stylesheet" href="styles/gallery.css" />
+<style>
+  .rec-grid-wide { grid-template-columns: repeat(2, 1fr); }
+  .rec.wide { grid-template-columns: 150px 1fr; }
+  .rec.wide .rec-route { width: 150px; height: 150px; display:block; padding: 14px 12px; }
+  .legs { display:grid; gap: 7px; }
+  .leg { display:grid; grid-template-columns: 34px 1fr; align-items:center; gap: 6px; font-size:.62rem; color: rgba(255,255,255,.55); letter-spacing:.04em; }
+  .leg i { display:block; height: 9px; border-radius: 3px; background: rgba(255,255,255,.22); }
+  .leg.mine { color:#58d995; } .leg.mine i { background:#58d995; }
+  .leg.t i { height: 4px; background: rgba(255,255,255,.12); }
+  .rec-stats { display:flex; gap: 12px; font-size:.78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; flex-wrap:wrap; }
+  .rec-stats b { color: var(--ink); font-weight: 700; }
+  .rec-sub { font-size:.76rem; color: var(--ink-soft); }
+  .rec-time small { font-size:.72rem; color: var(--ink-soft); letter-spacing:0; margin-left: 6px; font-family: inherit; }
+  @media (max-width: 1000px) { .rec-grid-wide { grid-template-columns: 1fr; } }
+  @media (max-width: 780px) { .rec.wide { grid-template-columns: 110px 1fr; } .rec.wide .rec-route { width: 110px; height: 110px; padding: 10px 8px; } }
+</style>
+</head>
+<body>
+<div class="page-shell">
+  <div class="crumb"><a href="index.html">← 回到首页</a>
+    <nav><a href="training.html">训练日志</a><a href="gallery.html">马拉松</a><a href="trail.html">越野跑</a><a class="on" href="triathlon.html">铁人三项</a><a href="hoodtocoast.html">越山向海</a></nav></div>
+
+  <header class="hall-hero">
+    <div>
+      <p class="hall-kicker">TRIATHLON · RELAY</p>
+      <h1 class="serif">铁人三项<small>SWIM · BIKE · RUN</small></h1>
+      <p class="intro">接力赛按棒次记录，绿色是我跑的那一棒。</p>
+    </div>
+    <div class="inventory cond" id="inventory"></div>
+  </header>
+  <section class="hall">
+    <div class="hall-title"><span class="num">档案</span><h2 class="serif">完赛档案</h2><p>分段 · 团队成绩 · 排名</p></div>
+    <div class="records rec-grid-wide" id="records"></div>
+  </section>
+</div>
+<script type="module" src="scripts/triathlon.js"></script>
+</body>
+</html>

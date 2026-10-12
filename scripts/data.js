@@ -263,11 +263,12 @@ export const halfMarathons = [
 // 越野跑（trail.html）。字段：date / event / group（组别）/ distanceKm（实际距离，证书或 Garmin）/ elevationM（累计爬升）/
 // time（官方成绩）/ rank { overall, gender, age, total }（ITRA 个人页公开的排名和总人数，香山不在 ITRA 里用证书）/ team（团队赛）/ index（"UTMB" 或 "ITRA"：
 // 这场比赛产生了头部的 UTMB / ITRA 表现分）/ itraScore（这一场的 ITRA 单场积分；两者目前都只存数据，卡片上不显示）。
-// 路线同样来自 data/routes.json，按 date + event 匹配。没有证书的比赛（赤城）成绩和排名取自 ITRA 公开记录。
+// 路线同样来自 data/routes.json，按 date + event 匹配；Garmin 没记录的比赛可以给 routeImage（从证书上抠出的轨迹图，放 assets/routes/）。
+// 没有证书的比赛（赤城）成绩和排名取自 ITRA 公开记录。
 // ITRA 个人页：https://itra.run/RunnerSpace/zhi.shi.5256619　UTMB 个人页：https://utmb.world/en/runner/6373808.zhi.shi
 // 两个站的单场积分都要登录后才看得到；综合指数是公开的。
 export const trailRaces = [
-  { date: "2023.10.21", event: "香山国际登山节", group: "20KM 精英组", distanceKm: 20, time: "04:20:32", rank: { overall: 63, gender: 48 }, bib: "A0165" },
+  { date: "2023.10.21", event: "香山国际登山节", group: "20KM 精英组", distanceKm: 20, time: "04:20:32", rank: { overall: 63, gender: 48 }, bib: "A0165", routeImage: "assets/routes/2023-香山国际登山节.webp" },
   { date: "2023.12.03", event: "北京三峰连穿越野赛（冬）", group: "22KM", distanceKm: 22.96, elevationM: 1856, time: "06:20:42", itraScore: 316, rank: { overall: 111, gender: 82, age: 29, total: 193 } },
   { date: "2024.03.31", event: "温岭黄金海岸跑山赛", group: "38KM", distanceKm: 36, elevationM: 1955, time: "07:39:04", rank: { overall: 515, gender: 383, age: 84, total: 1215 }, itraScore: 363 },
   { date: "2024.07.13", event: "崇礼168超级越野赛 TTC", group: "共舞50 · 五人组", distanceKm: 51.2, elevationM: 2497, time: "09:25:19", rank: { overall: 461, gender: 329, age: 91, total: 1815 }, team: true, itraScore: 416 },
@@ -276,6 +277,38 @@ export const trailRaces = [
   { date: "2025.07.13", event: "崇礼168超级越野赛 云顶30", group: "云顶30", distanceKm: 26.5, elevationM: 1084, time: "03:12:53", rank: { overall: 51, gender: 45, age: 12, total: 2172 }, index: "ITRA", itraScore: 567 },
   { date: "2025.11.09", event: "大武夷超级山径赛", group: "虎啸九曲 20KM", distanceKm: 19.31, elevationM: 625, time: "02:33:52", rank: { overall: 51, gender: 42, age: 15, total: 2042 } },
   { date: "2026.04.12", event: "莫干山越野赛 by UTMB", group: "20K", distanceKm: 25, elevationM: 1208, time: "03:56:13", rank: { overall: 461, gender: 371, age: 97, total: 1342 } },
+];
+
+// 铁人三项（triathlon.html）。接力赛：legs 里每一棒谁跑用 mine 标出；成绩和排名来自证书。
+export const triathlonRaces = [
+  {
+    date: "2023.10.29", event: "阳朔铁人三项赛", place: "桂林 · 阳朔", group: "半程大铁 · 三人接力", bib: "57-C",
+    total: "05:40:14", rank: { group: 13 },
+    legs: [
+      { name: "游泳", distanceKm: 1.9, time: "00:41:04" },
+      { name: "T1", time: "00:08:01", transition: true },
+      { name: "自行车", distanceKm: 90, time: "03:12:15" },
+      { name: "T2", time: "00:03:00", transition: true },
+      { name: "跑步", distanceKm: 21.1, time: "01:35:51", mine: true },
+    ],
+  },
+];
+
+// 越山向海人车接力（hoodtocoast.html）。team 只写队名；myLegs 是我自己跑的赛段（来自 Garmin），
+// verified = 核实成绩（组委会扣掉行车/受影响赛段后的成绩），live = 实时/净时成绩。
+export const hoodToCoastRaces = [
+  {
+    date: "2024.06.28", dateEnd: "2024.06.29", event: "越山向海人车接力中国赛 · 张家口", team: "601 · 不畏风雨", teamSize: 5,
+    distanceKm: 143.1, verified: "13:11:07", live: "12:19:28", liveLabel: "完赛净时",
+    rank: { overall: 68, group: 41, groupName: "混合组" },
+    myLegs: [ { distanceKm: 9.18, time: "00:43:51", elevationM: 97 }, { distanceKm: 9.33, time: "00:48:10", elevationM: 240 }, { distanceKm: 7.13, time: "00:35:31", elevationM: 159 }, { distanceKm: 10.12, time: "00:42:56", elevationM: 46 } ],
+  },
+  {
+    date: "2025.06.27", dateEnd: "2025.06.28", event: "越山向海人车接力中国赛 · 张家口", team: "932 · 沧澜破晓队", teamSize: 5,
+    distanceKm: 142.6, verified: "08:39:19", verifiedNote: "扣除受影响赛段 EX7–EX11", live: "12:36:24", liveLabel: "实时成绩",
+    rank: { overall: 78, group: 40, groupName: "混合组" },
+    myLegs: [ { distanceKm: 9.16, time: "00:41:42", elevationM: 97 }, { distanceKm: 14.25, time: "01:01:02", elevationM: 121 } ],
+  },
 ];
 
 // 已报名、还没跑的赛事，按日期先后排列。

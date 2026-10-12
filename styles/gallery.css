@@ -53,7 +53,7 @@
   .rec.sub3 { border-color: rgba(227,73,72,.35); background: linear-gradient(135deg, rgba(227,73,72,.06), rgba(255,255,255,.62) 45%); }
   .rec-route { width: 120px; height: 120px; border-radius: 16px; background: var(--ink); display:grid; place-items:center; position:relative; overflow:hidden; }
   .rec-route::before { content:""; position:absolute; inset:0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 12px), repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 12px); }
-  .rec-route svg { width: 96px; height: 96px; position:relative; }
+  .rec-route svg, .rec-route img { width: 96px; height: 96px; position:relative; }
   .rec-route polyline { fill:none; stroke: #58d995; stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
   .rec-route circle { fill:#fff; }
   .rec-route .na { color: rgba(255,255,255,.45); font-size:.66rem; letter-spacing:.14em; position:relative; }
@@ -74,5 +74,5 @@
   @media (max-width: 1000px) { .records { grid-template-columns: repeat(2, 1fr); } .medals { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 780px) {
     .hall-hero { grid-template-columns: 1fr; padding: 22px 18px; } .hall-hero h1 { font-size: 2rem; } .inventory { grid-template-columns: repeat(2,1fr); }
-    .hall { padding: 18px 16px 22px; } .records { grid-template-columns: 1fr; } .rec { grid-template-columns: 96px 1fr; } .rec-route { width: 96px; height: 96px; } .rec-route svg { width: 78px; height: 78px; } .wall { padding: 30px 16px 20px; } .medals { gap: 14px; }
+    .hall { padding: 18px 16px 22px; } .records { grid-template-columns: 1fr; } .rec { grid-template-columns: 96px 1fr; } .rec-route { width: 96px; height: 96px; } .rec-route svg, .rec-route img { width: 78px; height: 78px; } .wall { padding: 30px 16px 20px; } .medals { gap: 14px; }
   }

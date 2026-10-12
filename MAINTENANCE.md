@@ -10,11 +10,15 @@
 ├── training.html         训练日志（Garmin 数据）
 ├── gallery.html          马拉松（大满贯墙、完赛档案、省会地图）
 ├── trail.html            越野跑档案
+├── triathlon.html        铁人三项（接力）
+├── hoodtocoast.html      越山向海人车接力
 ├── assets/
-│   └── 2025*.webp        奖牌图（400px 宽 WebP）
+│   ├── 2025*.webp        奖牌图（400px 宽 WebP）
+│   └── routes/           Garmin 没记录的比赛，从证书上抠出来的轨迹图（trailRaces.routeImage）
 ├── data/
 │   ├── china.geojson
 │   ├── training.json     由 tools/export_training.py 生成，不要手改
+│   ├── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
 │   └── routes.json       每场比赛的路线折线（归一化到 0–100 的点串）
 ├── tools/
 │   ├── export_training.py
@@ -30,7 +34,9 @@
     ├── app.js            首页渲染 + 省会地图（gallery.html 也引用它来画地图）
     ├── training.js
     ├── gallery.js
-    └── trail.js
+    ├── trail.js
+    ├── triathlon.js
+    └── hoodtocoast.js
 ```
 
 各文件职责如下：
@@ -64,6 +70,8 @@
   - 只读 `data/training.json`，不含手填数据；更新方式见「10. 更新训练日志数据」。
 - `trail.html` / `scripts/trail.js`
   - 越野跑档案：`trailRaces`（data.js）+ `data/routes.json`，样式复用 `styles/gallery.css` 的档案卡片。
+- `triathlon.html` / `scripts/triathlon.js`、`hoodtocoast.html` / `scripts/hoodtocoast.js`
+  - 数据分别在 `triathlonRaces`、`hoodToCoastRaces`（字段见 data.js 注释）；卡片左侧的分段条由 legs / myLegs 画出。
 - `gallery.html` / `styles/gallery.css` / `scripts/gallery.js`
   - 马拉松页：大满贯墙（复用 `chinaMajorRaces`）、完赛档案（`marathonResults` + `halfMarathons` + `data/routes.json`）、省会地图（复用 `app.js`）。
 
