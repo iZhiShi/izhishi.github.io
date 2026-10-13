@@ -1,6 +1,7 @@
 import { marathonResults } from "./data.js";
 performance.mark("training:fetch");
-const data = await (await fetch("data/training.json")).json();
+// no-cache：每次都先向服务器核对版本（GitHub Pages 给的 max-age 是 10 分钟，否则刷新也看不到新数据）
+const data = await (await fetch("data/training.json", { cache: "no-cache" })).json();
 performance.mark("training:parsed");
 const daily = data.daily, acts = data.activities;
 const byDate = Object.fromEntries(daily.map(d => [d.date, d]));
