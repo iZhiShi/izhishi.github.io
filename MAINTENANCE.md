@@ -289,7 +289,7 @@ tools/sync_training.sh
 - 日历里跑步 chip 前的 恢复 / 有氧 / 节奏 / 阈值 / VO₂max / 无氧 来自 Garmin 的 `training_effect_label`，是训练效果判定、不是课表结构（硬拉的马拉松也会被判成 VO₂max）；映射表在 `scripts/training.js` 的 `EFFECT`。
 - 页面里「不在北京」的判断顺序：`scripts/training.js` 里的 `trips` 手填行程 > 户外活动 GPS 地点 > 比赛日及前一天 = 赛事城市 > 前后两天同一外地的空档日。
   室内课（力量、跑步机）没有定位，出差期间只练室内课的日子要靠 `trips` 补。
-- 自动同步：`tools/sync_training.sh` 有变化才提交，而且只提交 `data/training.json`。数据提交一周只留一个，信息是 `Update training data (2026-W42)`：本周的数据提交在最前面时直接 amend 进去，再 `--force-with-lease` 只替换远端那一个提交；中间插了别的提交就另起一个。主要由 Obsidian 插件触发：插件设置「同步成功后执行命令」填了这个脚本的绝对路径，每小时同步完就跑一次，输出在 `~/SynologyDrive/.obsidian/plugins/garmin-cn-sync/post-sync.log`。另外 Claude 桌面端的定时任务「训练数据同步到网站」每天 7:15 兜底跑一次（桌面端实际会晚十分钟左右启动），任务定义在 `~/.claude/scheduled-tasks/sync-training-data/SKILL.md`，在 Claude 侧栏的 Scheduled 里能看运行记录、暂停或立刻运行。
+- 自动同步：`tools/sync_training.sh` 有变化才提交，而且只提交 `data/training.json`。数据提交一周只留一个，信息是 `Update training data (2026-W42)`：本周的数据提交在最前面时直接 amend 进去，再 `--force-with-lease` 只替换远端那一个提交；中间插了别的提交就另起一个。主要由 Obsidian 插件触发：插件设置「同步成功后执行命令」指向 `~/Documents/Claude/Projects/garmin-data/scripts/post_sync.sh`，它先跑本脚本、再给训练记录补佳明链接，每小时同步完跑一次，输出在 `~/SynologyDrive/.obsidian/plugins/garmin-cn-sync/post-sync.log`。另外 Claude 桌面端的定时任务「训练数据同步到网站」每天 7:15 兜底跑一次（桌面端实际会晚十分钟左右启动），任务定义在 `~/.claude/scheduled-tasks/sync-training-data/SKILL.md`，在 Claude 侧栏的 Scheduled 里能看运行记录、暂停或立刻运行。
   - 定时任务只在 Claude 桌面端开着时跑，关着就等下次打开补跑。
   - 不能用 launchd / cron：macOS 不让它们启动的进程读 `~/Documents`，而仓库就在那里。
   - 笔记本身靠 Obsidian 插件 `garmin-cn-sync` 更新（源码在 `~/Documents/Claude/Projects/garmin-data`，NAS 上构建），插件按固定钟点同步，目前是每小时整点（插件设置「同步时刻」写 `*:00`），同步完直接调本脚本。改插件的同步时刻，记得把定时任务也挪到之后。不要把 Garmin 账号放进 GitHub Secrets。
