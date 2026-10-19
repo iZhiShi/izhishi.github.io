@@ -54,7 +54,7 @@ export const completedMarathons = {
   沈阳: { date: "2025.09.14", time: "03:14:20" },
   拉萨: { date: "2025.09.21", time: "01:59:55", distance: "half" },
   成都: { date: "2025.10.26", time: "03:09:54" },
-  北京: { date: "2025.11.02", time: "02:59:13", tag: "⏱️" },
+  北京: { date: "2025.11.02", time: "02:59:13" },
   南京: { date: "2025.11.16", time: "03:49:48" },
   昆明: { date: "2025.11.30", time: "03:26:32" },
   广州: { date: "2025.12.21", time: "03:24:21" },
@@ -62,14 +62,15 @@ export const completedMarathons = {
   石家庄: { date: "2026.03.29", time: "03:24:16" },
   银川: { date: "2026.05.17", time: "03:19:09" },
   呼和浩特: { date: "2026.09.19", time: "03:18:25" },
+  西安: { date: "2026.10.18", time: "02:58:22", tag: "⏱️" },
 };
 
 // 头部成绩卡的数据；各项可填写成绩/分数和赛事，留空会显示“待填写”。
 export const runnerProfile = {
   fullMarathonPb: {
-    time: "02:59:13",
-    event: "2025 北京马拉松",
-    date: "2025.11.02",
+    time: "02:58:22",
+    event: "2026 西安马拉松",
+    date: "2026.10.18",
   },
   halfMarathonPb: {
     time: "01:27:55",
@@ -236,7 +237,7 @@ export const marathonResults = [
   { date: "2025.09.14", event: "沈阳马拉松", time: "03:14:20", bib: "A1418" },
   { date: "2025.10.12", event: "海淀马拉松", time: "03:14:18", bib: "A0819" },
   { date: "2025.10.26", event: "成都马拉松", time: "03:09:54", bib: "A12022" },
-  { date: "2025.11.02", event: "北京马拉松", time: "02:59:13", tag: "⏱️", bib: "B1089" },
+  { date: "2025.11.02", event: "北京马拉松", time: "02:59:13", bib: "B1089" },
   { date: "2025.11.16", event: "南京马拉松", time: "03:49:48", bib: "B27692" },
   { date: "2025.11.30", event: "昆明马拉松", time: "03:26:32", bib: "A10340" },
   { date: "2025.12.21", event: "广州马拉松", time: "03:24:21", bib: "A3933" },
@@ -246,6 +247,7 @@ export const marathonResults = [
   { date: "2026.03.29", event: "石家庄马拉松", time: "03:24:16", bib: "B00211" },
   { date: "2026.05.17", event: "银川马拉松", time: "03:19:09", bib: "A00609" },
   { date: "2026.09.19", event: "呼和浩特马拉松", time: "03:18:25", bib: "A02798" },
+  { date: "2026.10.18", event: "西安马拉松", time: "02:58:22", tag: "⏱️", bib: "A26994" },
 ];
 
 // 半程马拉松（只收城市赛事，公园赛不放）。陈列馆“完赛档案”切到半马时显示。
@@ -367,8 +369,6 @@ export const hoodToCoastRaces = [
 // 第一项是“下一站”，会显示在地图顶部的卡片里；省会赛事还会在地图上以空心点 + 日期标出，
 // 非省会城市（例如香港）只出现在卡片里。跑完省会赛事后把它移到 completedMarathons 即可。
 export const plannedMarathons = [
-  { city: "西安", date: "2026.10.18" },
-  { city: "济南", date: "2026.10.25" },
   { city: "杭州", date: "2026.11.01" },
   { city: "长沙", date: "2026.11.15" },
   { city: "上海", date: "2026.12.05" },
