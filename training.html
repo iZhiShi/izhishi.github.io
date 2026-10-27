@@ -25,10 +25,12 @@
   </section>
 
   <section class="card">
-    <div class="card-head">
+    <div class="card-head cal-head">
       <h2>训练日历</h2>
-      <div class="legend"><span><i style="background:var(--amber)"></i>路跑</span><span><i style="background:var(--amber);border:2px double var(--amber-line);box-sizing:border-box"></i>场地</span><span><i style="background:rgba(237,161,0,.35)"></i>跑步机</span><span><i style="background:var(--blue)"></i>力量</span><span><i style="background:var(--mute)"></i>其它</span><span><i style="background:var(--amber);border-radius:999px"></i>比赛</span><span><i style="background:#fff;border:1.5px dashed rgba(42,120,214,.7);box-sizing:border-box"></i>✈ 不在北京</span><span style="opacity:.75">右上角小字 = 晨起训练准备度</span><span style="opacity:.75">跑步前的字 = Garmin 训练效果判定</span></div>
       <div class="cal-tools"><select id="calTitle" aria-label="选择月份"></select></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--amber)"></i>路跑</span><span><i style="background:var(--amber);border:2px double var(--amber-line);box-sizing:border-box"></i>场地</span><span><i style="background:rgba(237,161,0,.35)"></i>跑步机</span><span><i style="background:var(--blue)"></i>力量</span><span><i style="background:var(--mute)"></i>其它</span><span><i style="background:var(--amber);border-radius:999px"></i>比赛</span><span><i style="background:#fff;border:1.5px dashed rgba(42,120,214,.7);box-sizing:border-box"></i>✈ 不在北京</span>
+      <details class="legend-help"><summary>说明</summary><p>日期右上角的小字是晨起训练准备度。跑步 chip 前面的字是 Garmin 的训练效果判定（恢复 / 有氧 / 节奏 / 阈值 / VO₂max / 无氧）。带左侧细线的分组是一条训练记录，标题是记录名，红色标题是比赛；力量课直接显示记录名。</p></details>
     </div>
     <div class="cal" id="cal"></div>
     <div class="month-sum" id="monthSum"></div>

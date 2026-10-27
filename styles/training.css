@@ -34,7 +34,12 @@
   /* calendar */
   .cal-tools { display:flex; align-items:center; gap: 8px; }
   
-  .legend { display:flex; gap: 14px; font-size:.78rem; color: var(--ink-soft); flex-wrap:wrap; }
+  .cal-head { flex-wrap: nowrap; align-items:center; margin-bottom: 10px; } .cal-head .cal-tools { margin-left:auto; }
+  .legend { display:flex; gap: 14px; font-size:.78rem; color: var(--ink-soft); flex-wrap:wrap; align-items:center; margin-bottom: 12px; }
+  .legend-help summary { cursor:pointer; list-style:none; color: var(--ink-soft); border-bottom: 1px dotted rgba(67,81,68,.45); }
+  .legend-help summary::-webkit-details-marker { display:none; }
+  .legend-help[open] { flex-basis:100%; } .legend-help[open] summary { color: var(--ink); }
+  .legend-help p { margin: 6px 0 0; max-width: 72ch; font-size:.78rem; line-height:1.5; color: var(--ink-soft); }
   .legend i { display:inline-block; width: 10px; height:10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
   .cal { display:grid; grid-template-columns: repeat(7, 1fr) 1.15fr; gap: 6px; }
   .cal .dow { font-size:.7rem; letter-spacing:.1em; color: var(--ink-soft); font-weight:700; padding: 0 4px 4px; }
@@ -55,6 +60,10 @@
   .chip.strength { background: rgba(42,120,214,.12); border-color: var(--blue); color: var(--blue-text); }
   .chip.other { background: rgba(138,144,136,.14); border-color: var(--mute); color:#4e544c; }
   .chip.race { background: var(--amber); border-color: var(--amber-line); color:#3a2600; font-weight:700; }
+  /* 同一条训练记录的活动分组：左侧细线 + 记录名 */
+  .sess { display:flex; flex-direction:column; gap: 3px; padding: 2px 0 2px 6px; border-left: 2px solid rgba(201,133,0,.5); }
+  .sess-name { font-size:.66rem; font-weight:700; line-height:1.15; color: var(--amber-text); }
+  .sess.race { border-left-color: var(--red); } .sess.race .sess-name { color: var(--red-text); }
   .wk { border-radius: 12px; background: rgba(34,48,39,.05); border:1px dashed rgba(67,81,68,.2); padding: 8px 10px; display:grid; align-content:start; gap: 4px; font-size:.75rem; color: var(--ink-soft); }
   .wk b { display:block; font-family:"Avenir Next Condensed","DIN Alternate","Arial Narrow",sans-serif; font-size: 1.35rem; color: var(--amber-text); letter-spacing:-.02em; }
   .wk .s { color: var(--blue-text); font-weight:700; }
@@ -75,6 +84,7 @@
     .cal { grid-template-columns: repeat(7,1fr); gap: 3px; } .wk, .dow.wkh { display:none; }
     .day { min-height: 54px; padding: 4px; } .day .n .rd { display:none; } .day .loc { font-size:0; height:0; }
     .chip { font-size: 0; padding: 0; height: 6px; border-radius: 3px; border-left: 0; }
+    .sess { padding: 0; border-left: 0; gap: 3px; } .sess-name { display:none; }
     .chip.run,.chip.track,.chip.treadmill,.chip.race { background: var(--amber); } .chip.strength { background: var(--blue); } .chip.other { background: var(--mute); }
     .card { padding: 16px; }
   }

@@ -5,6 +5,7 @@
 """
 import os, re, json, glob, sys
 ROOT = os.environ.get("GARMIN_VAULT", os.path.expanduser("~/SynologyDrive/Garmin"))
+RECORDS = os.environ.get("TRAINING_RECORDS", os.path.expanduser("~/Documents/Obsidian/Daily Vault/Sports"))  # 训练记录 / 比赛记录 两个子目录
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "training.json")
 SINCE = "2023-01-01"
 def fm(path):
@@ -44,7 +45,22 @@ def place(a):
     ALIAS = {"浦东新区":"上海","长宁区":"上海","新界":"香港","Hillingdon":"伦敦","Fujikawaguchiko Town":"河口湖","Kuala Lumpur":"吉隆坡","Singapore":"新加坡"}
     if cand in ALIAS: return ALIAS[cand]
     return re.sub(r"(市|布依族苗族自治州|苗族侗族自治州|藏族羌族自治州)$", "", cand)
-acts = [dict({k:a.get(k) for k in AK}, place=place(a)) for a in acts if a.get("date") and a["date"] >= SINCE]
+# 训练记录和比赛记录（Obsidian 笔记）→ 每条活动的 session（记录名）和 session_kind（run / strength / race）。
+# 训练记录按 frontmatter 里 garmin_activities 的链接精确对应到活动；比赛记录没有 frontmatter，按文件名里的日期把当天所有活动算进去。
+def record_title(path): return re.sub(r"^\d{4}-\d{2}-\d{2}\s*", "", os.path.splitext(os.path.basename(path))[0])
+session_by_id, race_by_date = {}, {}
+for p in glob.glob(f"{RECORDS}/训练记录/*.md"):
+    d = fm(p); kind = "strength" if str(d.get("training_type") or "").endswith("_strength") else "run"
+    for aid in re.findall(r"\[\[Garmin/Activities/[^\]]*-(\d+)\]\]", open(p, encoding="utf-8").read()):
+        session_by_id[aid] = (record_title(p), kind)
+for p in glob.glob(f"{RECORDS}/比赛记录/*.md"):
+    m = re.match(r"(\d{4}-\d{2}-\d{2})", os.path.basename(p))
+    if m: race_by_date[m.group(1)] = record_title(p)
+def session(a):
+    if a["date"] in race_by_date: return {"session": race_by_date[a["date"]], "session_kind": "race"}
+    t = session_by_id.get(str(a.get("activity_id")))
+    return {"session": t[0], "session_kind": t[1]} if t else {}
+acts = [dict({k:a.get(k) for k in AK}, place=place(a), **session(a)) for a in acts if a.get("date") and a["date"] >= SINCE]
 strip = lambda rows: [{k:v for k,v in r.items() if v is not None} for r in rows]
 json.dump({"since":SINCE,"daily":strip(daily),"activities":strip(acts)}, open(OUT,"w"), ensure_ascii=False, separators=(",",":"))
 print(len(daily),"daily;",len(acts),"activities")

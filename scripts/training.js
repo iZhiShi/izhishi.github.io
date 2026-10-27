@@ -94,16 +94,28 @@ function renderCal() {
       const iso = isoLocal(d);
       const inMonth = d.getMonth() === m;
       const list = actsByDate[iso] || [], race = raceByDate[iso], dd = byDate[iso];
-      let chips = "";
+      // 一条活动一个 chip；全马比赛日的那条用赛事名 + 官方成绩。grouped = 已经在带标题的分组里，赛事名不重复写。
+      const chipOf = (a, grouped) => {
+        const k = kind(a);
+        if (race && k === "run" && a.distance_km > 40) return `<div class="chip race"><span>${grouped ? race.time.replace(/^0/,"") : race.event}</span><small>${grouped ? a.distance_km.toFixed(1) + "k" : race.time.replace(/^0/,"")}</small></div>`;
+        if (k === "strength") return `<div class="chip strength"><span>${a.session_kind === "strength" && a.session ? a.session : "力量"}</span><small>${fmtMin(a.duration_sec)}</small></div>`;
+        if (k === "other") return `<div class="chip other"><span>${a.activity_label}</span><small>${fmtMin(a.duration_sec)}</small></div>`;
+        return `<div class="chip ${k}"><span>${k==="track"?"场地 ":k==="treadmill"?"跑步机 ":""}${EFFECT[a.training_effect_label] ? EFFECT[a.training_effect_label] + " " : ""}${a.distance_km.toFixed(1)}k</span><small>${fmtPace(a.pace_sec_per_km)}</small></div>`;
+      };
+      // 同一条训练记录 / 比赛记录（data.json 里的 session）下的跑步活动合成一组，组标题是记录名，比赛标成红字；
+      // 力量课的记录名直接写进 chip，不另起分组。
+      let chips = "", group = null;
+      const flush = () => { if (group) { chips += `<div class="sess ${group.kind}"><div class="sess-name">${group.kind === "race" ? "比赛 · " : ""}${group.name}</div>${group.html}</div>`; group = null; } };
       for (const a of list) {
         const k = kind(a);
-        if (race && k === "run" && a.distance_km > 40) { chips += `<div class="chip race"><span>${race.event}</span><small>${race.time.replace(/^0/,"")}</small></div>`; }
-        else if (k === "strength") chips += `<div class="chip strength"><span>力量</span><small>${fmtMin(a.duration_sec)}</small></div>`;
-        else if (k === "other") chips += `<div class="chip other"><span>${a.activity_label}</span><small>${fmtMin(a.duration_sec)}</small></div>`;
-        else chips += `<div class="chip ${k}"><span>${k==="track"?"场地 ":k==="treadmill"?"跑步机 ":""}${EFFECT[a.training_effect_label] ? EFFECT[a.training_effect_label] + " " : ""}${a.distance_km.toFixed(1)}k</span><small>${fmtPace(a.pace_sec_per_km)}</small></div>`;
+        if (a.session && a.session_kind !== "strength") {
+          if (!group || group.name !== a.session) { flush(); group = { name: a.session, kind: a.session_kind, html: "" }; }
+          group.html += chipOf(a, true);
+        } else { flush(); chips += chipOf(a, false); }
         if (inMonth) { if (a.activity_group === "running") { monthKm += a.distance_km; monthRuns++; } if (k==="strength") monthStr++; monthMin += a.duration_sec; }
         if (a.activity_group === "running") wkKm += a.distance_km; if (k==="strength") wkStr++; wkMin += a.duration_sec;
       }
+      flush();
       const rd = dd?.training_readiness_score != null && iso <= TODAY ? `<span class="rd" title="晨起训练准备度">${dd.training_readiness_score}</span>` : "";
       const place = dayPlace(iso); const away = place && place !== "北京";
       const loc = away ? `<div class="loc">✈ ${place}</div>` : "";
