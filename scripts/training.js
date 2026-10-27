@@ -132,7 +132,7 @@ renderCal();
 const weeks = []; for (let i = 11; i >= 0; i--) { const to = shift(TODAY, -7*i), from = shift(to, -7); const w = acts.filter(a => a.date > from && a.date <= to);
   weeks.push({ label: from.slice(5).replace("-", "/"), run: w.filter(a=>a.activity_type==="running").reduce((s,a)=>s+a.distance_km,0), track: w.filter(a=>a.activity_type==="track_running").reduce((s,a)=>s+a.distance_km,0), tm: w.filter(a=>a.activity_type==="treadmill_running").reduce((s,a)=>s+a.distance_km,0), str: w.filter(a=>a.activity_group==="strength").length }); }
 const base = { animationDuration: 600, textStyle:{fontFamily:FONT}, tooltip:{trigger:"axis", backgroundColor:"#fffaf0", borderColor:"rgba(67,81,68,.2)", textStyle:{color:"#223027", fontSize:12}} };
-echarts.init(document.getElementById("weekly")).setOption({ ...base, grid:{left:36,right:36,top:20,bottom:28}, legend:{show:false},
+echarts.init(document.getElementById("weekly")).setOption({ ...base, grid:{left:36,right:36,top:36,bottom:28}, legend:{show:false},  // 顶部留给两个轴名（km / 次），轴名画在网格上方 15px 处
   xAxis:{type:"category",data:weeks.map(w=>w.label),axisLine:{lineStyle:{color:"rgba(67,81,68,.25)"}},axisTick:{show:false},axisLabel:{color:"#5f685e",fontSize:11}},
   yAxis:[{type:"value",name:"km",nameTextStyle:{color:"#5f685e"},splitLine:{lineStyle:{color:"rgba(67,81,68,.1)"}},axisLabel:{color:"#5f685e"}},{type:"value",min:0,max:6,interval:2,name:"次",nameTextStyle:{color:"#1c5cab"},splitLine:{show:false},axisLabel:{color:"#1c5cab"}}],
   series:[
