@@ -14,7 +14,7 @@ const fmtT = t => t ? t.replace(/^0/, "") : "—";
 
 // ---- inventory
 const capsDone = new Set([...full, ...half].map(f => cityOf(f.event)).filter(c => capitalSet.has(c))); // 与地图口径一致：拉萨半马也算点亮
-document.getElementById("inventory").innerHTML = `<div><b>${full.length}</b><span>全马</span></div><div><b>${half.length}</b><span>半马</span></div><div><b>${capsDone.size}<small style="font-size:1rem;color:var(--ink-soft)"> / 31</small></b><span>省会</span></div><div class="pb"><b>${fmtT(runnerProfile.fullMarathonPb.time)}</b><span>全马 PB</span></div>`;
+document.getElementById("inventory").innerHTML = `<div><b>${full.length}</b><span>全马</span></div><div><b>${half.length}</b><span>半马</span></div><div><b>${capsDone.size}<small style="font-size:1rem;color:var(--ink-soft)"> / ${capitals.length}</small></b><span>省会</span></div><div class="pb"><b>${fmtT(runnerProfile.fullMarathonPb.time)}</b><span>全马 PB</span></div>`;
 
 // ---- medal wall
 document.getElementById("medals").innerHTML = chinaMajorRaces.map(r => { const it = full.find(f => f.event === r.event && f.year === r.year);

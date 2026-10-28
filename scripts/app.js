@@ -50,6 +50,7 @@ const mapLabelPlacement = {
   南昌: ["right", [14, 16]],
   福州: ["right", [18, 2]],
   广州: ["right", [44, 12]],
+  香港: ["right", [34, 44]],
   海口: ["right", [12, 26]],
   南宁: ["left", [-24, 16]],
   重庆: ["left", [-26, 30]],
@@ -158,7 +159,8 @@ function updateSummary() {
     doneValue.textContent = completed + " / " + total;
   }
   if (nextCity) {
-    nextCity.textContent = next ? (nextCapital ? nextCapital.province + " · " + next.city + "市" : next.city) : "待定";
+    const citySuffix = nextCapital && nextCapital.province.endsWith("特别行政区") ? "" : "市";
+    nextCity.textContent = next ? (nextCapital ? nextCapital.province + " · " + next.city + citySuffix : next.city) : "待定";
   }
   if (nextDate) {
     nextDate.textContent = next ? "比赛日期 · " + next.date : "待填写";

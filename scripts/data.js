@@ -32,6 +32,8 @@ export const capitals = [
   { province: "西藏自治区", city: "拉萨", coord: [91.1322, 29.6604] },
   { province: "宁夏回族自治区", city: "银川", coord: [106.2309, 38.4872] },
   { province: "新疆维吾尔自治区", city: "乌鲁木齐", coord: [87.6168, 43.8256] },
+  { province: "香港特别行政区", city: "香港", coord: [114.1694, 22.3193] },
+  { province: "澳门特别行政区", city: "澳门", coord: [113.5439, 22.1987] },
 ];
 
 // 在这里填写你的真实完赛记录，键名使用城市名即可。
@@ -367,7 +369,7 @@ export const hoodToCoastRaces = [
 
 // 已报名、还没跑的赛事，按日期先后排列。
 // 第一项是“下一站”，会显示在地图顶部的卡片里；省会赛事还会在地图上以空心点 + 日期标出，
-// 非省会城市（例如香港）只出现在卡片里。跑完省会赛事后把它移到 completedMarathons 即可。
+// 港澳按省会处理（已在 capitals 里）；其他非省会城市只出现在卡片里。跑完省会赛事后把它移到 completedMarathons 即可。
 export const plannedMarathons = [
   { city: "杭州", date: "2026.11.01" },
   { city: "长沙", date: "2026.11.15" },
