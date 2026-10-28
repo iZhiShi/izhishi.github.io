@@ -284,7 +284,7 @@ tools/sync_training.sh
 ```
 
 - 脚本只读 Daily / Activities 笔记的 frontmatter 和正文里的 FIT 统计表（取 `timestamp` 最小值当开始时间），不碰 FIT 文件；路径可用环境变量 `GARMIN_VAULT` 覆盖。
-- 训练记录和比赛记录也会读（`~/Documents/Obsidian/Daily Vault/Sports` 下的 `训练记录/`、`比赛记录/`，环境变量 `TRAINING_RECORDS` 可覆盖）：训练记录按 frontmatter 里 `garmin_activities` 的链接对应到活动，比赛记录按文件名日期算当天所有活动。导出成每条活动的 `session`（记录名，即文件名去掉日期）和 `session_kind`（run / strength / race）。日历上跑步和比赛的记录合成一组、标题是记录名（比赛红字），力量课的记录名直接写进 chip。
+- 训练记录和比赛记录也会读（库在 `~/Documents/Obsidian/Daily Vault`，环境变量 `TRAINING_VAULT` 可覆盖）：训练记录是库里所有 frontmatter 带 `type: sports-session` 的笔记，不限文件夹（从模板新建的常落在库根目录），只排除 `Templates/`，按 `garmin_activities` 的链接对应到活动；比赛记录是 `Sports/比赛记录/` 下的笔记，按文件名日期算当天所有活动。没写比赛记录的比赛从 `scripts/data.js` 的成绩表拿赛事名（有 `date` + `event` 的条目）。没有任何记录的日子按训练规律推测：有场地跑、或 5 km 以上的 VO₂max / 无氧 / 阈值跑的日子算强度课：周三在朝阳区是「元大都强度课」，周二在西城区是「亚瑟士强度课」（月坛），周三其它地方只标「强度课」；周日单次 18 km 以上算「长距离」，这类活动多一个 `session_inferred: true`。导出成每条活动的 `session`（记录名，即文件名去掉日期）和 `session_kind`（run / strength / race）。日历上跑步和比赛的记录合成一组、标题是记录名（比赛红字），力量课的记录名直接写进 chip。
 - 同一天的活动按开始时间排序；2026-05 之前的笔记没有 FIT 时间戳，按 `activity_id` 兜底（偶尔和真实顺序不一致）。
 - `training_readiness_score` 是晨起值（当天最早一次计算），`training_readiness_latest` 是同步时刻的最新值，由插件写入。
 - 日历里跑步 chip 前的 恢复 / 有氧 / 节奏 / 阈值 / VO₂max / 无氧 来自 Garmin 的 `training_effect_label`，是训练效果判定、不是课表结构（硬拉的马拉松也会被判成 VO₂max）；映射表在 `scripts/training.js` 的 `EFFECT`。

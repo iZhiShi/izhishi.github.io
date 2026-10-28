@@ -5,7 +5,7 @@
 """
 import os, re, json, glob, sys
 ROOT = os.environ.get("GARMIN_VAULT", os.path.expanduser("~/SynologyDrive/Garmin"))
-RECORDS = os.environ.get("TRAINING_RECORDS", os.path.expanduser("~/Documents/Obsidian/Daily Vault/Sports"))  # 训练记录 / 比赛记录 两个子目录
+VAULT = os.environ.get("TRAINING_VAULT", os.path.expanduser("~/Documents/Obsidian/Daily Vault"))  # 训练记录（type: sports-session，不限文件夹）和 Sports/比赛记录
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "training.json")
 SINCE = "2023-01-01"
 def fm(path):
@@ -46,14 +46,22 @@ def place(a):
     if cand in ALIAS: return ALIAS[cand]
     return re.sub(r"(市|布依族苗族自治州|苗族侗族自治州|藏族羌族自治州)$", "", cand)
 # 训练记录和比赛记录（Obsidian 笔记）→ 每条活动的 session（记录名）和 session_kind（run / strength / race）。
-# 训练记录按 frontmatter 里 garmin_activities 的链接精确对应到活动；比赛记录没有 frontmatter，按文件名里的日期把当天所有活动算进去。
+# 训练记录 = 库里所有 type: sports-session 的笔记（从模板新建的常落在库根目录，所以不按文件夹找，只排除 Templates），
+# 按 frontmatter 里 garmin_activities 的链接精确对应到活动；比赛记录没有 frontmatter，按文件名里的日期把当天所有活动算进去。
 def record_title(path): return re.sub(r"^\d{4}-\d{2}-\d{2}\s*", "", os.path.splitext(os.path.basename(path))[0])
 session_by_id, race_by_date = {}, {}
-for p in glob.glob(f"{RECORDS}/训练记录/*.md"):
-    d = fm(p); kind = "strength" if str(d.get("training_type") or "").endswith("_strength") else "run"
+for p in glob.glob(f"{VAULT}/**/*.md", recursive=True):
+    if os.path.relpath(p, VAULT).startswith("Templates" + os.sep): continue
+    d = fm(p)
+    if d.get("type") != "sports-session": continue
+    kind = "strength" if str(d.get("training_type") or "").endswith("_strength") else "run"
     for aid in re.findall(r"\[\[Garmin/Activities/[^\]]*-(\d+)\]\]", open(p, encoding="utf-8").read()):
         session_by_id[aid] = (record_title(p), kind)
-for p in glob.glob(f"{RECORDS}/比赛记录/*.md"):
+# 没写比赛记录的比赛从 scripts/data.js 的成绩表拿（有 date + event 的条目：全马、半马、越野），笔记优先。
+DATA_JS = os.path.join(os.path.dirname(OUT), "..", "scripts", "data.js")
+for y, mo, dd, ev in re.findall(r'date:\s*"(\d{4})\.(\d{2})\.(\d{2})",\s*event:\s*"([^"]+)"', open(DATA_JS, encoding="utf-8").read()):
+    race_by_date.setdefault(f"{y}-{mo}-{dd}", ev)
+for p in glob.glob(f"{VAULT}/Sports/比赛记录/*.md"):
     m = re.match(r"(\d{4}-\d{2}-\d{2})", os.path.basename(p))
     if m: race_by_date[m.group(1)] = record_title(p)
 def session(a):
@@ -61,6 +69,25 @@ def session(a):
     t = session_by_id.get(str(a.get("activity_id")))
     return {"session": t[0], "session_kind": t[1]} if t else {}
 acts = [dict({k:a.get(k) for k in AK}, place=place(a), **session(a)) for a in acts if a.get("date") and a["date"] >= SINCE]
+# 没有记录的日子按训练规律推测（session_inferred: true）。强度课 = 当天有场地跑、或 5 km 以上的 VO₂max / 无氧 / 阈值跑：
+# 周三在朝阳区是元大都的 C1 课「元大都强度课」，周二在西城区是月坛的亚瑟士训练营「亚瑟士强度课」，周三其它地方只标「强度课」；
+# 周日单次 18 km 以上 = 长距离。用 2026-03 以来有记录的周次校准过：周三零漏，周日漏一次（河口湖那次不到 18 km）。
+import datetime
+by_day = {}
+for a in acts: by_day.setdefault(a["date"], []).append(a)
+HARD = {"VO2MAX", "ANAEROBIC_CAPACITY", "LACTATE_THRESHOLD"}
+for d, day in by_day.items():
+    if any(a.get("session") for a in day): continue
+    runs = [a for a in day if a.get("activity_group") == "running"]
+    wd = datetime.date.fromisoformat(d).weekday()
+    hard = any(a.get("activity_type") == "track_running" or (a.get("training_effect_label") in HARD and (a.get("distance_km") or 0) >= 5) for a in runs)
+    district = next((n.split(" ")[0] for a in runs for n in [a.get("activity_name") or ""] if n.split(" ")[0].endswith("区")), None)
+    label = None
+    if wd == 2 and hard: label = "元大都强度课" if district == "朝阳区" else "强度课"
+    if wd == 1 and hard and district == "西城区": label = "亚瑟士强度课"
+    if wd == 6 and any((a.get("distance_km") or 0) >= 18 for a in runs): label = "长距离"
+    if label:
+        for a in runs: a.update(session=label, session_kind="run", session_inferred=True)
 strip = lambda rows: [{k:v for k,v in r.items() if v is not None} for r in rows]
 json.dump({"since":SINCE,"daily":strip(daily),"activities":strip(acts)}, open(OUT,"w"), ensure_ascii=False, separators=(",",":"))
 print(len(daily),"daily;",len(acts),"activities")
