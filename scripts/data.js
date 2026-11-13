@@ -375,5 +375,6 @@ export const hoodToCoastRaces = [
 export const plannedMarathons = [
   { city: "长沙", date: "2026.11.15" },
   { city: "上海", date: "2026.12.05" },
+  { city: "南宁", date: "2026.12.20" },
   { city: "香港", date: "2027.01.17" },
 ];
