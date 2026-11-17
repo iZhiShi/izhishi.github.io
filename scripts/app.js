@@ -160,7 +160,11 @@ function updateSummary() {
   }
   if (nextCity) {
     const citySuffix = nextCapital && nextCapital.province.endsWith("特别行政区") ? "" : "市";
-    nextCity.textContent = next ? (nextCapital ? nextCapital.province + " · " + next.city + citySuffix : next.city) : "待定";
+    // 直辖市的省名就是“城市 + 市”，只写一遍。
+    const municipality = nextCapital && nextCapital.province === next.city + "市";
+    nextCity.textContent = next
+      ? (nextCapital ? (municipality ? nextCapital.province : nextCapital.province + " · " + next.city + citySuffix) : next.city)
+      : "待定";
   }
   if (nextDate) {
     nextDate.textContent = next ? "比赛日期 · " + next.date : "待填写";
